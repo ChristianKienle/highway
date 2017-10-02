@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "highway",
+        "repositoryURL": "git@bitbucket.org:ChristianKienle/highway.git",
+        "state": {
+          "branch": null,
+          "revision": "bbf46d86e6aee141658b2a5c725d486405fb4e80",
+          "version": "0.0.196"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -5,6 +5,10 @@
 .Spotlight-V100
 *.swp
 
+# xcode project files
+highway.xcodeproj/
+_highway.xcodeproj/
+
 ## Xcode build files
 DerivedData/
 build/

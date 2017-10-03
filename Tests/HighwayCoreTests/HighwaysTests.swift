@@ -17,10 +17,9 @@ final class HighwaysTests: XCTestCase {
     }
     func testListHighwaysAsJSON() {
         _useDefaultHighways()
-        
         highways.go("listPublicHighwaysAsJSON")
-        
     }
+    
     func testThatArgumentsAreReceivedCorrectly() {
         let inputArgs = ["1", "2", "3"]
         _useDefaultHighways()
@@ -29,7 +28,7 @@ final class HighwaysTests: XCTestCase {
             XCTAssertEqual(["does not exist"] + inputArgs, args)
             unrecognizedCalled.fulfill()
         }
-        .go(HighwayInvocation(name: "does not exist", arguments: inputArgs))
+        .go(Invocation(highwayName: "does not exist", arguments: Arguments(all: ["does not exist"] + inputArgs)))
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
         }
@@ -108,7 +107,7 @@ final class HighwaysTests: XCTestCase {
         }
     }
     func testErrorHandlerIsCalledWhenHighwayThrows() {
-        let ctx = HighwayInvocation(name: MockHighway.build.highwayName, arguments: [])
+        let ctx = Invocation(highwayName: MockHighway.build.highwayName)
         let onErrorExpectation = expectation(description: "Error handler is called.")
         let expectedError = "ich bin der ich bin ich"
         highways
@@ -166,13 +165,13 @@ final class HighwaysTests: XCTestCase {
 
 // MARK: Helper & Mocks
 extension String: HighwayInvocationProvider {
-    public func highwayInvocation() -> HighwayInvocation {
-        return HighwayInvocation(name: self)
+    public func highwayInvocation() -> Invocation {
+        return Invocation(highwayName: self)
     }
 }
 
-extension HighwayInvocation: HighwayInvocationProvider {
-    public func highwayInvocation() -> HighwayInvocation {
+extension Invocation: HighwayInvocationProvider {
+    public func highwayInvocation() -> Invocation {
         return self
     }
 }

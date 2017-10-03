@@ -1,29 +1,100 @@
 import Foundation
 
-public final class ManagedHighway {
-    // MARK: Creating
-    convenience init(highway: Highway, dependencies: [Highway] = [], _ noResultHandler: @escaping HighwayHandler) {
-        let wrappingHandler: HighwayHandlerProducingResult = {
-            try noResultHandler()
-            return ()
-        }
-        self.init(highway: highway, dependencies: dependencies, handler: wrappingHandler)
-    }
-    
-    init(highway: Highway, dependencies: [Highway], handler: @escaping HighwayHandlerProducingResult) {
+protocol Invokeable: class {
+    func invoke(with invocation: Invocation) throws
+}
+
+public class ManagedHighway: Invokeable {
+    // MARK: - Init
+    init(highway: Highway, dependencies: [Highway]) {
         self.highway = highway
         self.dependencies = dependencies
-        self.handler = handler
     }
 
-    // MARK: Properties
-    let handler: HighwayHandlerProducingResult
+    // MARK: - Properties
     let dependencies: [Highway]
     let highway: Highway
     var result: Any?
     
-    // MARK: Convenience
-    func execute() throws {
+    // MARK: - Invokeable
+    func invoke(with invocation: Invocation) throws {
+    }
+}
+
+public class FireAndForgetHighway: ManagedHighway {
+    // MARK: - Types
+    public typealias Handler = () throws -> ()
+    
+    // MARK: - Init
+    init(highway: Highway, dependencies: [Highway], handler: @escaping Handler) {
+        self.handler = handler
+        super.init(highway: highway, dependencies: dependencies)
+    }
+    
+    // MARK: - Properties
+    private let handler: Handler
+    
+    // MARK: - ManagedHighway
+    override func invoke(with invocation: Invocation) throws {
+        try handler()
+    }
+}
+
+
+public class ResultProducingHighway: ManagedHighway {
+    // MARK: - Types
+    public typealias Handler = () throws -> (Any)
+
+    // MARK: - Init
+    init(highway: Highway, dependencies: [Highway], handler: @escaping Handler) {
+        self.handler = handler
+        super.init(highway: highway, dependencies: dependencies)
+    }
+
+    // MARK: - Properties
+    private let handler: Handler
+
+    // MARK: - ManagedHighway
+    override func invoke(with invocation: Invocation) throws {
         result = try handler()
     }
 }
+
+public class ResultProducingComplexHighway: ManagedHighway {
+    // MARK: - Types
+    public typealias Handler = (_ invocation: Invocation) throws -> (Any)
+    
+    // MARK: - Init
+    init(highway: Highway, dependencies: [Highway], handler: @escaping Handler) {
+        self.handler = handler
+        super.init(highway: highway, dependencies: dependencies)
+    }
+    
+    // MARK: - Properties
+    private let handler: Handler
+    
+    // MARK: - ManagedHighway
+    override func invoke(with invocation: Invocation) throws {
+        result = try handler(invocation)
+    }
+}
+
+public class ComplexHighway: ManagedHighway {
+    // MARK: - Types
+    public typealias Handler = (_ invocation: Invocation) throws -> ()
+    
+    // MARK: - Init
+    init(highway: Highway, dependencies: [Highway], handler: @escaping Handler) {
+        self.handler = handler
+        super.init(highway: highway, dependencies: dependencies)
+    }
+    
+    // MARK: - Properties
+    private let handler: Handler
+    
+    // MARK: - ManagedHighway
+    override func invoke(with invocation: Invocation) throws {
+        try handler(invocation)
+    }
+}
+

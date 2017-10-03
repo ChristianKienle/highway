@@ -31,6 +31,7 @@ final class App {
             Terminal.shared.log("Update failed. It happens…")
         }
     }
+    
     // MARK: Creating
     init(fileSystem: FileSystem) {
         self.fileSystem = fileSystem
@@ -42,6 +43,18 @@ final class App {
         try self.__ensureValidHomeBundle()
         let projectBundle = try HighwayBundle(creatingInParent: getabscwd(), fileSystem: fileSystem, configuration: .standard, homeBundleConfiguration: .standard)
         
+        terminal.log("Created at: \(projectBundle.url). Try 'highway generate'.")
+    }
+    
+    // HACK
+    private func _init_swift(_ invocation: Invocation) throws {
+        try self._updateDependenciesIfNeeded()
+        try self.__ensureValidHomeBundle()
+        let projectBundle = try HighwayBundle(creatingInParent: getabscwd(), fileSystem: fileSystem, configuration: .standard, homeBundleConfiguration: .standard)
+        let main_swift_data = mainSwiftSubtypeSwiftTemplate.data(using: .utf8)!
+        try projectBundle.write(mainSwiftData: main_swift_data)
+        let swift_package = SwiftPackageTool(context: context)
+        try swift_package.package(arguments: ["init", "--type", "executable"], currentDirectoryUrl: getabscwd())
         terminal.log("Created at: \(projectBundle.url). Try 'highway generate'.")
     }
     
@@ -166,6 +179,7 @@ final class App {
 
     func run(with arguments: [String]) {
         highways
+            .highway(.initialize_swift, _init_swift)
             .highway(.initialize, _init)
             .highway(.help, _showAllHighways)
             .highway(.generate, _generate)

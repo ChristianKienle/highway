@@ -3,6 +3,7 @@ import HighwayCore
 
 enum AppHighway: String, Highway {
     case initialize
+    case initialize_swift
     case help
     case generate
     case bootstrap
@@ -10,6 +11,7 @@ enum AppHighway: String, Highway {
     case version
     case self_update
     var highwayName: String {
+        if self == .initialize_swift { return "init_swift" }
         if self == .initialize { return "init" }
         if self == .version { return "--version" }
         return rawValue
@@ -17,6 +19,7 @@ enum AppHighway: String, Highway {
     var usage: String {
         switch self {
         case .initialize: return "Initialize a new Highway project"
+        case .initialize_swift: return "Initialize a new Highway project that builds a Swift project."
         case .help: return "Display available commands and options"
         case .generate: return "Generates an Xcode project"
         case .bootstrap: return "Bootstraps the Highway home directory"

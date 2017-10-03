@@ -4,39 +4,73 @@ import Terminal
 public typealias HighwayHandlerProducingResult = () throws -> (Any)
 public typealias HighwayHandler = () throws -> ()
 public typealias UnrecognizedCommandHandler = (_ arguments: [String]) throws -> ()
+public typealias HighwaysResultProducingInvocationHandler = (_ invocation: Invocation) throws -> (Any)
+
+public final class Invocation {
+    // MARK: - Convenience
+    public static let empty = Invocation(highwayName: "")
+    
+    // MARK: - Init
+    public init(highwayName: String, arguments: Arguments = .empty) {
+        self.highwayName = highwayName
+        self.arguments = arguments
+    }
+    
+    // MARK: - Properties
+    public let highwayName: String
+    public let arguments: Arguments
+}
+
+extension Invocation: Equatable {
+    public static func ==(l: Invocation, r: Invocation) -> Bool {
+      return l.highwayName == r.highwayName && l.arguments == r.arguments
+    }
+}
 
 public class Highways<T: Highway> {
-    // MARK: Types
+    // MARK: - Types
     public typealias ErrorHandler = (Error) -> ()
     public typealias EmptyHandler = () throws -> ()
 
-    // MARK: Creating
+    // MARK: - Init
     public init(_ highwayType: T.Type) {
         addPrivateHighway(PrivateHighway.listPublicHighwaysAsJSON, _listPublicHighwaysAsJSON)
     }
     
-    // MARK: Properties
+    // MARK: - Properties
     public private(set) var highways: [ManagedHighway] = []
     private var _privateHighways: [ManagedHighway] = []
     private var errorHandler: ErrorHandler?
     private var emptyHandler: EmptyHandler?
     private var unrecognizedCommandHandler: UnrecognizedCommandHandler?
     
-    // MARK: Adding Highways
-    public func highway(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping HighwayHandler) -> Highways<T> {
-        let _highway = ManagedHighway(highway: highway, dependencies: dependencies, handler: handler)
+    // MARK: - Adding Highways
+    public func highway(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping FireAndForgetHighway.Handler) -> Highways<T> {
+        let _highway = FireAndForgetHighway(highway: highway, dependencies: dependencies, handler: handler)
         highways.append(_highway)
         return self
     }
     
-    public func highwayWithResult(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping HighwayHandlerProducingResult) -> Highways<T> {
-        let _highway = ManagedHighway(highway: highway, dependencies: dependencies, handler: handler)
+    public func highway(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ComplexHighway.Handler) -> Highways<T> {
+        let _highway = ComplexHighway(highway: highway, dependencies: dependencies, handler: handler)
+        highways.append(_highway)
+        return self
+    }
+    
+    public func highwayWithResult(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ResultProducingHighway.Handler) -> Highways<T> {
+        let _highway = ResultProducingHighway(highway: highway, dependencies: dependencies, handler: handler)
+        highways.append(_highway)
+        return self
+    }
+    
+    public func highwayWithResult(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ResultProducingComplexHighway.Handler) -> Highways<T> {
+        let _highway = ResultProducingComplexHighway(highway: highway, dependencies: dependencies, handler: handler)
         highways.append(_highway)
         return self
     }
 
-    public func addPrivateHighway(_ highway: Highway, _ handler: @escaping HighwayHandler) {
-        let _highway = ManagedHighway(highway: highway, handler)
+    public func addPrivateHighway(_ highway: Highway, _ handler: @escaping FireAndForgetHighway.Handler) {
+        let _highway = FireAndForgetHighway(highway: highway, dependencies: [], handler: handler)
         _privateHighways.append(_highway)
     }
 
@@ -71,7 +105,7 @@ public class Highways<T: Highway> {
     public func done() {}
     
     // MARK: Executing
-    private func _handle(highway: ManagedHighway) throws {
+    private func _handle(highway: ManagedHighway, with arguments: Arguments) throws {
         let dependencies: [ManagedHighway] = try highway.dependencies.map {
             guard let result = self.highways.managedHighway(representing: $0) else {
                 throw "\(highway.highway.highwayName) depends on \($0.highwayName) but no such highway is registered."
@@ -79,11 +113,13 @@ public class Highways<T: Highway> {
             return result
         }
         try dependencies.forEach {
-            try self._handle(highway: $0)
+            try self._handle(highway: $0, with: arguments)
         }
         
         do {
-            try highway.execute() // Execute and sets the result
+            let name = highway.highway.highwayName
+            let invocation = Invocation(highwayName: name, arguments: arguments)
+            try highway.invoke(with: invocation) // Execute and sets the result
         } catch {
             _reportError(error)
             throw error
@@ -136,10 +172,10 @@ public class Highways<T: Highway> {
        
         // Normal logic
         // Handle private highway
-        let highwayName = invocation.name
+        let highwayName = invocation.highwayName
         if let privateHighway = _privateHighways.managedHighway(named: highwayName) {
             do {
-                try _handle(highway: privateHighway)
+                try _handle(highway: privateHighway, with: invocation.arguments)
             } catch {
                 errorHandler?(error)
                 return
@@ -149,12 +185,12 @@ public class Highways<T: Highway> {
         
         // Handle normal highway
         guard let highway = highways.managedHighway(named: highwayName) else {
-            _handleUnrecognizedCommandOrReportError(arguments: invocation.allArguments)
+            _handleUnrecognizedCommandOrReportError(arguments: invocation.arguments.all)
             return
         }
         
         do {
-            try _handle(highway: highway)
+            try _handle(highway: highway, with: invocation.arguments)
         } catch {
             // Do not rethrow or report the error because _handle did that already
         }
@@ -164,8 +200,8 @@ public class Highways<T: Highway> {
         let rawHighways = highways.map { RawHighway(name: $0.highway.highwayName, usage: $0.highway.usage) }
         let text = try rawHighways.jsonString()
         Swift.print(text, separator: "", terminator: "\n")
+        fflush(stdout)
     }
-    
 }
 
 extension Array where Iterator.Element == ManagedHighway {

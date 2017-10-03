@@ -1,48 +1,37 @@
 import Foundation
 
-let mainSwiftTemplate =
+public let mainSwiftSubtypeSwiftTemplate =
 """
 import HighwayCore
 import FSKit
 
 enum App: String, Highway {
-    case build
-    case test
-    case run
+    case build, test
 
     /// !!! Add more Highways by adding additional cases. !!!
 
     var usage: String {
         switch self {
-        case .build: return "Builds the project"
-        case .test: return "Executes tests"
-        case .run: return "Runs the project"
+        case .build: return "Builds the Swift project"
+        case .test: return "Executes Tests"
         }
     }
 }
 
 // MARK: - Helper to get you started
-
-let context = Context.local()
-let pwd = context.currentWorkingUrl // also works when build + run within Xcode
 let highways = Highways(App.self)
+let swiftc = SwiftBuildSystem()
 
 // MARK: - Setup your custom highways
-
 highways
 
 .highway(.build) {
-
+    _ = try swiftc.build()
 }
 .highway(.test) {
-
-}
-.highway(.run) {
-
+    try swiftc.test()
 }
 
 .go()
 
 """
-
-

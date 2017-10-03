@@ -13,4 +13,4 @@ public extension SwiftBuildSystem {
         let compiler = try bundleCompiler(for: bundle)
         return try execute(plan: compiler.plan)
     }
-}
+} 

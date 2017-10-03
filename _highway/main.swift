@@ -17,7 +17,7 @@ enum CustomHighway: String, Highway {
         case .release_then_upload:
             return "Creates and publishes a new release, then uploads it."
         case .updateVersion:
-            return "Writes the current tag to CurrentVersion.swift"
+            return "Writes the next tag to CurrentVersion.swift and tags the current state."
         }
     }
 }
@@ -26,15 +26,14 @@ let terminal = Terminal.shared
 let keychain = Keychain()
 let context = Context.local()
 let highways = Highways(CustomHighway.self)
-
+let cwd = getabscwd()
 func _commitUpdateVersionAndTag() throws -> String {
-    let nextVersion = try getNextVersion(context: context)
-    try update(nextVersion: nextVersion, currentDirectoryURL: context.currentWorkingUrl, fileSystem: context.fileSystem)
+    let nextVersion = try getNextVersion(cwd: cwd, context: context)
+    try update(nextVersion: nextVersion, currentDirectoryURL: cwd, fileSystem: context.fileSystem)
     
     let git = try GitTool(context: context)
-    let cwd = context.currentWorkingUrl
     try git.addAll(at: cwd)
-    try git.commit(at: cwd, message: "update")
+    try git.commit(at: cwd, message: "Release \(nextVersion)")
     _ = try GitAutotag(context: context).autotag(at: cwd, dryRun: false)
     terminal.log("New version: \(nextVersion)")
     return nextVersion
@@ -52,7 +51,6 @@ func _test() throws {
 func _build() throws -> SwiftBuildSystem.Artifact {
     let swiftBuildSystem = SwiftBuildSystem(context: context)
     let buildOptions = SwiftOptions(subject: .auto, projectDirectory: getabscwd(), configuration: .release, verbose: true, additionalArguments: [])
-    
     let plan = try swiftBuildSystem.executionPlan(with: buildOptions)
     return try swiftBuildSystem.execute(plan: plan)
 }
@@ -63,7 +61,6 @@ func _release() throws {
 
 func _release_then_upload() throws {
     let git = try GitTool(context: context)
-    let cwd = context.currentWorkingUrl
     try git.pushToMaster(at: cwd)
     try git.pushTagsToMaster(at: cwd)
 }
@@ -71,8 +68,8 @@ func _release_then_upload() throws {
 highways
     .highway(.test, _test)
     .highway(.release, dependsOn: [.test, .updateVersion, .build], _release)
-    .highwayWithResult(.build,  _build)
-    .highwayWithResult(.updateVersion, _commitUpdateVersionAndTag)
+    .highway(.build,  _build)
+    .highway(.updateVersion, _commitUpdateVersionAndTag)
     .highway(.release_then_upload, dependsOn: [.release], _release_then_upload)
     .onError { error in _error(error) }
     .go()

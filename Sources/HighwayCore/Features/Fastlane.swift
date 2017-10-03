@@ -1,4 +1,5 @@
 import Foundation
+import FSKit
 
 public final class Fastlane {
     // MARK: - Properties
@@ -10,10 +11,9 @@ public final class Fastlane {
     }
     
     // MARK: - Executing Actions
-    public func action(named action: String, additionalArguments: [String] = []) throws {
+    public func action(named action: String, additionalArguments: [String] = [], currentDirectoryUrl cwd: AbsoluteUrl = getabscwd()) throws {
         let arguments = [action] + additionalArguments
-        let currentDirectory = context.currentWorkingUrl
-        let task = try Task(commandName: "fastlane", arguments: arguments, currentDirectoryURL: currentDirectory, executableFinder: context.executableFinder)
+        let task = try Task(commandName: "fastlane", arguments: arguments, currentDirectoryURL: cwd, executableFinder: context.executableFinder)
         context.executor.execute(task: task)
         guard task.state.successfullyFinished else {
             throw "fastlane failed."

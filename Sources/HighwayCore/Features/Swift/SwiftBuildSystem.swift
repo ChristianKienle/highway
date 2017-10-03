@@ -20,6 +20,7 @@ public final class SwiftBuildSystem {
             throw "Test failed"
         }
     }
+    
     private func _buildTask(with options: SwiftOptions) throws -> Task {
         return try options.task(fileSystem: fileSystem, executableFinder: executableFinder)
     }

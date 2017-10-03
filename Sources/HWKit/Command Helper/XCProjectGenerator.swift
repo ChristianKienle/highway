@@ -1,37 +1,38 @@
 import HighwayCore
+import FSKit
 
 // MARK: - Types
 public typealias GeneratedXCProject = SwiftPackageTool.XCProjectOptions
 
 public class XCProjectGenerator {
     // MARK: - Init
-    public init(context: Context, bundleConfiguration: HighwayBundle.Configuration) {
+    public init(context: Context, bundle: HighwayBundle) {
         self.context = context
-        self.bundleConfiguration = bundleConfiguration
+        self.bundle = bundle
     }
     
     // MARK: - Properties
     public let context: Context
-    public let bundleConfiguration: HighwayBundle.Configuration
+    public let bundle: HighwayBundle
     
     // MARK: - Command
-    public func generate() throws -> GeneratedXCProject {
+    public func generate() throws -> Result {
         let swift_package = SwiftPackageTool(context: context)
-        let dst = context.currentWorkingUrl.appending(bundleConfiguration.directoryName)
-        let options = SwiftPackageTool.XCProjectOptions(swiftProjectDirectory: dst, xcprojectDestinationDirectory: dst.parent, xcconfigFileName: "config.xcconfig")
+        let xcconfigName = bundle.configuration.xcconfigName
+        let projectUrl = bundle.xcodeprojectUrl
+        let options = SwiftPackageTool.XCProjectOptions(swiftProjectDirectory: bundle.url,
+                                                        xcprojectDestinationDirectory: projectUrl,
+                                                        xcconfigFileName: xcconfigName)
         try swift_package.generateXcodeproj(with: options)
-        return options
+        return Result(projectUrl: projectUrl)
     }
 }
 
-extension SwiftPackageTool.XCProjectOptions {
-    // TODO: Get the path from the swift package generate-commandline tool output.
-    // Actual output:
-    // generated: /private/tmp/blll.xcodeproj
-    // <newline>
-    public func openProjectCommand(with configuration: HighwayBundle.Configuration) -> String {
-        let projectName = "\(configuration.packageName).xcodeproj"
-        let projectPath = xcprojectDestinationDirectory.appending(projectName)
-        return "open \(projectPath.path)"
+public extension XCProjectGenerator {
+    public struct Result {
+        init(projectUrl: AbsoluteUrl) {
+            openCommand = "open \(projectUrl.path)"
+        }
+        public let openCommand: String
     }
 }

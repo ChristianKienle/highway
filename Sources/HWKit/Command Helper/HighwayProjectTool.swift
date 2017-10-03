@@ -13,9 +13,7 @@ public class HighwayProjectTool {
     public let context: Context
     public let compiler: SwiftBuildSystem
     public let bundle: HighwayBundle
-    
     private var fileSystem: FileSystem { return context.fileSystem }
-    private var currentDirectoryUrl: AbsoluteUrl { return context.currentWorkingUrl }
     
     // MARK: - Init
     public init(compiler: SwiftBuildSystem, bundle: HighwayBundle, context: Context) throws {
@@ -24,31 +22,33 @@ public class HighwayProjectTool {
         self.bundle = bundle
     }
     
-    
     // MARK: - Working with the Tool
     public func availableHighways() -> [RawHighway] {
-        do {
-            let arguments = ["listPublicHighwaysAsJSON"]
-            let result = try build(thenExecuteWith: arguments, currentDirectoryUrl: currentDirectoryUrl)
-            return (try? Array(rawHighwaysData: result.outputData)) ?? []
-        } catch {
+        let arguments = ["listPublicHighwaysAsJSON"]
+        guard let result = try? build(thenExecuteWith: arguments) else {
             return []
         }
+        return (try? Array(rawHighwaysData: result.outputData)) ?? []
     }
 
+    public func update() throws {
+        let package = SwiftPackageTool(context: context)
+        try package.package(arguments: ["update"], currentDirectoryUrl: bundle.url)
+    }
+    
     public func build() throws -> BuildResult {
         let artifact = try compiler.compile(bundle: bundle)
         let url = bundle.executableUrl(swiftBinUrl: artifact.binUrl)
         return BuildResult(executableUrl: url, artifact: artifact)
     }
     
-    public func build(thenExecuteWith arguments: [String], currentDirectoryUrl: AbsoluteUrl) throws -> BuildThenExecuteResult {
+    public func build(thenExecuteWith arguments: [String]) throws -> BuildThenExecuteResult {
         let buildResult = try build()
-        let executableURL = buildResult.executableUrl
+        let executableUrl = buildResult.executableUrl
         
-        try fileSystem.assertItem(at: executableURL, is: .file)
+        try fileSystem.assertItem(at: executableUrl, is: .file)
         
-        let _highway = Task(executableURL: executableURL, arguments: arguments, currentDirectoryURL: currentDirectoryUrl)
+        let _highway = Task(executableURL: executableUrl, arguments: arguments, currentDirectoryURL: bundle.url.parent)
         Terminal.shared.log("Launching: \(_highway.executableURL)")
 
         _highway.output = .pipeChannel()

@@ -1,19 +1,15 @@
 import HighwayCore
 import FSKit
 
-func getNextVersion(context: Context) throws -> String {
+func getNextVersion(cwd: AbsoluteUrl, context: Context) throws -> String {
     let git = try GitAutotag(context: context)
-    return try git.autotag(at: context.currentWorkingUrl, dryRun: true)
+    return try git.autotag(at: cwd, dryRun: true)
 }
 
 func update(nextVersion: String, currentDirectoryURL: AbsoluteUrl, fileSystem: FileSystem) throws {
     let versionFile = AbsoluteUrl(path: "Sources/highway/CurrentVersion.swift", relativeTo: currentDirectoryURL)
-    guard fileSystem.file(at: versionFile).isExistingFile else {
-        throw "Unable to update version number. '\(versionFile.debugDescription)' does not exist."
-    }
+    try fileSystem.assertItem(at: versionFile, is: .file)
+
     let code = "let CurrentVersion = \"\(nextVersion)\""
-    guard let data = code.data(using: .utf8) else {
-        fatalError("Unable to convert String ('\(code)') to Data.")
-    }
-    try fileSystem.writeData(data, to: versionFile)
+    try fileSystem.writeString(code, to: versionFile)
 }

@@ -22,7 +22,6 @@ public final class HighwayBundle {
         self.configuration = configuration
     }
     
-    
     public convenience init(fileSystem: FileSystem, parentUrl: AbsoluteUrl = getabscwd(), configuration: Configuration = .standard) throws {
         let url = parentUrl.appending(configuration.directoryName)
         try self.init(url: url, fileSystem: fileSystem, configuration: configuration)
@@ -32,7 +31,12 @@ public final class HighwayBundle {
     public let url: AbsoluteUrl
     public let fileSystem: FileSystem
     public let configuration: Configuration
-    
+    public var xcodeprojectParent: AbsoluteUrl {
+        return url.parent
+    }
+    public var xcodeprojectUrl: AbsoluteUrl {
+        return url.parent.appending(configuration.xcodeprojectName)
+    }
     // MARK: - Working with the Bundle
     public func write(xcconfigData data: Data) throws {
         try fileSystem.writeData(data, to: xcconfigFileUrl)
@@ -51,7 +55,7 @@ public final class HighwayBundle {
     }
     
     public var mainSwiftFileUrl: AbsoluteUrl {
-        return url.appending("main.swift")
+        return url.appending(configuration.mainSwiftFileName)
     }
     
     public func write(mainSwiftData data: Data) throws {
@@ -59,7 +63,7 @@ public final class HighwayBundle {
     }
     
     public var packageFileUrl: AbsoluteUrl {
-        return url.appending("Package.swift")
+        return url.appending(configuration.packageSwiftFileName)
     }
     
     public func write(packageDescription data: Data) throws {
@@ -116,6 +120,9 @@ extension HighwayBundle {
         public static let standard = Configuration()
         
         // MARK: - Properties
+        public var mainSwiftFileName = "main.swift"
+        public var packageSwiftFileName = "Package.swift"
+        public var xcodeprojectName = "_highway.xcodeproj"
         public var packageName = "_highway"
         public var targetName = "_highway"
         public var directoryName = "_highway"

@@ -6,10 +6,9 @@ import FSKit
 private final class MockGitSystem {
     let executor = ExecutorMock()
     lazy var context: Context = {
-        let cwd = AbsoluteUrl.root
         let fs = InMemoryFileSystem()
         let finder = ExecutableFinder(searchURLs: [AbsoluteUrl("/bin")], fileSystem: fs)
-        return Context(currentWorkingUrl: cwd, executableFinder: finder, executor: executor)
+        return Context(executableFinder: finder, executor: executor)
     }()
 
     var fs: FileSystem { return context.fileSystem }

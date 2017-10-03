@@ -24,7 +24,7 @@ enum App: String, Highway {
 // MARK: - Helper to get you started
 
 let context = Context.local()
-let pwd = context.currentWorkingUrl // also works when build + run within Xcode
+let cwd = getabscwd() // also works when build + run within Xcode
 let highways = Highways(App.self)
 
 // MARK: - Setup your custom highways

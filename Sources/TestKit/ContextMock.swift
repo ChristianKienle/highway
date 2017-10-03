@@ -6,6 +6,6 @@ public class ContextMock: Context {
     public init() {
         let fs = InMemoryFileSystem()
         let finder = ExecutableFinder(searchURLs: [], fileSystem: fs)
-        super.init(currentWorkingUrl: .root, executableFinder: finder, executor: executorMock)
+        super.init(executableFinder: finder, executor: executorMock)
     }
 }

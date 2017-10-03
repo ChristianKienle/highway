@@ -28,7 +28,7 @@ final class SwiftBuildSystem_HighwayBundleTests: XCTestCase {
         let executor = ExecutorMock { _ in 
             return;
         }
-        let context = Context(currentWorkingUrl: bundleUrl, executableFinder: finder, executor: executor)
+        let context = Context(executableFinder: finder, executor: executor)
         let buildSystem = SwiftBuildSystem(context: context)
         
         guard let compiler = try? buildSystem.bundleCompiler(for: bundle) else {

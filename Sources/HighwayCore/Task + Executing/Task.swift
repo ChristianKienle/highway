@@ -6,7 +6,7 @@ public class Task {
     public convenience init(commandName: String,
                             arguments: [String] = [],
                             environment: [String : String] = [:],
-                            currentDirectoryURL: AbsoluteUrl,
+                            currentDirectoryURL: AbsoluteUrl = getabscwd(),
                             executableFinder: ExecutableFinder) throws {
         guard let executableUrl = executableFinder.urlForExecuable(named: commandName) else {
             throw "Cannot create task named '\(commandName)': No executeable found."

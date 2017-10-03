@@ -25,7 +25,7 @@ public class Keychain {
     }
     
     public func password(matching query: PasswordQuery) throws -> String  {
-        let task = try Task(commandName: "security", arguments:  query.processArguments, currentDirectoryURL: context.currentWorkingUrl, executableFinder: context.executableFinder)
+        let task = try Task(commandName: "security", arguments:  query.processArguments, executableFinder: context.executableFinder)
         task.output = TaskIOChannel.pipeChannel()
         task.enableReadableOutputDataCapturing()
 

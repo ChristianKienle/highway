@@ -26,9 +26,9 @@ private func _getabsxcodecwd(file: String, bundle: HighwayBundle.Configuration) 
     // Xcode modifies the current working directory. If the user
     // opens his highway project in Xcode and launches it
     // he expects the cwd to be the directory that contains
-    // highway-go/.
+    // _highway/.
     // In order to determine the cwd we get #file and move up the
-    // directory tree until we find 'highway-go/.hwbuild'
+    // directory tree until we find '_highway/.build'
     // or more generally, until we find:
     // HWBundle.directoryName/HWBundle.buildDirectoryName
     // The cwd then becomes the parent of HWBundle.directoryName.

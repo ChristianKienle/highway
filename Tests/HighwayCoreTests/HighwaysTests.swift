@@ -11,8 +11,8 @@ final class HighwaysTests: XCTestCase {
     
     private func _useDefaultHighways() {
         highways
-            .highwayWithResult(.build) { "build" }
-            .highwayWithResult(.test) { "test" }
+            .highway(.build) { "build" }
+            .highway(.test) { "test" }
             .done()
     }
     func testListHighwaysAsJSON() {
@@ -85,23 +85,27 @@ final class HighwaysTests: XCTestCase {
         let testCalled = expectation(description: "test called")
         var testPerformed = false
         
+        func _build() throws -> String {
+            XCTAssertTrue(testPerformed)
+            let result: String = try self.highways.result(for: .test)
+            XCTAssertEqual(result, "test")
+            buildCalled.fulfill()
+            buildCalled.assertForOverFulfill = true
+            return "build"
+        }
+        func _test() throws -> String {
+            XCTAssertFalse(testPerformed)
+            testPerformed = true
+            testCalled.fulfill()
+            testCalled.assertForOverFulfill = true
+            return "test"
+        }
+        
         highways
-            .highwayWithResult(.build, dependsOn: [.test]) {
-                XCTAssertTrue(testPerformed)
-                let result: String = try self.highways.result(for: .test)
-                XCTAssertEqual(result, "test")
-                buildCalled.fulfill()
-                buildCalled.assertForOverFulfill = true
-                return "build"
-            }
-            .highwayWithResult(.test) {
-                XCTAssertFalse(testPerformed)
-                testPerformed = true
-                testCalled.fulfill()
-                testCalled.assertForOverFulfill = true
-                return "test"
-            }
+            .highway(.build, dependsOn: [.test], _build)
+            .highway(.test, _test)
             .go("build")
+       
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
         }

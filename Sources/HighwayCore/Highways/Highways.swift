@@ -57,13 +57,13 @@ public class Highways<T: Highway> {
         return self
     }
     
-    public func highwayWithResult(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ResultProducingHighway.Handler) -> Highways<T> {
+    public func highway(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ResultProducingHighway.Handler) -> Highways<T> {
         let _highway = ResultProducingHighway(highway: highway, dependencies: dependencies, handler: handler)
         highways.append(_highway)
         return self
     }
     
-    public func highwayWithResult(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ResultProducingComplexHighway.Handler) -> Highways<T> {
+    public func highway(_ highway: T, dependsOn dependencies: [T] = [], _ handler: @escaping ResultProducingComplexHighway.Handler) -> Highways<T> {
         let _highway = ResultProducingComplexHighway(highway: highway, dependencies: dependencies, handler: handler)
         highways.append(_highway)
         return self

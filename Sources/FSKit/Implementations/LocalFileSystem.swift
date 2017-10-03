@@ -1,15 +1,6 @@
 import Foundation
 
 public class LocalFileSystem: FileSystem {
-    public func itemMetadata(at url: AbsoluteUrl) throws -> Metadata {
-        var isDir = ObjCBool(false)
-        guard _fm.fileExists(atPath: url.path, isDirectory: &isDir) else {
-            throw FSError.doesNotExist
-        }
-        let type: Metadata.ItemType = isDir.boolValue ? .directory : .file
-        return Metadata(type: type)
-    }
-    
     // MARK: - Init
     public init() {}
     
@@ -47,6 +38,15 @@ public class LocalFileSystem: FileSystem {
         return try _withItem(at: url) {
             return try Data(contentsOfAbsolute: url)
         }
+    }
+    
+    public func itemMetadata(at url: AbsoluteUrl) throws -> Metadata {
+        var isDir = ObjCBool(false)
+        guard _fm.fileExists(atPath: url.path, isDirectory: &isDir) else {
+            throw FSError.doesNotExist
+        }
+        let type: Metadata.ItemType = isDir.boolValue ? .directory : .file
+        return Metadata(type: type)
     }
     
     // MARK: - Private Helper

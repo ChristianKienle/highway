@@ -8,12 +8,11 @@ open class Context {
         let fileSystem = LocalFileSystem()
         let executableFinder = ExecutableFinder(searchURLs: searchUrls, fileSystem: fileSystem)
         let executor = SystemExecutor()
-        return Context(currentWorkingUrl: getabscwd(), executableFinder: executableFinder, executor: executor)
+        return Context(executableFinder: executableFinder, executor: executor)
     }
     
     // MARK: - Init
-    public init(currentWorkingUrl: AbsoluteUrl, executableFinder: ExecutableFinder, executor: TaskExecutor) {
-        self.currentWorkingUrl = currentWorkingUrl
+    public init(executableFinder: ExecutableFinder, executor: TaskExecutor) {
         self.executableFinder = executableFinder
         self.executor = executor
     }
@@ -21,7 +20,6 @@ open class Context {
     // MARK: - Properties
     public var fileSystem: FileSystem { return executableFinder.fileSystem }
     public let executableFinder: ExecutableFinder
-    public var currentWorkingUrl: AbsoluteUrl
     public private(set) var executor: TaskExecutor
 }
 

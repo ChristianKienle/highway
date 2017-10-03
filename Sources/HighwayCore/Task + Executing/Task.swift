@@ -81,6 +81,17 @@ public class Task {
         }
         return String(data: data, encoding: .utf8)
     }
+    public var successfullyFinished: Bool {
+        return state.successfullyFinished
+    }
+    public func throwIfNotSuccess(_ error: Swift.Error? = nil) throws {
+        guard successfullyFinished else {
+            if let error = error {
+                throw error
+            }
+            throw "\(name) not finished successfully."
+        }
+    }
 }
 
 extension Task: CustomStringConvertible {

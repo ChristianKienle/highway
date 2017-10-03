@@ -18,14 +18,10 @@ public final class CompileAndRun {
     public func compileAndRun(arguments: [String]) throws {
         let artifact = try compiler.compile(bundle: bundle)
         let executableURL = AbsoluteUrl(path: bundleConfiguration.targetName, relativeTo: artifact.binUrl)
-        let p = Task(executableURL: executableURL, arguments: arguments, currentDirectoryURL: getabscwd())
-        Terminal.shared.log("Launching: \(p.description)")
-        let context = Context.local()
-        context.executor.execute(task: p)
-        let success = p.state.successfullyFinished
-        guard success else {
-            throw "Failed to execute \(executableURL.path)"
-        }
+        let highwayTool = Task(executableURL: executableURL, arguments: arguments, currentDirectoryURL: getabscwd())
+        Terminal.shared.log("Launching: \(highwayTool.description)")
+        compiler.context.executor.execute(task: highwayTool) // move to highwaygotool
+        try highwayTool.throwIfNotSuccess()
     }
 }
 

@@ -82,6 +82,24 @@ public final class HighwayBundle {
             return buildDirectory
         }
     }
+
+    public struct CleanResult {
+        public let deletedFiles: [AbsoluteUrl]
+    }
+    /// Removes build artifacts and calculateable information from the
+    /// highway bundle = the folder that contains your custom "highfile".
+    public func clean() throws -> CleanResult {
+        var deletedFiles = [AbsoluteUrl]()
+        if let pinsFile = try deletePinsFileIfPresent() {
+            deletedFiles.append(pinsFile)
+        }
+        
+        if let buildDirectory = try deleteBuildDirectoryIfPresent() {
+            deletedFiles.append(buildDirectory)
+        }
+        return CleanResult(deletedFiles: deletedFiles)
+    }
+
 }
 
 extension HighwayBundle {

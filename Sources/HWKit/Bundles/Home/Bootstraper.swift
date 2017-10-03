@@ -1,17 +1,24 @@
 import HighwayCore
 import FSKit
 
-public final class HomeBundleCreator {
+/// This class is doing a lot of things - probably too many things:
+/// - Creates the highway home directory ($HOME/.highway)
+/// - Checks if the highway working copy exists
+///     If it does not exist it uses git to clone
+///     the repo. 
+public final class Bootstraper {
     // MARK: - Init
-    public init(homeDirectory: AbsoluteUrl, configuration: HomeBundle.Configuration, context: Context) {
+    public init(homeDirectory: AbsoluteUrl, configuration: HomeBundle.Configuration, git: Git.System, context: Context) {
         self.homeDirectory = homeDirectory
         self.configuration = configuration
+        self.git = git
         self.context = context
     }
     
     // MARK: - Properties
     public let homeDirectory: AbsoluteUrl
     public let configuration: HomeBundle.Configuration
+    public let git: Git.System
     public let context: Context
     
     public func requestHomeBundle() throws -> HomeBundle {
@@ -21,12 +28,10 @@ public final class HomeBundleCreator {
         }
         let bundle = try HomeBundle(url: homeDirectory, fileSystem: fs)
         if bundle.missingComponents().contains(.clone) {
-            let git = try GitTool(context: context)
             let localCloneUrl = bundle.localCloneUrl
             let remoteCloneUrl = configuration.remoteRepositoryUrl
-            let options = GitTool.CloneOptions(remoteUrl: remoteCloneUrl, localPath: localCloneUrl, performMirror: false)
-            let plan = try git.cloneExecutionPlan(with: options)
-            try git.execute(cloneExecutionPlan: plan)
+            let options = Git.CloneOptions(remoteUrl: remoteCloneUrl, localPath: localCloneUrl, performMirror: false)
+            try git.clone(with: options)
         }
         
         return bundle

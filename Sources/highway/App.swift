@@ -51,10 +51,11 @@ final class App {
 
     private func __bootstrappedHomeBundle() throws -> HomeBundle {
         let config = HomeBundle.Configuration.standard
-        let homeDir = try self.fileSystem.homeDirectoryUrl()
+        let homeDir = try fileSystem.homeDirectoryUrl()
         let highwayHomeDirectory = homeDir.appending(config.directoryName)
-        let bootstrap = Bootstraper(homeBundleDirectory: highwayHomeDirectory, context: self.context)
-        return try bootstrap.start()
+        let git = try GitTool(context: context)
+        let bootstrap = Bootstraper(homeDirectory: highwayHomeDirectory, configuration: config, git: git, context: context)
+        return try bootstrap.requestHomeBundle()
     }
     
     private func _generate() throws {
@@ -89,7 +90,7 @@ final class App {
             return
         }
         
-        let result = try BundleCleaner(bundle: bundle).clean()
+        let result = try bundle.clean()
         Terminal.shared.log("DONE")
         let lines = result.deletedFiles.map { "Deleted '\($0.path)'" }
         let list = List(lines: lines)

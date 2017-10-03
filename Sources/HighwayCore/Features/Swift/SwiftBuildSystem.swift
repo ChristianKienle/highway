@@ -59,10 +59,8 @@ public final class SwiftBuildSystem {
             throw "failed to convert build log data to string"
         }
 
-        guard buildTask.state.successfullyFinished else {
-            throw "Failed to build. non-0 exit code. Build log: \(rawBuildLog)"
-        }
-    
+        try buildTask.throwIfNotSuccess("Failed to build. non-0 exit code. Build log: \(rawBuildLog)")
+        
         let showPathTask = plan.showBinPathTask
         var pathData = Data()
         plan.showBinPathOutput.readabilityHandler = { handle in
@@ -71,9 +69,7 @@ public final class SwiftBuildSystem {
             }
         }
         context.executor.execute(task: showPathTask)
-        guard showPathTask.state.successfullyFinished else {
-            throw "failed to determine path to executable. swift returned non-0 exit code."
-        }
+        try showPathTask.throwIfNotSuccess("failed to determine path to executable. swift returned non-0 exit code.")
 
         guard let rawPath = String(data: pathData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             throw "failed to convert binary path data to string"

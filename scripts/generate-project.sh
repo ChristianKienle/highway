@@ -16,5 +16,5 @@ set -u			# => exit on undeclared variable access
 set -o pipefail		# => sane exit codes when using |
 
 # Do it
-swift package generate-xcodeproj --xcconfig-overrides ./config/config.xcconfig --output .
+swift package generate-xcodeproj --enable-code-coverage --xcconfig-overrides ./config/config.xcconfig --output .
 

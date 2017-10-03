@@ -8,7 +8,11 @@ let package = Package(
         .library(name: "HWKit", targets: ["HWKit"]),
         .library(name: "Terminal", targets: ["Terminal"]),
         .library(name: "TestKit", targets: ["TestKit"]),
-        .library(name: "FSKit", targets: ["FSKit"])
+        .library(name: "FSKit", targets: ["FSKit"]),
+        .library(name: "All",
+                 type: .dynamic,
+                 targets: ["HWKit", "HighwayCore", "highway", "Terminal", "TestKit", "FSKit"]
+        )
     ],
     dependencies: [],
     targets: [
@@ -23,7 +27,7 @@ let package = Package(
         .testTarget(name: "HighwayCoreTests", dependencies: ["HighwayCore", "TestKit"]),
         .testTarget(name: "HWKitTests", dependencies: ["HWKit", "TestKit"]),
         .testTarget(name: "TerminalTests", dependencies: ["Terminal"]),
-        .testTarget(name: "FSKitTests", dependencies: ["FSKit"])
+        .testTarget(name: "FSKitTests", dependencies: ["FSKit"]),
     ],
     swiftLanguageVersions: [4]
 )

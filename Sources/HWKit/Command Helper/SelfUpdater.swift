@@ -17,9 +17,8 @@ public final class SelfUpdater {
     public func update() throws {
         let tempUrl = try self.homeBundle.fileSystem.uniqueTemporaryDirectoryUrl()
         let git = try GitTool(context: context)
-        let cloneOptions = GitTool.CloneOptions(remoteUrl: homeBundle.localCloneUrl.path, localPath: tempUrl, performMirror: false)
-        let clonePlan = try git.cloneExecutionPlan(with: cloneOptions)
-        try git.execute(cloneExecutionPlan: clonePlan)
+        let cloneOptions = Git.CloneOptions(remoteUrl: homeBundle.localCloneUrl.path, localPath: tempUrl, performMirror: false)
+        try git.clone(with: cloneOptions)
         let bootstrapScriptUrl = tempUrl.appending("scripts").appending("bootstrap.sh")
         let args = ["-c", "(/bin/sleep 2; \(bootstrapScriptUrl.path))&"]
         let bash = try Task(commandName: "bash", arguments: args, currentDirectoryURL: tempUrl, executableFinder: context.executableFinder)

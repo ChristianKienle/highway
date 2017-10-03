@@ -23,7 +23,7 @@ public final class HomeBundleUpdater {
 
         func __currentTag(at url: AbsoluteUrl) throws -> String {
             let git = try GitTool(context: self.context)
-            return try git.currentTagOfRepository(at: url)
+            return try git.currentTag(at: url)
         }
         
         let cloneUrl = homeBundle.localCloneUrl

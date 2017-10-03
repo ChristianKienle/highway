@@ -5,11 +5,6 @@ import Terminal
 import FSKit
 
 final class App {
-    
-    private func _private_bootstrapAndUpdate() throws {
-        try _bootstrap()
-        let _ = try _update_highway()
-    }
     // MARK: Properties
     private let fileSystem: FileSystem
     private let bundleConfiguration = HighwayBundle.Configuration.standard
@@ -44,12 +39,30 @@ final class App {
     
     private func _init() throws {
         try self._updateDependenciesIfNeeded()
-        let homeBundle = try self.__bootstrappedHomeBundle()
-        let command = InitCommand(context: .local(), destinationUrl: getabscwd(), bundleConfiguration: .standard, homeBundle: homeBundle)
-        try command.execute()
+        try self.__ensureValidHomeBundle()
+        let projectBundle = try HighwayBundle(creatingInParent: getabscwd(), fileSystem: fileSystem, configuration: .standard, homeBundleConfiguration: .standard)
+        
+        terminal.log("Created at: \(projectBundle.url). Try 'highway generate'.")
+    }
+    
+    // MARK: - Private Highways
+    private func _private_bootstrapAndUpdate() throws {
+        try _bootstrap()
+        let _ = try _update_highway()
+    }
+    
+    // MARK: - Helper
+    private func __customHighways() -> [RawHighway] {
+        // Try to get the bundle
+        // if the are not able to get it just show the help.
+        guard let bundle = __currentHighwayBundle() else {
+            return []
+        }
+        return (try? HighwayProjectTool(compiler: swift_build, bundle: bundle, context: context).availableHighways()) ?? []
     }
 
-    private func __bootstrappedHomeBundle() throws -> HomeBundle {
+    @discardableResult
+    private func __ensureValidHomeBundle() throws -> HomeBundle {
         let config = HomeBundle.Configuration.standard
         let homeDir = try fileSystem.homeDirectoryUrl()
         let highwayHomeDirectory = homeDir.appending(config.directoryName)
@@ -58,6 +71,15 @@ final class App {
         return try bootstrap.requestHomeBundle()
     }
     
+    // MARK: - Helper
+    private func __currentHighwayBundle() -> HighwayBundle? {
+        let parentUrl = context.currentWorkingUrl
+        return try? HighwayBundle(fileSystem: fileSystem,
+                                  parentUrl: parentUrl,
+                                  configuration: .standard)
+    }
+    
+    // MARK: - Custom Highways
     private func _generate() throws {
         Terminal.shared.log("Creating Xcode project\(String.elli)")
         do {
@@ -72,13 +94,13 @@ final class App {
     }
     
     private func _update_highway() throws -> HomeBundle {
-        let homeBundle = try self.__bootstrappedHomeBundle()
+        let homeBundle = try self.__ensureValidHomeBundle()
         try HomeBundleUpdater(homeBundle: homeBundle, context: context).update()
         return homeBundle
     }
     
     private func _bootstrap() throws {
-        let _ = try self.__bootstrappedHomeBundle()
+        let _ = try self.__ensureValidHomeBundle()
     }
     
     private func _clean() throws  {
@@ -107,7 +129,6 @@ final class App {
     private func _handleError(error: Swift.Error) {
         Terminal.shared.log(error.localizedDescription)
         exit(EXIT_FAILURE)
-
     }
 
     // Try to forward args to the highway project.
@@ -118,27 +139,11 @@ final class App {
             try _showAllHighways()
             return
         }
-        let buildAndRun = CompileAndRun(bundle: bundle, compiler: swift_build)
         let args = Array(CommandLine.arguments.dropFirst())
-        try buildAndRun.compileAndRun(arguments: args)
+        let projectTool = try HighwayProjectTool(compiler: swift_build, bundle: bundle, context: context)
+        _ = try projectTool.build(thenExecuteWith: args, currentDirectoryUrl: context.currentWorkingUrl)
     }
     
-    private func __customHighways() -> [RawHighway] {
-        // Try to get the bundle
-        // if the are not able to get it just show the help.
-        guard let bundle = __currentHighwayBundle() else {
-            return []
-        }
-        do {
-            let artifact = try swift_build.compile(bundle: bundle)
-            let highwayGoExecutableUrl = artifact.binUrl.appending(bundleConfiguration.targetName)
-            let highwayGo = try HighwayGoTool(executableUrl: highwayGoExecutableUrl, bundle: .standard, context: context)
-            let highways = highwayGo.availableHighways()
-            return highways
-        } catch {
-            return []
-        }
-    }
     private func _showAllHighways() throws {
         let customHighways = __customHighways()
         let ownedHighways = highways.highways.rawHighways
@@ -150,10 +155,6 @@ final class App {
         t.write(String.whitespace(3) + "Nothing new to learn. It is just Swift.\n")
         t.write("\n")
         t.write(list)
-    }
-    
-    private func _handlyEmptyInvocation() throws {
-        let _ = try _showAllHighways()
     }
     
     private func _self_update() throws {
@@ -173,14 +174,9 @@ final class App {
             .highway(.version, _version)
             .highway(.self_update, _self_update)
             .onError(_handleError)
-            .onEmptyCommand(_handlyEmptyInvocation)
+            .onEmptyCommand(_showAllHighways)
             .onUnrecognizedCommand(_fallbackCommand)
             .go()
         exit(EXIT_SUCCESS)
-    }
-    
-    // MARK: - Helper
-    private func __currentHighwayBundle() -> HighwayBundle? {
-        return try? HighwayBundle(parentUrl: context.currentWorkingUrl, fileSystem: context.fileSystem, configuration: .standard)
     }
 }

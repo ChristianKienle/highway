@@ -27,17 +27,16 @@ let keychain = Keychain()
 let context = Context.local()
 let highways = Highways(CustomHighway.self)
 
-func _commitUpdateVersioAndTag() throws -> String {
+func _commitUpdateVersionAndTag() throws -> String {
     let nextVersion = try getNextVersion(context: context)
     try update(nextVersion: nextVersion, currentDirectoryURL: context.currentWorkingUrl, fileSystem: context.fileSystem)
     
     let git = try GitTool(context: context)
     let cwd = context.currentWorkingUrl
-    try git.addEverything(at: cwd)
-    try git.commit(with: "update", at: cwd)
+    try git.addAll(at: cwd)
+    try git.commit(at: cwd, message: "update")
     _ = try GitAutotag(context: context).autotag(at: cwd, dryRun: false)
-
-    terminal.log(finishedTask: FinishedTask(title: "Updating current version\(String.elli)", resultInfo: nextVersion, color: .green))
+    terminal.log("New version: \(nextVersion)")
     return nextVersion
 }
 
@@ -47,7 +46,7 @@ func _error(_ error: Swift.Error) {
 }
 
 func _test() throws {
-    try SwiftBuildSystem().test(executor: Context.local().executor)
+    try SwiftBuildSystem().test()
 }
 
 func _build() throws -> SwiftBuildSystem.Artifact {
@@ -57,6 +56,7 @@ func _build() throws -> SwiftBuildSystem.Artifact {
     let plan = try swiftBuildSystem.executionPlan(with: buildOptions)
     return try swiftBuildSystem.execute(plan: plan)
 }
+
 func _release() throws {
     Terminal.shared.log("Releasing...")
 }
@@ -64,25 +64,15 @@ func _release() throws {
 func _release_then_upload() throws {
     let git = try GitTool(context: context)
     let cwd = context.currentWorkingUrl
-    try git.push(at: cwd)
-    try git.pushTags(at: cwd)
-}
-
-func _tagAndPush() throws {
-    let git = try GitTool(context: context)
-    let cwd = context.currentWorkingUrl
-    try git.addEverything(at: cwd)
-    try git.commit(with: "update", at: cwd)
-    _ = try GitAutotag(context: context).autotag(at: cwd, dryRun: false)
-    try git.push(at: cwd)
-    try git.pushTags(at: cwd)
+    try git.pushToMaster(at: cwd)
+    try git.pushTagsToMaster(at: cwd)
 }
 
 highways
-    .highway(.test) { try _test() }
-    .highway(.release, dependsOn: [.test, .updateVersion, .build]) { try _release() }
+    .highway(.test, _test)
+    .highway(.release, dependsOn: [.test, .updateVersion, .build], _release)
     .highwayWithResult(.build,  _build)
-    .highwayWithResult(.updateVersion, _commitUpdateVersioAndTag)
+    .highwayWithResult(.updateVersion, _commitUpdateVersionAndTag)
     .highway(.release_then_upload, dependsOn: [.release], _release_then_upload)
     .onError { error in _error(error) }
     .go()

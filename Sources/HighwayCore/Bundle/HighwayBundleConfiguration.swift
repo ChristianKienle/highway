@@ -22,7 +22,8 @@ public final class HighwayBundle {
         self.configuration = configuration
     }
     
-    public convenience init(parentUrl: AbsoluteUrl = getabscwd(), fileSystem: FileSystem, configuration: Configuration = .standard) throws {
+    
+    public convenience init(fileSystem: FileSystem, parentUrl: AbsoluteUrl = getabscwd(), configuration: Configuration = .standard) throws {
         let url = parentUrl.appending(configuration.directoryName)
         try self.init(url: url, fileSystem: fileSystem, configuration: configuration)
     }
@@ -40,7 +41,11 @@ public final class HighwayBundle {
     public func write(gitignore data: Data) throws {
         try fileSystem.writeData(data, to: url.appending(configuration.gitignoreName))
     }
-    
+
+    public var gitignoreFileUrl: AbsoluteUrl {
+        return url.appending(configuration.gitignoreName)
+    }
+
     public var xcconfigFileUrl: AbsoluteUrl {
         return url.appending(configuration.xcconfigName)
     }
@@ -100,6 +105,9 @@ public final class HighwayBundle {
         return CleanResult(deletedFiles: deletedFiles)
     }
 
+    public func executableUrl(swiftBinUrl: AbsoluteUrl) -> AbsoluteUrl {
+        return swiftBinUrl.appending(configuration.targetName)
+    }
 }
 
 extension HighwayBundle {

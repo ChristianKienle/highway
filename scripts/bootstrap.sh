@@ -13,6 +13,62 @@ rulem ()  {
     printf -v _hr "%*s" $(tput cols) && echo -en ${_hr// /${2--}} && echo -e "\r\033[2C$1"
 }
 
+# helper
+arguments_invalid () {
+  local count=$#
+  # 0 arguments are always valid
+  if [ ${count} -eq 0 ] ; then
+      false ; return
+  fi
+
+  if interactive_mode_enabled $@ ; then
+    false ; return
+  fi
+
+  true ; return
+}
+
+interactive_mode_enabled () {
+  if [ $# -eq 1 ] && [ $1 == '--interactive' ] ; then
+    true ; return
+  fi
+  false ; return
+}
+
+print_usage () {
+  rulem "highway bootstrap"
+  echo ""
+  echo "  USAGE: bootstrap.sh [--interactive]"
+  echo "    --interactive        Request user confirmation before starting the bootstrap process"
+  echo ""
+}
+
+# more boilerplate
+set -e			       # => exit on failure
+set -u			       # => exit on undeclared variable access
+set -o pipefail		 # => sane exit codes when using |
+
+# Print Information
+
+if arguments_invalid $@ ; then
+    print_usage
+    exit 1
+fi
+
+
+if interactive_mode_enabled $@ ; then
+  echo ""
+  echo ""
+  rulem "highway bootstrap"
+  echo ""
+  echo "  You are about to run the highway bootstrap script. This will clone the highway repo, build"
+  echo "  highway using the Swift compiler and move everything to ${HOME}/.highway."
+  echo ""
+  echo "  Press <any key> to continue."
+  echo ""
+  read confirmation
+fi
+
 # Debug Support
 if [ -z ${HIGHWAY_DEBUG_ENABLED+x} ]
   then
@@ -20,13 +76,8 @@ if [ -z ${HIGHWAY_DEBUG_ENABLED+x} ]
     echo "To enable debugging: 'export HIGHWAY_DEBUG_ENABLED=1'"
   else
     echo "Debugging enabled"
-    set -x              # => enable tracing 
+    set -x              # => enable tracing
 fi
-
-# more boilerplate
-set -e			# => exit on failure 
-set -u			# => exit on undeclared variable access
-set -o pipefail		# => sane exit codes when using |
 
 # settings
 __repoUrl="https://github.com/ChristianKienle/highway.git"
@@ -36,20 +87,18 @@ __wc_name="highway"
 temp=$(mktemp -d -t highway)
 __wc="${temp}/${__wc_name}"
 
-cd ${temp}
-
 # clone the master branch
 git clone -b master ${__repoUrl} ${__wc}
-cd ${__wc}
 
 # build it
-swift build --configuration release --product highway
-highway_bin="$(swift build --configuration release --product highway --show-bin-path | tr -d '[:space:]')/highway"
+pushd ${__wc}
+    swift build --configuration release --product highway
+    highway_bin="$(swift build --configuration release --product highway --show-bin-path | tr -d '[:space:]')/highway"
+popd
 
 # create highway home
 highway_home="${HOME}/.highway"
 mkdir -p ${highway_home}
-cd ${highway_home}
 highway_home_bin_dir="${highway_home}/bin"
 mkdir -p ${highway_home_bin_dir}
 
@@ -59,9 +108,8 @@ rm -f -rf ${highway_home_bin} || true
 cp ${highway_bin} ${highway_home_bin_dir}
 
 # bootstrap the home bundle
-cd ${highway_home_bin_dir}
-./highway bootstrap
-./highway bootstrapAndUpdate
+${highway_home_bin_dir}/highway bootstrap
+${highway_home_bin_dir}/highway bootstrapAndUpdate
 
 echo "highway downloaded, compiled and ready to be used at:"
 echo ${highway_home_bin}
@@ -70,7 +118,7 @@ echo ${highway_home_bin}
 set +e
 which highway
 if [ $? -eq 0 ]
-  then 
+  then
     printf "\n\n"
     rulem "SUCCESS"
     printf "%s\n" "try: highway help "
@@ -93,4 +141,3 @@ if [ $? -eq 0 ]
 fi
 
 set -e
-

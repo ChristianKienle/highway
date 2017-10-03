@@ -13,7 +13,7 @@ final class HighwayBundleTests: XCTestCase {
     
     func testInitFailsIfDirectoryDoesNotExist() {
         XCTAssertThrowsError(try HighwayBundle(url: AbsoluteUrl("/bundle"), fileSystem: fs))
-        XCTAssertThrowsError(try HighwayBundle(parentUrl: AbsoluteUrl("/bundle"), fileSystem: fs))
+        XCTAssertThrowsError(try HighwayBundle(fileSystem: fs, parentUrl: AbsoluteUrl("/bundle")))
     }
     
     func testInitFailsIfUrlPointsToFile() {
@@ -21,12 +21,12 @@ final class HighwayBundleTests: XCTestCase {
         XCTAssertNoThrow(try fs.writeData(Data(), to: url))
         XCTAssertThrowsError(try HighwayBundle(url: url, fileSystem: fs))
         XCTAssertNoThrow(try fs.writeData(Data(), to: AbsoluteUrl("/bundle/\(HighwayBundle.Configuration.standard.directoryName)")))
-        XCTAssertThrowsError(try HighwayBundle(parentUrl: url, fileSystem: fs))
+        XCTAssertThrowsError(try HighwayBundle(fileSystem: fs, parentUrl: url))
     }
     func testInitWorksIfDirectoryExists() {
         XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/dir/\(config.directoryName)")))
         XCTAssertNoThrow(try HighwayBundle(url: AbsoluteUrl("/dir/\(config.directoryName)"), fileSystem: fs))
-        XCTAssertNoThrow(try HighwayBundle(parentUrl: AbsoluteUrl("/dir"), fileSystem: fs))
+        XCTAssertNoThrow(try HighwayBundle(fileSystem: fs, parentUrl: AbsoluteUrl("/dir")))
     }
     func testWriteMethods() {
         // Prepare the FS

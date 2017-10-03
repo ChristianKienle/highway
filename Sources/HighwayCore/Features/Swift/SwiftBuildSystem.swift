@@ -39,6 +39,7 @@ public final class SwiftBuildSystem {
         
         return ExecutionPlan(buildTask: buildTask, buildOutput: buildOutput, showBinPathTask: binPathTask, showBinPathOutput: binPathOutput)
     }
+    
     public func build() throws -> Artifact {
         let plan = try executionPlan(with: .defaultOptions())
         return try execute(plan: plan)

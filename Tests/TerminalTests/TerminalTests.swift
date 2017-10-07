@@ -1,1 +1,2 @@
-struct xxx {}
+/* intentionally left blank */
+

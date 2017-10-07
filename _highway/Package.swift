@@ -9,7 +9,7 @@ let package = Package(
    targets: [
       .target(
          name: "_highway",
-         dependencies: ["HighwayCore", "HWKit", "FSKit", "Terminal"],
+         dependencies: ["HighwayProject", "HighwayCore", "HWKit", "FSKit", "Terminal"],
          path: "."
       ),
    ]

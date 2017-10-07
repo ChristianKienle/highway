@@ -4,7 +4,7 @@ typealias Node = InMemoryFileSystem.Node
 typealias DirectoryContents = InMemoryFileSystem.Node.DirectoryContents
 
 public final class InMemoryFileSystem: FileSystem {
-    public func itemMetadata(at url: AbsoluteUrl) throws -> Metadata {
+    public func itemMetadata(at url: Absolute) throws -> Metadata {
         guard try nodeExists(at: url) else {
             throw FSError.doesNotExist
         }
@@ -20,7 +20,7 @@ public final class InMemoryFileSystem: FileSystem {
         }
     }
     
-    public func deleteItem(at url: AbsoluteUrl) throws {
+    public func deleteItem(at url: Absolute) throws {
         let parentUrl = url.parent
         guard let parentNode = try getNode(parentUrl) else {
             throw FSError.doesNotExist
@@ -28,16 +28,16 @@ public final class InMemoryFileSystem: FileSystem {
         parentNode[url.lastPathComponent] = nil
     }
     
-    public func homeDirectoryUrl() throws -> AbsoluteUrl {
+    public func homeDirectoryUrl() throws -> Absolute {
         return homeDirectoryUrlOverride
     }
     
-    public func temporaryDirectoryUrl() throws -> AbsoluteUrl {
+    public func temporaryDirectoryUrl() throws -> Absolute {
         return temporaryDirectoryUrlOverride
     }
     
-    public func createDirectory(at url: AbsoluteUrl) throws {
-        let urlsToUrl:[AbsoluteUrl] = [.root] + url.urlsFromRootToSelf.remainingUrls
+    public func createDirectory(at url: Absolute) throws {
+        let urlsToUrl:[Absolute] = [.root] + url.urlsFromRootToSelf.remainingUrls
         for directoryURL in urlsToUrl {
             if try nodeExists(at: directoryURL) == true {
                 continue
@@ -50,7 +50,7 @@ public final class InMemoryFileSystem: FileSystem {
         }
     }
     
-    public func writeData(_ data: Data, to url: AbsoluteUrl) throws {
+    public func writeData(_ data: Data, to url: Absolute) throws {
         let tailURL = url.parent
         guard let node = try getNode(tailURL) else {
             throw "write to file failed because it has no parent."
@@ -58,7 +58,7 @@ public final class InMemoryFileSystem: FileSystem {
         node[url.lastPathComponent] = .file(String(data: data, encoding: .utf8)!)
     }
     
-    public func data(at url: AbsoluteUrl) throws -> Data {
+    public func data(at url: Absolute) throws -> Data {
         guard let node = try getNode(url) else {
             throw FSError.doesNotExist
         }
@@ -73,8 +73,8 @@ public final class InMemoryFileSystem: FileSystem {
     
     // MARK: - Properties
     public var root: Node
-    public var homeDirectoryUrlOverride = AbsoluteUrl.root
-    public var temporaryDirectoryUrlOverride = AbsoluteUrl.root
+    public var homeDirectoryUrlOverride = Absolute.root
+    public var temporaryDirectoryUrlOverride = Absolute.root
 
     
     // MARK: - Init
@@ -82,16 +82,16 @@ public final class InMemoryFileSystem: FileSystem {
         self.root = Node(.directory(DirectoryContents(entries: [:])))
     }
 
-    private func nodeExists(at url: AbsoluteUrl) throws -> Bool {
+    private func nodeExists(at url: Absolute) throws -> Bool {
         return try getNode(url) != nil
     }
 
-    private func getNode(_ url: AbsoluteUrl) throws -> Node? {
+    private func getNode(_ url: Absolute) throws -> Node? {
         let urlPath = url.urlsFromRootToSelf
         return try _getNode(urlPath.remainingUrls, currentNode: root)
     }
 
-    private func _getNode(_ urlPath: [AbsoluteUrl], currentNode: Node) throws -> Node? {
+    private func _getNode(_ urlPath: [Absolute], currentNode: Node) throws -> Node? {
         guard let head = urlPath.first else {
             return currentNode
         }

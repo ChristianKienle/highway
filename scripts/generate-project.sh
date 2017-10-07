@@ -7,14 +7,15 @@ if [ -z ${HIGHWAY_DEBUG_ENABLED+x} ]
     echo "To enable debugging: 'export HIGHWAY_DEBUG_ENABLED=1'"
   else
     echo "Debugging enabled"
-    set -x              # => enable tracing 
+    set -x              # => enable tracing
 fi
 
 # more boilerplate
-set -e			# => exit on failure 
+set -e			# => exit on failure
 set -u			# => exit on undeclared variable access
 set -o pipefail		# => sane exit codes when using |
 
 # Do it
+# rm -f -rf highway.xcodeproj || true
 swift package generate-xcodeproj --enable-code-coverage --xcconfig-overrides ./config/config.xcconfig --output .
-
+open highway.xcodeproj -a Xcode

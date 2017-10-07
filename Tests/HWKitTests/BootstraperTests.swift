@@ -1,7 +1,8 @@
 import XCTest
 import HWKit
 import TestKit
-import FSKit
+import FileSystem
+import Url
 
 class BootstraperTests: XCTestCase {
     private var context = ContextMock()
@@ -15,7 +16,7 @@ class BootstraperTests: XCTestCase {
     
     func testSuccess() {
         git.throwsEnabeld = false
-        let homeDir = AbsoluteUrl("/home")
+        let homeDir = Absolute("/home")
         let bootstrapper = Bootstraper(homeDirectory: homeDir, configuration: .standard, git: git, context: context)
         let bundle: HomeBundle
         do {

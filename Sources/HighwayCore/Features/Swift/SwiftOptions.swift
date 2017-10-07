@@ -1,5 +1,8 @@
 import Foundation
-import FSKit
+import FileSystem
+import Url
+import Arguments
+import POSIX
 
 public struct SwiftOptions {
     public struct Result {
@@ -15,19 +18,19 @@ public struct SwiftOptions {
         case product(String /* product name */)
         case target(String /* target name */)
         case auto // no further product/target specified - let swift build to the magic
-        var _processArguments: [String] {
+        var _processArguments: Arguments {
             switch self {
             case .product(let product):
-                return ["--product", product]
+                return Arguments(["--product", product])
             case .target(let target):
-                return ["--target", target]
+                return Arguments(["--target", target])
             case .auto: return []
             }
         }
     }
     
     public static func defaultOptions() -> SwiftOptions { return SwiftOptions() }
-    public init(subject: Subject = .auto, projectDirectory: AbsoluteUrl = getabscwd(), configuration: Configuration = .debug, verbose: Bool = false, buildPath: AbsoluteUrl? = nil, additionalArguments: [String] = []) {
+    public init(subject: Subject = .auto, projectDirectory: Absolute = abscwd(), configuration: Configuration = .debug, verbose: Bool = false, buildPath: Absolute? = nil, additionalArguments: Arguments = .empty) {
         self.subject = subject
         self.projectDirectory = projectDirectory
         self.configuration = configuration
@@ -36,28 +39,25 @@ public struct SwiftOptions {
         self.additionalArguments = additionalArguments
     }
     public let subject: Subject
-    public let projectDirectory: AbsoluteUrl
+    public let projectDirectory: Absolute
     public let configuration: Configuration
     public var verbose: Bool
-    public var buildPath: AbsoluteUrl?
-    public mutating func appending(arguments: [String]) {
+    public var buildPath: Absolute?
+    public mutating func appending(arguments: Arguments) {
         additionalArguments += arguments
     }
-    public var additionalArguments: [String]
-    var _processArguments: [String] {
+    public var additionalArguments: Arguments
+    var _processArguments: Arguments {
         return _processArgumentsWithoutSettingVerbosity
             + (verbose ? ["-v"] : [])
         
     }
-    private var _buildPathArguments: [String] {
+    private var _buildPathArguments: Arguments {
         guard let buildPath = self.buildPath else { return [] }
-        return ["--build-path", buildPath.path]
+        return Arguments(["--build-path", buildPath.path])
     }
-    var _processArgumentsWithoutSettingVerbosity: [String] {
-        return [
-            "build",
-            "--configuration", configuration.rawValue
-            ]
+    var _processArgumentsWithoutSettingVerbosity: Arguments {
+        return Arguments(["build", "--configuration", configuration.rawValue])
             + subject._processArguments
             + _buildPathArguments
             + additionalArguments

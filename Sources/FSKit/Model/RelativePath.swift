@@ -1,7 +1,7 @@
 import Foundation
 
-public struct RelativePath {
-    public static let currentDirectory = RelativePath(".")
+public struct Relative {
+    public static let currentDirectory = Relative(".")
     public init(_ path: String)  {
         if [".", ""].contains(path) {
             _string = "."
@@ -19,7 +19,7 @@ public struct RelativePath {
     public var asString: String { return _string }
 }
 
-extension RelativePath: ExpressibleByStringLiteral {
+extension Relative: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
      self.init(value)
     }
@@ -31,7 +31,7 @@ extension RelativePath: ExpressibleByStringLiteral {
     }
 }
 
-extension RelativePath: RawRepresentable {
+extension Relative: RawRepresentable {
     public var rawValue: String {
         return _string
     }
@@ -41,8 +41,8 @@ extension RelativePath: RawRepresentable {
     }
 }
 
-extension RelativePath: Equatable {
-    public static func ==(lhs: RelativePath, rhs: RelativePath) -> Bool {
+extension Relative: Equatable {
+    public static func ==(lhs: Relative, rhs: Relative) -> Bool {
         return lhs._string == rhs._string
     }
 }

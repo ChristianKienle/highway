@@ -1,9 +1,13 @@
 import Foundation
-import FSKit
+import FileSystem
+import Url
+import Task
+import Arguments
+import POSIX
 
 public struct Xcodebuild {
     public init(
-        projectDirectory: AbsoluteUrl? = nil, // Default: currentWorkingDirectory
+        projectDirectory: Absolute? = nil, // Default: currentWorkingDirectory
         target: String? = nil,
         project: String? = nil,
         configuration: String? = nil,
@@ -11,10 +15,10 @@ public struct Xcodebuild {
         sdk: String? = nil,
         showBuildSettings: Bool = false,
         buildSettings:[String : String] = [:],
-        customArguments: [String] = [],
+        customArguments: Arguments = [],
         buildAction: String? = nil
         ) {
-        self.projectDirectory = projectDirectory ?? getabscwd()
+        self.projectDirectory = projectDirectory ?? abscwd()
         self.target = target
         self.project = project
         self.configuration = configuration
@@ -26,7 +30,7 @@ public struct Xcodebuild {
         self.buildAction = buildAction
     }
     
-    public let projectDirectory: AbsoluteUrl // Default: currentWorkingDirectory
+    public let projectDirectory: Absolute // Default: currentWorkingDirectory
     public let target: String?
     public let project: String?
     public let configuration: String?
@@ -34,15 +38,15 @@ public struct Xcodebuild {
     public let sdk: String?
     public let showBuildSettings: Bool
     public let buildSettings:[String : String]
-    public let customArguments: [String]
+    public let customArguments: Arguments
     public let buildAction: String?
     
-    public func task(executableFinder: ExecutableFinder) throws -> Task {
-        return try Task(commandName: "xcrun", arguments: arguments, currentDirectoryURL: projectDirectory, executableFinder: executableFinder)
+    public func task(executableFinder: ExecutableProvider) throws -> Task {
+        return try Task(commandName: "xcrun", arguments: arguments, currentDirectoryUrl: projectDirectory, provider: executableFinder)
     }
 
-    var arguments: [String] {
-        var res = ["xcodebuild"]
+    var arguments: Arguments {
+        var res = Arguments("xcodebuild")
         if let target = target {
             res += ["-target", target]
         }

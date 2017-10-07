@@ -1,5 +1,6 @@
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 // MARK: - Types
 public typealias GeneratedXCProject = SwiftPackageTool.XCProjectOptions
@@ -30,7 +31,7 @@ public class XCProjectGenerator {
 
 public extension XCProjectGenerator {
     public struct Result {
-        init(projectUrl: AbsoluteUrl) {
+        init(projectUrl: Absolute) {
             openCommand = "open \(projectUrl.path)"
         }
         public let openCommand: String

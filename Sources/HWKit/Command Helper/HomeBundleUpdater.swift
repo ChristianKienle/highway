@@ -1,6 +1,8 @@
 import HighwayCore
 import Terminal
-import FSKit
+import FileSystem
+import Url
+import Task
 
 /// Updates the dependencies located in the highway home directory.
 /// The home directory contains a mirrored working copy of the
@@ -21,7 +23,7 @@ public final class HomeBundleUpdater {
     public func update() throws {
         Terminal.shared.log("Updating highway\(String.elli)")
 
-        func __currentTag(at url: AbsoluteUrl) throws -> String {
+        func __currentTag(at url: Absolute) throws -> String {
             let git = try GitTool(context: self.context)
             return try git.currentTag(at: url)
         }
@@ -29,8 +31,7 @@ public final class HomeBundleUpdater {
         let cloneUrl = homeBundle.localCloneUrl
         let currentTag = try __currentTag(at: cloneUrl)
         let bumpInfo: String
-        let task = try Task(commandName: "git", arguments: ["fetch", "--quiet"], currentDirectoryURL: homeBundle.localCloneUrl, executableFinder: context.executableFinder)
-        task.output = .pipeChannel()
+        let task = try Task(commandName: "git", arguments: ["fetch", "--quiet"], currentDirectoryUrl: homeBundle.localCloneUrl, provider: context.executableProvider)
         task.enableReadableOutputDataCapturing()
         context.executor.execute(task: task)
         

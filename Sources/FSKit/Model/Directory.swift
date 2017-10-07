@@ -2,7 +2,7 @@ import Foundation
 
 public class Directory {
     // MARK: - Properties
-    let url: AbsoluteUrl
+    let url: Absolute
     let fileSystem: FileSystem
     public var isExistingDirectory: Bool {
         guard let type = try? fileSystem.itemMetadata(at: url).type else {
@@ -12,29 +12,29 @@ public class Directory {
     }
 
     // MARK: - Init
-    init(url: AbsoluteUrl, in fileSystem: FileSystem) {
+    init(url: Absolute, in fileSystem: FileSystem) {
         self.url = url
         self.fileSystem = fileSystem
     }
     
     // MARK: - Working with the directory
-    public func directory(at url: RelativePath) -> Directory {
+    public func directory(at url: Relative) -> Directory {
         return fileSystem.directory(at: _absoluteUrl(for: url))
     }
     
-    public func file(at url: RelativePath) -> File {
+    public func file(at url: Relative) -> File {
         return fileSystem.file(at: _absoluteUrl(for: url))
     }
     
     public func file(named name: String) -> File {
-        return file(at: RelativePath(name))
+        return file(at: Relative(name))
     }
     
     public func directory(named name: String) -> Directory {
-        return directory(at: RelativePath(name))
+        return directory(at: Relative(name))
     }
     
-    private func _absoluteUrl(`for` path: RelativePath) -> AbsoluteUrl {
-        return AbsoluteUrl(path: path.asString, relativeTo: url)
+    private func _absoluteUrl(`for` path: Relative) -> Absolute {
+        return Absolute(path: path.asString, relativeTo: url)
     }
 }

@@ -1,7 +1,9 @@
 import XCTest
 @testable import HighwayCore
 import TestKit
-import FSKit
+import FileSystem
+import Url
+import Task
 
 final class SwiftBuildSystemTests: XCTestCase {
     // MARK: - Properties
@@ -9,8 +11,8 @@ final class SwiftBuildSystemTests: XCTestCase {
     private func fs() -> FileSystem {
         return system.context.fileSystem
     }
-    private func _finder() -> ExecutableFinder {
-        return system.context.executableFinder
+    private func _finder() -> ExecutableProviderMock {
+        return system.context.executableProviderMock
     }
     private func _executor() -> ExecutorMock {
         return system.context.executorMock
@@ -28,14 +30,16 @@ final class SwiftBuildSystemTests: XCTestCase {
     // MARK: - Tests
     func testPlanCreationFailsWithoutXCRun() {
         // Create project dir, /usr/bin and required binaries
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/Users/chris/project")))
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/usr/bin")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/bin/xcrun_does_not_exist")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/xcrun"))) // not searched
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/Users/chris/project")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/usr/bin")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/bin/xcrun_does_not_exist")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/xcrun"))) // not searched
         
         // Setup
-        _finder().searchURLs = [AbsoluteUrl("/usr/bin")]
-        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: AbsoluteUrl("/Users/chris/project"))
+        _finder()[Absolute("/usr/bin")] = ["xcrun_does_not_exist"]
+//        _finder()[Absolute("/usr")] = ["xcrun"]
+        
+        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: Absolute("/Users/chris/project"))
         
         // Tests
         XCTAssertThrowsError(try system.swift_build.executionPlan(with: options))
@@ -43,27 +47,27 @@ final class SwiftBuildSystemTests: XCTestCase {
     
     func testBuildFailsIfBinPathTaskFails() {
         // Create project dir, /usr/bin and required binaries
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/Users/chris/project")))
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/usr/bin")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/bin/xcrun")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/Users/chris/project")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/usr/bin")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/bin/xcrun")))
         
         // Setup
-        _finder().searchURLs = [AbsoluteUrl("/usr/bin")]
-        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: AbsoluteUrl("/Users/chris/project"))
+        _finder()[Absolute("/usr/bin")] = ["xcrun"]
+        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: Absolute("/Users/chris/project"))
         do {
             let plan = try _swift_build().executionPlan(with: options)
-            XCTAssertEqual(plan.buildTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.showBinPathTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
-            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
+            XCTAssertEqual(plan.buildTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.showBinPathTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
+            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
             _executor().mockExecution(of: plan.buildTask) { task in
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
                 task.output.withPipedFileHandleForWriting { handle in
                     handle.closeFile() // we have to close - otherwise the build system waits forever
                 }
             }
             _executor().mockExecution(of: plan.showBinPathTask) { task in
-                task.state = .finished(.failure)
+                task.state = .terminated(.failure)
             }
             XCTAssertThrowsError(try _swift_build().execute(plan: plan))
         } catch {
@@ -73,25 +77,26 @@ final class SwiftBuildSystemTests: XCTestCase {
     
     func testBuildFailsIfBuildTaskFails() {
         // Create project dir, /usr/bin and required binaries
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/Users/chris/project")))
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/usr/bin")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/bin/xcrun")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/Users/chris/project")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/usr/bin")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/bin/xcrun")))
         
         // Setup
-        _finder().searchURLs = [AbsoluteUrl("/usr/bin")]
-        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: AbsoluteUrl("/Users/chris/project"))
+        _finder()[Absolute("/usr/bin")] = ["xcrun"]
+
+        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: Absolute("/Users/chris/project"))
         do {
             let plan = try _swift_build().executionPlan(with: options)
-            XCTAssertEqual(plan.buildTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.showBinPathTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
-            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
+            XCTAssertEqual(plan.buildTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.showBinPathTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
+            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
             
             _executor().mockExecution(of: plan.buildTask) { task in
-                task.state = .finished(.failure)
+                task.state = .terminated(.failure)
             }
             _executor().mockExecution(of: plan.showBinPathTask) { task in
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
             }
             XCTAssertThrowsError(try _swift_build().execute(plan: plan))
         } catch {
@@ -100,19 +105,19 @@ final class SwiftBuildSystemTests: XCTestCase {
     }
     func testExecutionFailsIfBinPathDoesNotExist() {
         // Create project dir, /usr/bin and required binaries
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/Users/chris/project")))
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/usr/bin")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/bin/xcrun")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/Users/chris/project")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/usr/bin")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/bin/xcrun")))
         
         // Setup
-        _finder().searchURLs = [AbsoluteUrl("/usr/bin")]
-        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: AbsoluteUrl("/Users/chris/project"))
+        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: Absolute("/Users/chris/project"))
         do {
+            _finder()[Absolute("/usr/bin")] = ["xcrun"]
             let plan = try _swift_build().executionPlan(with: options)
-            XCTAssertEqual(plan.buildTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.showBinPathTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
-            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
+            XCTAssertEqual(plan.buildTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.showBinPathTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
+            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
             
             
             _executor().mockExecution(of: plan.buildTask) { task in
@@ -120,14 +125,14 @@ final class SwiftBuildSystemTests: XCTestCase {
                     handle.write("> line1\n> line2")
                     handle.closeFile()
                 }
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
             }
             _executor().mockExecution(of: plan.showBinPathTask) { task in
                 task.output.withPipedFileHandleForWriting { handle in
                     handle.write("/usr/bin/highway/which/does/not/exist")
                     handle.closeFile()
                 }
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
             }
             XCTAssertThrowsError(try _swift_build().execute(plan: plan))
         } catch {
@@ -137,20 +142,20 @@ final class SwiftBuildSystemTests: XCTestCase {
     
     func testSimpleSuccessfulBuild() {
         // Create project dir, /usr/bin and required binaries
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/Users/chris/project")))
-        XCTAssertNoThrow(try fs().createDirectory(at: AbsoluteUrl("/usr/bin")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/bin/xcrun")))
-        XCTAssertNoThrow(try fs().writeData(Data(), to: AbsoluteUrl("/usr/bin/highway")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/Users/chris/project")))
+        XCTAssertNoThrow(try fs().createDirectory(at: Absolute("/usr/bin")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/bin/xcrun")))
+        XCTAssertNoThrow(try fs().writeData(Data(), to: Absolute("/usr/bin/highway")))
         
         // Setup
-        _finder().searchURLs = [AbsoluteUrl("/usr/bin")]
-        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: AbsoluteUrl("/Users/chris/project"))
+        _finder()[Absolute("/usr/bin")] = ["xcrun"]
+        let options = SwiftOptions(subject: .product("myapp"), projectDirectory: Absolute("/Users/chris/project"))
         do {
             let plan = try _swift_build().executionPlan(with: options)
-            XCTAssertEqual(plan.buildTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.showBinPathTask.executableURL, AbsoluteUrl("/usr/bin/xcrun"))
-            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
-            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, AbsoluteUrl("/Users/chris/project"))
+            XCTAssertEqual(plan.buildTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.showBinPathTask.executableUrl, Absolute("/usr/bin/xcrun"))
+            XCTAssertEqual(plan.buildTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
+            XCTAssertEqual(plan.showBinPathTask.currentDirectoryUrl, Absolute("/Users/chris/project"))
             
             _executor().mockExecution(of: plan.buildTask) { task in
                 let sem = DispatchSemaphore(value: 0)
@@ -162,7 +167,7 @@ final class SwiftBuildSystemTests: XCTestCase {
                     handle.close()
                 }
                 sem.wait()
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
             }
             _executor().mockExecution(of: plan.showBinPathTask) { task in
                 let sem = DispatchSemaphore(value: 0)
@@ -174,7 +179,7 @@ final class SwiftBuildSystemTests: XCTestCase {
                     handle.close()
                 }
                 sem.wait()
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
             }
             
             let artifact = try _swift_build().execute(plan: plan)

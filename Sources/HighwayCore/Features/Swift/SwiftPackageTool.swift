@@ -1,5 +1,8 @@
 import Foundation
-import FSKit
+import FileSystem
+import Url
+import Task
+import Arguments
 
 public final class SwiftPackageTool {
     // MARK: - Init
@@ -26,15 +29,16 @@ public final class SwiftPackageTool {
         }
     }
     
-    private func _packageProcess(arguments: [String], currentDirectoryUrl: AbsoluteUrl) throws -> Task {
+    private func _packageProcess(arguments: Arguments, currentDirectoryUrl: Absolute) throws -> Task {
         let arguments = ["package"] + arguments
-        let task = try Task(commandName: "swift", arguments: arguments, currentDirectoryURL: currentDirectoryUrl, executableFinder: context.executableFinder)
-        task.output = .pipeChannel()
+        let task = try Task(commandName: "swift", provider: context.executableProvider)
+        task.currentDirectoryUrl = currentDirectoryUrl
+        task.arguments = arguments
         task.enableReadableOutputDataCapturing()
         return task
     }
 
-    public func package(arguments: [String], currentDirectoryUrl: AbsoluteUrl) throws  {
+    public func package(arguments: Arguments, currentDirectoryUrl: Absolute) throws  {
         let task = try _packageProcess(arguments: arguments, currentDirectoryUrl: currentDirectoryUrl)
         context.executor.execute(task: task)
         guard task.state.successfullyFinished else {
@@ -45,17 +49,17 @@ public final class SwiftPackageTool {
 
 public extension SwiftPackageTool {
     public struct XCProjectOptions {
-        public init(swiftProjectDirectory: AbsoluteUrl, xcprojectDestinationDirectory: AbsoluteUrl, xcconfigFileName: String?) {
+        public init(swiftProjectDirectory: Absolute, xcprojectDestinationDirectory: Absolute, xcconfigFileName: String?) {
             self.swiftProjectDirectory = swiftProjectDirectory
             self.xcprojectDestinationDirectory = xcprojectDestinationDirectory
             self.xcconfigFileName = xcconfigFileName
         }
-        public let swiftProjectDirectory: AbsoluteUrl
-        public let xcprojectDestinationDirectory: AbsoluteUrl
+        public let swiftProjectDirectory: Absolute
+        public let xcprojectDestinationDirectory: Absolute
         public let xcconfigFileName: String?
-        var arguments: [String] {
+        var arguments: Arguments {
             let xcconfigArguments = xcconfigFileName.map { return ["--xcconfig-overrides", $0] } ?? []
-            return ["generate-xcodeproj"] + xcconfigArguments + ["--output", xcprojectDestinationDirectory.path]
+            return Arguments(["generate-xcodeproj"] + xcconfigArguments + ["--output", xcprojectDestinationDirectory.path])
         }
     }
 }

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Actions</key>
+	<array>
+		<dict>
+			<key>ActionResult</key>
+			<dict>
+				<key>AnalyzerWarningCount</key>
+				<integer>0</integer>
+				<key>ErrorCount</key>
+				<integer>0</integer>
+				<key>Status</key>
+				<string>IDEActionResultStatus_Cancelled</string>
+				<key>TestsCount</key>
+				<integer>0</integer>
+				<key>TestsFailedCount</key>
+				<integer>0</integer>
+				<key>WarningCount</key>
+				<integer>0</integer>
+			</dict>
+			<key>BuildResult</key>
+			<dict>
+				<key>AnalyzerWarningCount</key>
+				<integer>0</integer>
+				<key>AnalyzerWarningSummaries</key>
+				<array/>
+				<key>ErrorCount</key>
+				<integer>2</integer>
+				<key>ErrorSummaries</key>
+				<array>
+					<dict>
+						<key>IssueType</key>
+						<string>Code Signing Error</string>
+						<key>Message</key>
+						<string>Highwayiostest has conflicting provisioning settings. highwayiostest is automatically signed, but code signing identity iPhone Distribution: Christian Kienle has been manually specified. Set the code signing identity value to "iPhone Developer" in the build settings editor, or switch to manual signing in the project editor.</string>
+						<key>Target</key>
+						<string>highwayiostest</string>
+					</dict>
+					<dict>
+						<key>IssueType</key>
+						<string>Code Signing Error</string>
+						<key>Message</key>
+						<string>Code signing is required for product type 'Application' in SDK 'Simulator - iOS 11.0'</string>
+						<key>Target</key>
+						<string>highwayiostest</string>
+					</dict>
+				</array>
+				<key>LogPath</key>
+				<string>1_Archive/build.xcactivitylog</string>
+				<key>Status</key>
+				<string>IDEActionResultStatus_Failed</string>
+				<key>TestFailureSummaries</key>
+				<array/>
+				<key>TestsCount</key>
+				<integer>0</integer>
+				<key>TestsFailedCount</key>
+				<integer>0</integer>
+				<key>WarningCount</key>
+				<integer>0</integer>
+				<key>WarningSummaries</key>
+				<array/>
+			</dict>
+			<key>EndedTime</key>
+			<date>2017-10-07T12:55:48Z</date>
+			<key>RunDestination</key>
+			<dict>
+				<key>LocalComputer</key>
+				<dict>
+					<key>BusSpeedInMHz</key>
+					<integer>100</integer>
+					<key>CPUCount</key>
+					<integer>1</integer>
+					<key>CPUKind</key>
+					<string>Intel Core i7</string>
+					<key>CPUSpeedInMHz</key>
+					<integer>2200</integer>
+					<key>Identifier</key>
+					<string>0C92F4B8-6DF7-5780-9850-6464657EB5C7</string>
+					<key>IsConcreteDevice</key>
+					<true/>
+					<key>LogicalCPUCoresPerPackage</key>
+					<integer>8</integer>
+					<key>ModelCode</key>
+					<string>MacBookPro11,4</string>
+					<key>ModelName</key>
+					<string>MacBook Pro</string>
+					<key>ModelUTI</key>
+					<string>com.apple.macbookpro-15-retina-display</string>
+					<key>Name</key>
+					<string>My Mac</string>
+					<key>NativeArchitecture</key>
+					<string>x86_64h</string>
+					<key>OperatingSystemVersion</key>
+					<string>10.13</string>
+					<key>OperatingSystemVersionWithBuildNumber</key>
+					<string>10.13 (17A365)</string>
+					<key>PhysicalCPUCoresPerPackage</key>
+					<integer>4</integer>
+					<key>Platform</key>
+					<dict>
+						<key>Identifier</key>
+						<string>com.apple.platform.macosx</string>
+						<key>Name</key>
+						<string>macOS</string>
+					</dict>
+					<key>RAMSizeInMegabytes</key>
+					<integer>16384</integer>
+				</dict>
+				<key>Name</key>
+				<string>Generic iOS Device</string>
+				<key>TargetArchitecture</key>
+				<string>arm64</string>
+				<key>TargetDevice</key>
+				<dict>
+					<key>Identifier</key>
+					<string>dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder</string>
+					<key>IsConcreteDevice</key>
+					<false/>
+					<key>ModelCode</key>
+					<string>GenericiOS</string>
+					<key>ModelName</key>
+					<string>GenericiOS</string>
+					<key>ModelUTI</key>
+					<string>com.apple.dt.Xcode.device.GenericiOS</string>
+					<key>Name</key>
+					<string>Generic iOS Device</string>
+					<key>NativeArchitecture</key>
+					<string>arm64</string>
+					<key>Platform</key>
+					<dict>
+						<key>Identifier</key>
+						<string>com.apple.platform.iphoneos</string>
+						<key>Name</key>
+						<string>iOS</string>
+					</dict>
+				</dict>
+				<key>TargetSDK</key>
+				<dict>
+					<key>Identifier</key>
+					<string>iphoneos11.0</string>
+					<key>IsInternal</key>
+					<false/>
+					<key>Name</key>
+					<string>iOS 11.0</string>
+					<key>OperatingSystemVersion</key>
+					<string>11.0</string>
+				</dict>
+			</dict>
+			<key>SchemeCommand</key>
+			<string>Archive</string>
+			<key>SchemeTask</key>
+			<string>BuildAndAction</string>
+			<key>StartedTime</key>
+			<date>2017-10-07T12:55:48Z</date>
+			<key>Title</key>
+			<string>Archiving project highwayiostest with scheme highwayiostest</string>
+		</dict>
+	</array>
+	<key>AnalyzerWarningCount</key>
+	<integer>0</integer>
+	<key>ArchivePath</key>
+	<string>/Users/d069408/privat/Developer/highway_github/end2end_tests/highwayiostest/archive.xcarchive</string>
+	<key>CreatingWorkspaceFilePath</key>
+	<string>/Users/d069408/privat/Developer/highway_github/end2end_tests/highwayiostest/highwayiostest.xcodeproj</string>
+	<key>ErrorCount</key>
+	<integer>2</integer>
+	<key>ErrorSummaries</key>
+	<array>
+		<dict>
+			<key>IssueType</key>
+			<string>Code Signing Error</string>
+			<key>Message</key>
+			<string>Highwayiostest has conflicting provisioning settings. highwayiostest is automatically signed, but code signing identity iPhone Distribution: Christian Kienle has been manually specified. Set the code signing identity value to "iPhone Developer" in the build settings editor, or switch to manual signing in the project editor.</string>
+			<key>Target</key>
+			<string>highwayiostest</string>
+		</dict>
+		<dict>
+			<key>IssueType</key>
+			<string>Code Signing Error</string>
+			<key>Message</key>
+			<string>Code signing is required for product type 'Application' in SDK 'Simulator - iOS 11.0'</string>
+			<key>Target</key>
+			<string>highwayiostest</string>
+		</dict>
+	</array>
+	<key>FormatVersion</key>
+	<string>1.2</string>
+	<key>Running</key>
+	<false/>
+	<key>TestsCount</key>
+	<integer>0</integer>
+	<key>TestsFailedCount</key>
+	<integer>0</integer>
+	<key>WarningCount</key>
+	<integer>0</integer>
+</dict>
+</plist>

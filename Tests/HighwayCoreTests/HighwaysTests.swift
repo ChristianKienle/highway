@@ -1,35 +1,63 @@
 import XCTest
 @testable import HighwayCore
+import Arguments
 
 final class HighwaysTests: XCTestCase {
-    private var highways = Highways(MockHighway.self)
+    private var highway = _Highway(MockHighway.self)
     
     override func setUp() {
         super.setUp()
-        highways = Highways(MockHighway.self)
+        highway = _Highway(MockHighway.self)
     }
     
     private func _useDefaultHighways() {
-        highways
-            .highway(.build) { "build" }
-            .highway(.test) { "test" }
-            .done()
+        highway[.build] ==> { "build" }
+        highway[.test] ==> { "test" }
     }
     func testListHighwaysAsJSON() {
         _useDefaultHighways()
-        highways.go("listPublicHighwaysAsJSON")
+        highway.go("listPublicHighwaysAsJSON")
     }
     
     func testThatArgumentsAreReceivedCorrectly() {
-        let inputArgs = ["1", "2", "3"]
+        let inputArgs: Arguments = ["1", "2", "3"]
         _useDefaultHighways()
         let unrecognizedCalled = expectation(description: "onUnrecognizedCommand called")
-        highways.onUnrecognizedCommand { args in
+        highway.onUnrecognizedCommand = { args in
             XCTAssertEqual(["does not exist"] + inputArgs, args)
             unrecognizedCalled.fulfill()
         }
-        .go(Invocation(highwayName: "does not exist", arguments: Arguments(all: ["does not exist"] + inputArgs)))
+        
+        highway.go(Invocation(highway: "does not exist", arguments: ["does not exist"] + inputArgs))
         waitForExpectations(timeout: 5) { error in
+            XCTAssertNil(error)
+        }
+    }
+    
+    func testDependenciesGetCorrectInvocation() {
+        let releaseExecuted = expectation(description: "release executed")
+        let testExecuted = expectation(description: "test executed")
+        let buildExecuted = expectation(description: "build executed")
+
+        func _release(invocation: Invocation) throws {
+            releaseExecuted.fulfill()
+            XCTAssertEqual(invocation.highway, "release")
+        }
+        func _test(invocation: Invocation) throws {
+            testExecuted.fulfill()
+            XCTAssertEqual(invocation.highway, "test")
+        }
+        func _build() throws {
+            buildExecuted.fulfill()
+        }
+        highway[.release].depends(on: .test) ==> _release
+        highway[.test].depends(on: .build) ==> _test
+        highway[.build] ==> _build
+        
+        let invocation = Invocation(highway: "release", arguments: ["hello", "world"], verbose: false)
+        highway.go(invocation)
+        
+        waitForExpectations(timeout: 4) { error in
             XCTAssertNil(error)
         }
     }
@@ -38,38 +66,28 @@ final class HighwaysTests: XCTestCase {
         let cleanExecuted = expectation(description: "clean executed")
         let testExecuted = expectation(description: "test executed")
         
-        highways
-            .highway(.build) {
-                XCTFail("should never be executed")
-                
-            }
-            .highway(.test) {
-                testExecuted.fulfill(); throw "test error"
-            }
-            .highway(.clean) {
-                cleanExecuted.fulfill()
-            }
-            .highway(.release, dependsOn: [.clean, .test, .build]) {
-                XCTFail("should never be executed")
-            }
-            .done()
-        highways.go("release")
+        highway[.build].depends(on: .build) ==> {  return "" }
+        highway[.build] ==> { XCTFail("should never be executed"); return }
+        highway[.test] ==> { testExecuted.fulfill(); throw "test error" }
+        highway[.clean] ==>  { cleanExecuted.fulfill() }
+        highway[.release].depends(on: .clean, .test, .build) ==> { XCTFail("should never be executed") }
+        highway.go("release")
+        
         waitForExpectations(timeout: 5.0) { error in
             XCTAssertNil(error)
         }
-        
     }
     
     func testSimplePositiveCase() {
         _useDefaultHighways()
-
+        
         do {
             // Tests
-            highways.go("build")
-            let buildResult: String = try highways.result(for: .build)
+            highway.go("build")
+            let buildResult: String = try highway.result(for: .build)
             XCTAssertEqual(buildResult, "build")
-            highways.go("test")
-            let testResult: String = try highways.result(for: .test)
+            highway.go("test")
+            let testResult: String = try highway.result(for: .test)
             XCTAssertEqual(testResult, "test")
         } catch {
             XCTFail(error.localizedDescription)
@@ -77,8 +95,8 @@ final class HighwaysTests: XCTestCase {
     }
     
     func testEmptyThrows() {
-        highways.go("anything_should_throw")
-        XCTAssertThrowsError(try highways.result(for: .build) as String)
+        highway.go("anything_should_throw")
+        XCTAssertThrowsError(try highway.result(for: .build) as String)
     }
     func testDirectDependenciesAreCalled() {
         let buildCalled = expectation(description: "build called")
@@ -87,7 +105,7 @@ final class HighwaysTests: XCTestCase {
         
         func _build() throws -> String {
             XCTAssertTrue(testPerformed)
-            let result: String = try self.highways.result(for: .test)
+            let result: String = try self.highway.result(for: .test)
             XCTAssertEqual(result, "test")
             buildCalled.fulfill()
             buildCalled.assertForOverFulfill = true
@@ -101,32 +119,31 @@ final class HighwaysTests: XCTestCase {
             return "test"
         }
         
-        highways
-            .highway(.build, dependsOn: [.test], _build)
-            .highway(.test, _test)
-            .go("build")
-       
+        highway[.build].depends(on: .test) ==> _build
+        highway[.test] ==> _test
+        
+        
+        highway.go("build")
+        
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
         }
     }
     func testErrorHandlerIsCalledWhenHighwayThrows() {
-        let ctx = Invocation(highwayName: MockHighway.build.highwayName)
+        let ctx = Invocation(highway: MockHighway.build.name)
         let onErrorExpectation = expectation(description: "Error handler is called.")
         let expectedError = "ich bin der ich bin ich"
-        highways
-            .highway(.build) {
-                throw expectedError
-            }.onError { error in
-                XCTAssertTrue(error is String)
-                guard let coreError = error as? String else {
-                    XCTFail()
-                    return
-                }
-                XCTAssertTrue(coreError == expectedError)
-                onErrorExpectation.fulfill()
+        highway[.build] ==> { throw expectedError }
+        highway.onError = { error in
+            XCTAssertTrue(error is String)
+            guard let coreError = error as? String else {
+                XCTFail()
+                return
             }
-            .go(ctx)
+            XCTAssertTrue(coreError == expectedError)
+            onErrorExpectation.fulfill()
+        }
+        highway.go(ctx)
         
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
@@ -137,13 +154,45 @@ final class HighwaysTests: XCTestCase {
         _useDefaultHighways()
         
         let onErrorExpectation = expectation(description: "Error handler is called.")
-        highways
-            .onError { _ in
-                onErrorExpectation.fulfill()
-            }
-            .go("highway_which_does_not_exist")
+        
+        highway.onError = { _ in
+            onErrorExpectation.fulfill()
+        }
+        highway.go("highway_which_does_not_exist")
         
         waitForExpectations(timeout: 5) { error in
+            XCTAssertNil(error)
+        }
+    }
+    func testEmptyHandler() {
+        _useDefaultHighways()
+        
+        let expectation = self.expectation(description: "onEmptyCommand handler is called.")
+        highway.onEmptyCommand = {
+            expectation.fulfill()
+        }
+        
+        highway.go(Invocation())
+        waitForExpectations(timeout: 4) { error in
+            XCTAssertNil(error)
+        }
+    }
+    func testThrowingEmptyHandler() {
+        _useDefaultHighways()
+        
+        let errorExpectation = self.expectation(description: "onEmptyCommand handler is called.")
+        highway.onError = { error in
+            errorExpectation.fulfill()
+        }
+        
+        let emptyExpectation = self.expectation(description: "onEmptyCommand handler is called.")
+        highway.onEmptyCommand = {
+            emptyExpectation.fulfill()
+            throw "Hello Dude"
+        }
+        
+        highway.go(Invocation())
+        waitForExpectations(timeout: 4) { error in
             XCTAssertNil(error)
         }
     }
@@ -151,35 +200,46 @@ final class HighwaysTests: XCTestCase {
     // Test that first onUnrecognizedCommand is consulted and then the error handler
     func testErrorHandlerIsNotCalledWhenHighwayNotFoundButUnrecgonizedHighwaysAreHandled() {
         _useDefaultHighways()
-
+        
         let expectation = self.expectation(description: "onUnrecognizedCommand handler is called.")
         
-        highways
-            .onError { _ in XCTFail("should not be called") }
-            .onUnrecognizedCommand { _ in expectation.fulfill() }
-            .go("highway_which_does_not_exist")
+        highway.onError = { _ in XCTFail("should not be called") }
+        highway.onUnrecognizedCommand = { _ in expectation.fulfill() }
+        highway.go("highway_which_does_not_exist")
         
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
         }
+    }
+    
+    func testCommandLineInvocationProvider() {
+        let verboseBuild = CommandLineInvocationProvider(args: ["xyz", "--verbose", "build"]).invocation()
+        XCTAssertEqual(verboseBuild.highway, "build")
+        XCTAssertEqual(verboseBuild.verbose, true)
+        XCTAssertEqual(verboseBuild.arguments, [])
+        
+        let buildWithArgs = CommandLineInvocationProvider(args: ["xyz", "build", "hello", "world"]).invocation()
+        XCTAssertEqual(buildWithArgs.highway, "build")
+        XCTAssertEqual(buildWithArgs.verbose, false)
+        XCTAssertEqual(buildWithArgs.arguments, ["hello", "world"])
     }
 }
 
 
 
 // MARK: Helper & Mocks
-extension String: HighwayInvocationProvider {
-    public func highwayInvocation() -> Invocation {
-        return Invocation(highwayName: self)
+extension String: InvocationProvider {
+    public func invocation() -> Invocation {
+        return Invocation(highway: self)
     }
 }
 
-extension Invocation: HighwayInvocationProvider {
-    public func highwayInvocation() -> Invocation {
+extension Invocation: InvocationProvider {
+    public func invocation() -> Invocation {
         return self
     }
 }
 
-enum MockHighway: String, Highway {
+enum MockHighway: String, HighwayType {
     case build, test, clean, release
 }

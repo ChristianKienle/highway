@@ -1,24 +1,24 @@
 import XCTest
-import FSKit
+import FileSystem
 
 final class RelativePathTests: XCTestCase {
     func testThatValidPathsAreNotModified() {
-        XCTAssertEqual(RelativePath("hello").asString, "hello")
-        XCTAssertEqual(RelativePath("hello/world").asString, "hello/world")
-        XCTAssertEqual(RelativePath(".hello").asString, ".hello")
-        XCTAssertEqual(RelativePath(".").asString, ".")
+        XCTAssertEqual(Relative("hello").asString, "hello")
+        XCTAssertEqual(Relative("hello/world").asString, "hello/world")
+        XCTAssertEqual(Relative(".hello").asString, ".hello")
+        XCTAssertEqual(Relative(".").asString, ".")
     }
     func testTrailingSlashesAreRemoved() {
-        XCTAssertEqual(RelativePath("hello/").asString, "hello")
-        XCTAssertEqual(RelativePath("hello/world/").asString, "hello/world")
+        XCTAssertEqual(Relative("hello/").asString, "hello")
+        XCTAssertEqual(Relative("hello/world/").asString, "hello/world")
     }
     func testEmptyPathIsTransformedIntoCurrentPathIndicator() {
-        XCTAssertEqual(RelativePath("").asString, ".")
+        XCTAssertEqual(Relative("").asString, ".")
     }
     
     func testThatRedundantDotsAreRemoved() {
-        XCTAssertEqual(RelativePath("hello/./.").asString, "hello")
-        XCTAssertEqual(RelativePath("./.").asString, ".")
-        XCTAssertEqual(RelativePath("hello/././world/./test/./bla/test/././.build/test").asString, "hello/world/test/bla/test/.build/test")
+        XCTAssertEqual(Relative("hello/./.").asString, "hello")
+        XCTAssertEqual(Relative("./.").asString, ".")
+        XCTAssertEqual(Relative("hello/././world/./test/./bla/test/././.build/test").asString, "hello/world/test/bla/test/.build/test")
     }
 }

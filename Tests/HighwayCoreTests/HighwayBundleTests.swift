@@ -1,6 +1,7 @@
 import XCTest
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 final class HighwayBundleTests: XCTestCase {
     private var fs = InMemoryFileSystem()
@@ -12,25 +13,25 @@ final class HighwayBundleTests: XCTestCase {
     }
     
     func testInitFailsIfDirectoryDoesNotExist() {
-        XCTAssertThrowsError(try HighwayBundle(url: AbsoluteUrl("/bundle"), fileSystem: fs))
-        XCTAssertThrowsError(try HighwayBundle(fileSystem: fs, parentUrl: AbsoluteUrl("/bundle")))
+        XCTAssertThrowsError(try HighwayBundle(url: Absolute("/bundle"), fileSystem: fs))
+        XCTAssertThrowsError(try HighwayBundle(fileSystem: fs, parentUrl: Absolute("/bundle")))
     }
     
     func testInitFailsIfUrlPointsToFile() {
-        let url = AbsoluteUrl("/bundle")
+        let url = Absolute("/bundle")
         XCTAssertNoThrow(try fs.writeData(Data(), to: url))
         XCTAssertThrowsError(try HighwayBundle(url: url, fileSystem: fs))
-        XCTAssertNoThrow(try fs.writeData(Data(), to: AbsoluteUrl("/bundle/\(HighwayBundle.Configuration.standard.directoryName)")))
+        XCTAssertNoThrow(try fs.writeData(Data(), to: Absolute("/bundle/\(HighwayBundle.Configuration.standard.directoryName)")))
         XCTAssertThrowsError(try HighwayBundle(fileSystem: fs, parentUrl: url))
     }
     func testInitWorksIfDirectoryExists() {
-        XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/dir/\(config.directoryName)")))
-        XCTAssertNoThrow(try HighwayBundle(url: AbsoluteUrl("/dir/\(config.directoryName)"), fileSystem: fs))
-        XCTAssertNoThrow(try HighwayBundle(fileSystem: fs, parentUrl: AbsoluteUrl("/dir")))
+        XCTAssertNoThrow(try fs.createDirectory(at: Absolute("/dir/\(config.directoryName)")))
+        XCTAssertNoThrow(try HighwayBundle(url: Absolute("/dir/\(config.directoryName)"), fileSystem: fs))
+        XCTAssertNoThrow(try HighwayBundle(fileSystem: fs, parentUrl: Absolute("/dir")))
     }
     func testWriteMethods() {
         // Prepare the FS
-        let url = AbsoluteUrl("/dir/\(config.directoryName)")
+        let url = Absolute("/dir/\(config.directoryName)")
         XCTAssertNoThrow(try fs.createDirectory(at: url))
         do {
             let b = try HighwayBundle(url: url, fileSystem: fs)

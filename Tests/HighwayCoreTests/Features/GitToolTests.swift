@@ -1,20 +1,20 @@
 import XCTest
 import TestKit
-import FSKit
+import FileSystem
 @testable import HighwayCore
+import Url
+import Task
 
 private final class MockGitSystem {
-    let executor = ExecutorMock()
-    lazy var context: Context = {
-        let fs = InMemoryFileSystem()
-        let finder = ExecutableFinder(searchURLs: [AbsoluteUrl("/bin")], fileSystem: fs)
-        return Context(executableFinder: finder, executor: executor)
-    }()
-
+    var executor: ExecutorMock {
+        return context.executorMock
+    }
+    let context = ContextMock()
     var fs: FileSystem { return context.fileSystem }
     func makeGitAvailable() throws {
-        try fs.createDirectory(at: AbsoluteUrl("/bin"))
-        try fs.writeData(Data(), to: AbsoluteUrl("/bin/git"))
+        try fs.createDirectory(at: Absolute("/bin"))
+        try fs.writeData(Data(), to: Absolute("/bin/git"))
+        context.executableProviderMock[Absolute("/bin")] = ["git"]
     }
 }
 
@@ -36,14 +36,14 @@ final class GitToolTests: XCTestCase {
         
         let gitExecuted = expectation(description: "git executed")
         executor.executions = { task in
-            XCTAssertEqual(task.executableURL, AbsoluteUrl("/bin/git"))
-            XCTAssertEqual(task.currentDirectoryUrl, AbsoluteUrl("/test"))
+            XCTAssertEqual(task.executableUrl, Absolute("/bin/git"))
+            XCTAssertEqual(task.currentDirectoryUrl, Absolute("/test"))
             XCTAssertEqual(task.arguments, ["add", "."])
-            task.state = .finished(.success)
+            task.state = .terminated(.success)
             gitExecuted.fulfill()
         }
         
-        XCTAssertNoThrow(try git.addAll(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try git.addAll(at: Absolute("/test")))
         waitForExpectations(timeout: 5) { XCTAssertNil($0) }
     }
     
@@ -61,15 +61,15 @@ final class GitToolTests: XCTestCase {
         }
 
         // Fail if directory does not exist
-        XCTAssertThrowsError(try git.addAll(at: AbsoluteUrl("/test")))
+        XCTAssertThrowsError(try git.addAll(at: Absolute("/test")))
         // Create dir
-        XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try fs.createDirectory(at: Absolute("/test")))
         // Now simulate an git failure
-        gitSystem.executor.executions = { $0.state = .finished(.failure) }
-        XCTAssertThrowsError(try git.addAll(at: AbsoluteUrl("/test")))
+        gitSystem.executor.executions = { $0.state = .terminated(.failure) }
+        XCTAssertThrowsError(try git.addAll(at: Absolute("/test")))
         // Now simulate an git success
-        gitSystem.executor.executions = { $0.state = .finished(.success) }
-        XCTAssertNoThrow(try git.addAll(at: AbsoluteUrl("/test")))
+        gitSystem.executor.executions = { $0.state = .terminated(.success) }
+        XCTAssertNoThrow(try git.addAll(at: Absolute("/test")))
     }
 
     func testCommit() {
@@ -80,15 +80,15 @@ final class GitToolTests: XCTestCase {
         }
 
         // Fail if directory does not exist
-        XCTAssertThrowsError(try git.commit(at: AbsoluteUrl("/test"), message: "Hello"))
+        XCTAssertThrowsError(try git.commit(at: Absolute("/test"), message: "Hello"))
         // Create dir
-        XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try fs.createDirectory(at: Absolute("/test")))
         // Now simulate an git failure
-        gitSystem.executor.executions = { $0.state = .finished(.failure) }
-        XCTAssertThrowsError(try git.commit(at: AbsoluteUrl("/test"), message: "Hello"))
+        gitSystem.executor.executions = { $0.state = .terminated(.failure) }
+        XCTAssertThrowsError(try git.commit(at: Absolute("/test"), message: "Hello"))
         // Now simulate an git success
-        gitSystem.executor.executions = { $0.state = .finished(.success) }
-        XCTAssertNoThrow(try git.commit(at: AbsoluteUrl("/test"), message: "Hello"))
+        gitSystem.executor.executions = { $0.state = .terminated(.success) }
+        XCTAssertNoThrow(try git.commit(at: Absolute("/test"), message: "Hello"))
     }
 
     func testCurrentTag() {
@@ -99,15 +99,15 @@ final class GitToolTests: XCTestCase {
         }
 
         // Fail if directory does not exist
-        XCTAssertThrowsError(try git.currentTag(at: AbsoluteUrl("/test")))
+        XCTAssertThrowsError(try git.currentTag(at: Absolute("/test")))
         // Create dir
-        XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try fs.createDirectory(at: Absolute("/test")))
         // Now simulate an git failure
-        gitSystem.executor.executions = { $0.state = .finished(.failure) }
-        XCTAssertThrowsError(try git.currentTag(at: AbsoluteUrl("/test")))
+        gitSystem.executor.executions = { $0.state = .terminated(.failure) }
+        XCTAssertThrowsError(try git.currentTag(at: Absolute("/test")))
         // Now simulate success but without any output
-        gitSystem.executor.executions = { $0.state = .finished(.success) }
-        XCTAssertThrowsError(try git.currentTag(at: AbsoluteUrl("/test")))
+        gitSystem.executor.executions = { $0.state = .terminated(.success) }
+        XCTAssertThrowsError(try git.currentTag(at: Absolute("/test")))
         // Now simulate success but without garbage output
         gitSystem.executor.executions = {
             let sem = DispatchSemaphore(value: 0)
@@ -119,9 +119,9 @@ final class GitToolTests: XCTestCase {
                 handle.close()
             }
             sem.wait()
-            $0.state = .finished(.success)
+            $0.state = .terminated(.success)
         }
-        XCTAssertThrowsError(try git.currentTag(at: AbsoluteUrl("/test")))
+        XCTAssertThrowsError(try git.currentTag(at: Absolute("/test")))
         // Now simulate an git success with valid outout
         gitSystem.executor.executions = {
             let sem = DispatchSemaphore(value: 0)
@@ -133,28 +133,28 @@ final class GitToolTests: XCTestCase {
                 handle.close()
             }
             sem.wait()
-            $0.state = .finished(.success)
+            $0.state = .terminated(.success)
         }
-        XCTAssertNoThrow(try git.currentTag(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try git.currentTag(at: Absolute("/test")))
     }
     
     func testAllOkay() {
         XCTAssertNoThrow(try gitSystem.makeGitAvailable())
-        XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/.highway")))
+        XCTAssertNoThrow(try fs.createDirectory(at: Absolute("/.highway")))
 
         guard let git = try? GitTool(context: gitSystem.context) else {
             XCTFail(); return
         }
             let repoUrl = "git@bitbucket.org:ChristianKienle/highway.git"
-            let localUrl = AbsoluteUrl("/.highway/highway.git")
+            let localUrl = Absolute("/.highway/highway.git")
             let options = Git.CloneOptions(remoteUrl: repoUrl, localPath: localUrl,  performMirror: true)
             
             let gitExecuted = expectation(description: "git executed")
             executor.executions = { task in
                 XCTAssertEqual(task.name, "git")
-                XCTAssertEqual(task.executableURL, AbsoluteUrl("/bin/git"))
+                XCTAssertEqual(task.executableUrl, Absolute("/bin/git"))
                 XCTAssertEqual(task.arguments, ["clone", "--mirror", repoUrl, localUrl.path])
-                task.state = .finished(.success)
+                task.state = .terminated(.success)
                 gitExecuted.fulfill()
             }
             

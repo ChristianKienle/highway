@@ -1,11 +1,13 @@
 import HighwayCore
-
+import Task
+import Terminal
 public typealias TaskExecution = ((_ task: Task) -> (Void))
 public typealias SingleExecutionHandler = ((Task) -> (Void))
 
 /// Mocked Executor
 public final class ExecutorMock {
-    
+    public var ui: UI = MockUI()
+
     // MARK: Types
     
     //  MARK: Properties
@@ -36,7 +38,7 @@ extension ExecutorMock: TaskExecutor {
     public func execute(tasks: [Task]) {
         tasks.forEach { self.executions($0) }
     }
-    public func execute(task: Task) {
+    public func execute(task: Task, then: ExecutionMode) {
         guard let executableTask = _executableTask(for: task) else {
             executions(task)
             return

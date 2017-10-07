@@ -1,7 +1,8 @@
 import XCTest
 import HWKit
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 final class HomeBundleTests: XCTestCase {
     
@@ -18,7 +19,7 @@ final class HomeBundleTests: XCTestCase {
     func testInit() {
         let fs = InMemoryFileSystem()
         let config = HomeBundle.Configuration.standard
-        let url = AbsoluteUrl.root.appending(config.directoryName)
+        let url = Absolute.root.appending(config.directoryName)
         
         XCTAssertThrowsError(try HomeBundle(url: url, fileSystem: fs, configuration: config))
         XCTAssertNoThrow(try fs.createDirectory(at: url))
@@ -28,7 +29,7 @@ final class HomeBundleTests: XCTestCase {
     func testMissingComponents() {
         let fs = InMemoryFileSystem()
         let config = HomeBundle.Configuration.standard
-        let url = AbsoluteUrl.root.appending(config.directoryName)
+        let url = Absolute.root.appending(config.directoryName)
         
         XCTAssertNoThrow(try fs.createDirectory(at: url))
         let binDir = url.appending(HomeBundle.Component.binDir.rawValue)

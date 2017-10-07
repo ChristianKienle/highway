@@ -1,10 +1,11 @@
 import Foundation
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 public final class HomeBundle {
     // MARK: - Init
-    public init(url: AbsoluteUrl, fileSystem fs: FileSystem, configuration: Configuration = .standard) throws {
+    public init(url: Absolute, fileSystem fs: FileSystem, configuration: Configuration = .standard) throws {
         do {
             guard try fs.itemMetadata(at: url).type == .directory else {
                 throw "Highway home directory does not exist at \(url.path)."
@@ -19,10 +20,10 @@ public final class HomeBundle {
     }
     
     // MARK: - Properties
-    public let url: AbsoluteUrl
+    public let url: Absolute
     public let fileSystem: FileSystem
     public let configuration: Configuration
-    public var localCloneUrl: AbsoluteUrl {
+    public var localCloneUrl: Absolute {
         return url.appending(Component.clone.path)
     }
     
@@ -46,7 +47,7 @@ public final class HomeBundle {
 }
 
 extension HomeBundle {
-    public enum Component: RelativePath {
+    public enum Component: Relative {
         case binDir = "bin"
         case highwayCLI = "bin/highway"
         case clone = "highway"
@@ -59,13 +60,18 @@ extension HomeBundle {
             }
         }
         static let all: Set<Component> = [.binDir, .highwayCLI, .clone]
-        var path: RelativePath { return rawValue }
+        var path: Relative { return rawValue }
     }
 }
 
 extension HomeBundle {
     public struct Configuration {
         public static let standard = Configuration()
+        static func _standard() -> Configuration {
+            var c = Configuration()
+            c.remoteRepositoryUrl = env("HIGHWAY_HOME_BUNDLE_REPOSITORY", defaultValue: "https://github.com/ChristianKienle/highway.git")
+            return c
+        }
         public init() {}
         public var directoryName = ".highway"
         public var remoteRepositoryUrl = "https://github.com/ChristianKienle/highway.git"

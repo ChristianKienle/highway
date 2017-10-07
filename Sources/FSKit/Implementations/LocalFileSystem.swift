@@ -8,39 +8,39 @@ public class LocalFileSystem: FileSystem {
     private let _fm = FileManager()
 
     // MARK: - FileSystem
-    public func homeDirectoryUrl() throws -> AbsoluteUrl {
-        return AbsoluteUrl(NSHomeDirectory())
+    public func homeDirectoryUrl() throws -> Absolute {
+        return Absolute(NSHomeDirectory())
     }
     
-    public func temporaryDirectoryUrl() throws -> AbsoluteUrl {
-        return AbsoluteUrl(NSTemporaryDirectory())
+    public func temporaryDirectoryUrl() throws -> Absolute {
+        return Absolute(NSTemporaryDirectory())
     }
     
-    public func deleteItem(at url: AbsoluteUrl) throws {
+    public func deleteItem(at url: Absolute) throws {
         try _withItem(at: url) {
             try _fm.removeItem(atAbsolute: url)
         }
     }
     
-    public func createDirectory(at url: AbsoluteUrl) throws {
+    public func createDirectory(at url: Absolute) throws {
         try _withItem(at: url) {
             try _fm.createDirectory(atAbsolute: url, withIntermediateDirectories: true)
         }
     }
 
-    public func writeData(_ data: Data, to url: AbsoluteUrl) throws {
+    public func writeData(_ data: Data, to url: Absolute) throws {
         try _withItem(at: url) {
             try data.write(toAbsolute: url)
         }
     }
     
-    public func data(at url: AbsoluteUrl) throws -> Data {
+    public func data(at url: Absolute) throws -> Data {
         return try _withItem(at: url) {
             return try Data(contentsOfAbsolute: url)
         }
     }
     
-    public func itemMetadata(at url: AbsoluteUrl) throws -> Metadata {
+    public func itemMetadata(at url: Absolute) throws -> Metadata {
         var isDir = ObjCBool(false)
         guard _fm.fileExists(atPath: url.path, isDirectory: &isDir) else {
             throw FSError.doesNotExist
@@ -53,7 +53,7 @@ public class LocalFileSystem: FileSystem {
     typealias ItemHandler<R> = () throws -> (R)
     // Executes handler. If handler throws any error this method automatically transforms the error
     // to a FSError and rethrows that one.
-    private func _withItem<R>(at url: AbsoluteUrl, handler: ItemHandler<R>) throws -> R {
+    private func _withItem<R>(at url: Absolute, handler: ItemHandler<R>) throws -> R {
         let notFoundCodes: Set<CocoaError.Code> = [.fileNoSuchFile, .fileReadNoSuchFile]
         do {
             return try handler()

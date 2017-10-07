@@ -2,17 +2,18 @@ import XCTest
 @testable import HWKit
 import HighwayCore
 import TestKit
-import FSKit
+import FileSystem
+import Url
 
 final class SwiftBuildSystem_HighwayBundleTests: XCTestCase {
     
     func testSuccess() {
         let fs = InMemoryFileSystem()
         let config = HighwayBundle.Configuration.standard
-        let bundleUrl = AbsoluteUrl.root.appending(config.directoryName)
+        let bundleUrl = Absolute.root.appending(config.directoryName)
         XCTAssertNoThrow(try fs.createDirectory(at: bundleUrl))
-        let binDir = AbsoluteUrl("/bin")
-        let swiftUrl = AbsoluteUrl("/bin/xcrun")
+        let binDir = Absolute("/bin")
+        let swiftUrl = Absolute("/bin/xcrun")
         XCTAssertNoThrow(try fs.createDirectory(at: binDir))
         XCTAssertNoThrow(try fs.writeData(Data(), to: swiftUrl))
         let bundle: HighwayBundle
@@ -24,11 +25,13 @@ final class SwiftBuildSystem_HighwayBundleTests: XCTestCase {
             return
         }
         
-        let finder = ExecutableFinder(searchURLs: [binDir], fileSystem: fs)
-        let executor = ExecutorMock { _ in 
+        let finder = ExecutableProviderMock()
+        finder[binDir] = ["xcrun"]
+            
+        let executor = ExecutorMock { _ in
             return;
         }
-        let context = Context(executableFinder: finder, executor: executor)
+        let context = Context(executableProvider: finder, executor: executor, fileSystem: fs)
         let buildSystem = SwiftBuildSystem(context: context)
         
         guard let compiler = try? buildSystem.bundleCompiler(for: bundle) else {
@@ -37,11 +40,11 @@ final class SwiftBuildSystem_HighwayBundleTests: XCTestCase {
         }
         let buildTask = compiler.plan.buildTask
 
-        XCTAssertEqual(buildTask.executableURL, swiftUrl)
+        XCTAssertEqual(buildTask.executableUrl, swiftUrl)
         XCTAssertEqual(buildTask.arguments, ["swift", "build", "--configuration", "debug", "--build-path", bundle.buildDirectory.path, "-v"])
         
         let binPathTask = compiler.plan.showBinPathTask
-        XCTAssertEqual(binPathTask.executableURL, swiftUrl)
+        XCTAssertEqual(binPathTask.executableUrl, swiftUrl)
         XCTAssertEqual(binPathTask.arguments, ["swift", "build", "--configuration", "debug", "--build-path", bundle.buildDirectory.path, "--show-bin-path"])
 
     }

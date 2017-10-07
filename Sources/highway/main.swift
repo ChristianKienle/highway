@@ -1,9 +1,11 @@
 import Foundation
 import HighwayCore
-import FSKit
+import FileSystem
+import Terminal
 
-let allArguments = ProcessInfo.processInfo.arguments
-let arguments = Array(allArguments.dropFirst())
-let app = App(fileSystem: LocalFileSystem())
-app.run(with: arguments)
+let invocation = CommandLineInvocationProvider().invocation()
+Terminal.shared.verbose = invocation.verbose
+
+let app = App(AppHighway.self)
+app.go()
 

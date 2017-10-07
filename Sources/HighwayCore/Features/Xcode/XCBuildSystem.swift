@@ -1,5 +1,6 @@
 import Foundation
-import FSKit
+import FileSystem
+import Task
 
 public final class XCBuildSystem {
     public enum Result {
@@ -24,10 +25,10 @@ public final class XCBuildSystem {
             return [xcodebuildTask] + prettyTaskArray
         }
     }
-    private let executableFinder: ExecutableFinder
+    private let executableProvider: ExecutableProvider
     private let fileSystem: FileSystem
-    public init(executableFinder: ExecutableFinder, fileSystem: FileSystem) {
-        self.executableFinder = executableFinder
+    public init(executableProvider: ExecutableProvider, fileSystem: FileSystem) {
+        self.executableProvider = executableProvider
         self.fileSystem = fileSystem
     }
     
@@ -37,13 +38,12 @@ public final class XCBuildSystem {
     }
     
     public func executionPlan(settings: Xcodebuild, outputStyle: OutputStyle) throws -> ExecutionPlan {
-        let xcodebuildTask = try settings.task(executableFinder: executableFinder)
+        let xcodebuildTask = try settings.task(executableFinder: executableProvider)
 
-        let xcprettyTask: Task? = outputStyle == .raw ? nil : try? Task(commandName: "xcpretty", currentDirectoryURL: settings.projectDirectory, executableFinder: executableFinder)
+        let xcprettyTask: Task? = outputStyle == .raw ? nil : try? Task(commandName: "xcpretty", currentDirectoryUrl: settings.projectDirectory, provider: executableProvider)
         
         if let xcprettyTask = xcprettyTask {
-            let xcodebuildOutputPipe = Pipe()
-            xcodebuildTask.output = .pipe(xcodebuildOutputPipe)
+            xcodebuildTask.output = .pipe()
             xcprettyTask.input = xcodebuildTask.output
         }
         return ExecutionPlan(xcodebuildTask: xcodebuildTask, xcprettyTask: xcprettyTask)
@@ -55,9 +55,8 @@ public final class XCBuildSystem {
         switch plan.xcodebuildTask.state {
         case .waiting, .executing:
             return .failure
-        case .finished(let result):
-            return result.terminationStatus == EXIT_SUCCESS ? .success : .failure
+        case .terminated(let termination):
+            return termination.isSuccess ? .success : .failure
         }
-        
     }
 }

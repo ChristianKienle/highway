@@ -1,6 +1,7 @@
 import Foundation
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 public class GitMock {
     public init() {}
@@ -10,26 +11,26 @@ public class GitMock {
 }
 
 extension GitMock: Git.System {
-    public func addAll(at url: AbsoluteUrl) throws {
+    public func addAll(at url: Absolute) throws {
         try _throwIfEnabled()
     }
     
-    public func commit(at url: AbsoluteUrl, message: String) throws {
-        try _throwIfEnabled()
-
-    }
-    
-    public func pushToMaster(at url: AbsoluteUrl) throws {
+    public func commit(at url: Absolute, message: String) throws {
         try _throwIfEnabled()
 
     }
     
-    public func pushTagsToMaster(at url: AbsoluteUrl) throws {
+    public func pushToMaster(at url: Absolute) throws {
         try _throwIfEnabled()
 
     }
     
-    public func currentTag(at url: AbsoluteUrl) throws -> String {
+    public func pushTagsToMaster(at url: Absolute) throws {
+        try _throwIfEnabled()
+
+    }
+    
+    public func currentTag(at url: Absolute) throws -> String {
         guard let tag = currentTag else {
             try _throwIfEnabled()
             throw "should never happen"

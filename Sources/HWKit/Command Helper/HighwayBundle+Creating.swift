@@ -1,9 +1,10 @@
 import Foundation
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 public extension HighwayBundle {
-    public convenience init(creatingInParent parentUrl: AbsoluteUrl, fileSystem: FileSystem, configuration config: Configuration = .standard, homeBundleConfiguration homeConfig: HomeBundle.Configuration) throws {
+    public convenience init(creatingInParent parentUrl: Absolute, fileSystem: FileSystem, configuration config: Configuration = .standard, homeBundleConfiguration homeConfig: HomeBundle.Configuration) throws {
         let url = parentUrl.appending(config.directoryName)
         guard fileSystem.directory(at: url).isExistingDirectory == false else {
             throw "Failed to inittialize a highway project: There is already a file at '\(config.directoryName)'."
@@ -21,17 +22,16 @@ public extension HighwayBundle {
         }
         
         func _createMainSwiftFile() throws {
-            let mainSwiftFileData = mainSwiftTemplate.data(using: .utf8)!
+            let mainSwiftFileData = mainSwiftSubtypeXcodeTemplate.data(using: .utf8)!
             try write(mainSwiftData: mainSwiftFileData)
         }
         
         func _updatePackageDescription() throws {
             let dependencyUrl = homeConfig.remoteRepositoryUrl
-            let fromVersion = config.dependencyFromVersion
+            let branch = config.branch
             let packageName = config.packageName
             let targetName = config.targetName
-            
-            let contents = packageDescriptionTemplate(packageName: packageName, targetName: targetName, dependencyFromVersion: fromVersion, dependencyUrl: dependencyUrl)
+            let contents = packageDescriptionTemplate(packageName: packageName, targetName: targetName, branch: branch, dependencyUrl: dependencyUrl)
             let data = contents.data(using: .utf8)!
             try write(packageDescription: data)
         }

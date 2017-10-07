@@ -3,13 +3,13 @@ import Foundation
 // All throwing methods HAVE to throw FileSystemError if they throw anything at all.
 public class File {
     // MARK: - Init
-    init(url: AbsoluteUrl, fileSystem: FileSystem) {
+    init(url: Absolute, fileSystem: FileSystem) {
         self.url = url
         self.fileSystem = fileSystem
     }
     
     // MARK: - Properties
-    let url: AbsoluteUrl
+    let url: Absolute
     let fileSystem: FileSystem
     public var isExistingFile: Bool {
         guard let type = try? fileSystem.itemMetadata(at: url).type else {

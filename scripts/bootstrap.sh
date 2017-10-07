@@ -88,7 +88,7 @@ temp=$(mktemp -d -t highway)
 __wc="${temp}/${__wc_name}"
 
 # clone the master branch
-git clone -b master ${__repoUrl} ${__wc}
+git clone -b  ${HIGHWAY_BOOTSTRAP_BRANCH:-master} ${__repoUrl} ${__wc}
 
 # build it
 pushd ${__wc}

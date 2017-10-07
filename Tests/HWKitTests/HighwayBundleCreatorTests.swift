@@ -2,19 +2,23 @@ import XCTest
 import HWKit
 import HighwayCore
 import TestKit
-import FSKit
+import FileSystem
+import Url
 
 final class HighwayBundleCreatorTests: XCTestCase {
     func testSuccess() {
         let fs = InMemoryFileSystem()
-        let url = AbsoluteUrl("/highway-go")
-        let homeUrl = AbsoluteUrl("/.highway")
+        let url = Absolute("/highway-go")
+        let homeUrl = Absolute("/.highway")
         XCTAssertNoThrow(try fs.createDirectory(at: url))
         XCTAssertNoThrow(try fs.createDirectory(at: homeUrl))
         let bundle: HighwayBundle
         let config = HighwayBundle.Configuration.standard
         do {
-            bundle = try HighwayBundle(creatingInParent: .root, fileSystem: fs, configuration: config, homeBundleConfiguration: .standard)
+            bundle = try HighwayBundle(creatingInParent: .root,
+                                       fileSystem: fs,
+                                       configuration: config,
+                                       homeBundleConfiguration: .standard)
         } catch {
             XCTFail(error.localizedDescription)
             return

@@ -1,7 +1,7 @@
 Highway
 =================
 
-From zero to a new highway- + Swift Package Manager-project + an Xcode project + a build and test highway in 5 seconds.
+From zero to a new highway- + Swift Package Manager-project + an Xcode project + a build and test highway in 5 seconds. 
 
 ```
 $ highway init_swift      # ➤ new swift + highway project
@@ -16,24 +16,24 @@ Table of Contents
 =================
 
 * [Getting started](#getting-started)
-  * [Installing highway in 60 seconds (or less)](#installing-highway-in-60-seconds-or-less)
-  * [Setting up highway](#setting-up-highway)
-  * [Hello World (the fun part)](#hello-world-the-fun-part)
-  * [highway + Swift](#highway--swift)
+* [Installing highway in 60 seconds (or less)](#installing-highway-in-60-seconds-or-less)
+* [Setting up highway](#setting-up-highway)
+* [Hello World (the fun part)](#hello-world-the-fun-part)
+* [highway + Swift](#highway--swift)
 * [Make your highway project useful](#make-your-highway-project-useful)
-  * [Creating a simple custom Highway](#creating-a-simple-custom-highway)
-  * [Highways with Dependencies](#highways-with-dependencies)
-  * [Highways with Results](#highways-with-results)
-  * [Special Highways](#special-highways)
+* [Creating a simple custom Highway](#creating-a-simple-custom-highway)
+* [Highways with Dependencies](#highways-with-dependencies)
+* [Highways with Results](#highways-with-results)
+* [Special Highways](#special-highways)
 * [Included Frameworks](#included-frameworks)
-  * [Swift: build &amp; test](#swift-build--test)
-  * [Xcode: build, archive, test (...) + xcpretty](#xcode-build-archive-test---xcpretty)
-  * [Keychain: Access Secrets](#keychain-access-secrets)
-  * [git: commit, push, (auto-) tag](#git-commit-push-auto--tag)
-  * [fastlane](#fastlane)
+* [Swift: build &amp; test](#swift-build--test)
+* [Xcode: build, archive, test (...) + xcpretty](#xcode-build-archive-test---xcpretty)
+* [Keychain: Access Secrets](#keychain-access-secrets)
+* [git: commit, push, (auto-) tag](#git-commit-push-auto--tag)
+* [fastlane](#fastlane)
 * [Updating](#updating)
-  * [Dependencies](#dependencies)
-  * [CLI](#cli)
+* [Dependencies](#dependencies)
+* [CLI](#cli)
 
 ---
 # Getting started
@@ -103,8 +103,8 @@ $ highway init_swift
 Executing `highway init_swift` creates:
 - a Swift Package Manager project (type: executable) named `my_new_app` and
 - a highway project in the same directory (`./_highway`). The created highway project has two simple highways:
-  - `build`: Builds the created Swift project.
-  - `test`: Executes the tests of the Swift project.
+- `build`: Builds the created Swift project.
+- `test`: Executes the tests of the Swift project.
 
 
 # Make your highway project useful
@@ -114,19 +114,19 @@ The `highway` command line tool can be executed with arguments - just like most 
 
 ```
 enum App: String, Highway {
-    case build
-    case test
-    case run
+case build
+case test
+case run
 
-    /// !!! Add more Highways by adding additional cases. !!!
+/// !!! Add more Highways by adding additional cases. !!!
 
-    var usage: String {
-        switch self {
-        case .build: return "Builds the project"
-        case .test: return "Executes tests"
-        case .run: return "Runs the project"
-        }
-    }
+var usage: String {
+switch self {
+case .build: return "Builds the project"
+case .test: return "Executes tests"
+case .run: return "Runs the project"
+}
+}
 }
 ```
 
@@ -153,19 +153,19 @@ You get the idea. Creating a custom highway is done in two steps:
 
 ```
 enum App: String, Highway {
-    case build
-    case test
-    case run
-    case myHighway /// <---- here
+case build
+case test
+case run
+case myHighway /// <---- here
 
-    var usage: String {
-        switch self {
-        case .build: return "Builds the project"
-        case .test: return "Executes tests"
-        case .run: return "Runs the project"
-        case .myHighway: return "I like snow" /// <---- and here
-        }
-    }
+var usage: String {
+switch self {
+case .build: return "Builds the project"
+case .test: return "Executes tests"
+case .run: return "Runs the project"
+case .myHighway: return "I like snow" /// <---- and here
+}
+}
 }
 ```
 
@@ -176,20 +176,20 @@ Still in `_highway/main.swift`: Scroll down and register your highway like this:
 // MARK: - Setup your custom highways
 highways
 
-    .highway(.build) {
+.highway(.build) {
 
-    }
-    .highway(.test) {
+}
+.highway(.test) {
 
-    }
-    .highway(.run) {
+}
+.highway(.run) {
 
-    }
-    .highway(myHighway) {
-      print(">>> here <<<")
-    }
+}
+.highway(myHighway) {
+print(">>> here <<<")
+}
 
-    .go()
+.go()
 ```
 Now you can execute your highway like this:
 
@@ -205,19 +205,19 @@ A highway can depend on other highways. You specify dependencies between highway
 ```
 highways
 
-    .highway(.build) {
-      // imagine code that actually builds your app/project.
-    }
+.highway(.build) {
+// imagine code that actually builds your app/project.
+}
 
-    .highway(.test, dependsOn: [.build]) {
-      // imagine code that actually runs your tests.
-    }
+.highway(.test, dependsOn: [.build]) {
+// imagine code that actually runs your tests.
+}
 
-    .highway(.run, dependsOn: [.test]) {
-      // imagine code that actually runs your app/project.
-    }
+.highway(.run, dependsOn: [.test]) {
+// imagine code that actually runs your app/project.
+}
 
-    .go()
+.go()
 ```
 
 In the example above there are three highways, two of which depend on other highways.
@@ -245,19 +245,19 @@ let highways = Highways(App.self)
 
 highways
 
-    .highway(.build) {
-        // image code that uses xcodebuild or swift (...)
-        // and returns the url to the build product.
-        return "./.build/release/my_app"
-    }
+.highway(.build) {
+// image code that uses xcodebuild or swift (...)
+// and returns the url to the build product.
+return "./.build/release/my_app"
+}
 
-    .highway(.release, dependsOn: [.build]) {
-        let path: String = try highways.result(for: .build)
-        print(path)
-        // Now upload the file at path to a server.
-    }
+.highway(.release, dependsOn: [.build]) {
+let path: String = try highways.result(for: .build)
+print(path)
+// Now upload the file at path to a server.
+}
 
-    .go()
+.go()
 ```  
 
 ## Special Highways
@@ -270,19 +270,19 @@ let highways = Highways(App.self)
 
 highways
 
-  // specical highways
+// specical highways
 
-  .onError { print($0) }                         // 1.
-  .onEmptyCommand { print("$ ./_highway") }      // 2.
-  .onUnrecognizedCommand { print("args: \($0)")} // 3.
+.onError { print($0) }                         // 1.
+.onEmptyCommand { print("$ ./_highway") }      // 2.
+.onUnrecognizedCommand { print("args: \($0)")} // 3.
 
 
-  // regular custom highways, as usual
+// regular custom highways, as usual
 
-  .highway(.build)   { /*...*/ }
-  .highway(.release) { /*...*/ }
+.highway(.build)   { /*...*/ }
+.highway(.release) { /*...*/ }
 
-  .go()
+.go()
 ```
 
 The code above registers for three special highways:
@@ -379,3 +379,4 @@ Update highway itself:
 $ highway self_update
 $ highway --version # verify
 ```
+

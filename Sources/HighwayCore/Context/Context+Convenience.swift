@@ -1,11 +1,9 @@
 import Foundation
-import FSKit
+import FileSystem
+import Url
 
 public extension Context {
     public func containsExecutableFor(command: String) -> Bool {
-        return executableFinder.urlForExecuable(named: command) != nil
-    }
-    public func addSearchPaths(_ paths: String...) {
-        executableFinder.searchURLs += paths.map { AbsoluteUrl($0) }
+        return executableProvider.urlForExecuable(command) != nil
     }
 }

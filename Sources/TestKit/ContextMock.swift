@@ -1,11 +1,16 @@
 import HighwayCore
-import FSKit
+import FileSystem
+import Task
+import Url
 
 public class ContextMock: Context {
     public let executorMock = ExecutorMock()
+    public let executableProviderMock = ExecutableProviderMock()
+    
     public init() {
         let fs = InMemoryFileSystem()
-        let finder = ExecutableFinder(searchURLs: [], fileSystem: fs)
-        super.init(executableFinder: finder, executor: executorMock)
+        super.init(executableProvider: executableProviderMock, executor: executorMock, fileSystem: fs)
     }
 }
+
+

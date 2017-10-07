@@ -13,14 +13,21 @@ public class Terminal {
     private let queue = DispatchQueue(label: "de.christian-kienle.highway.terminal")
     private var promptTemplate = Prompt.normal
     private let stream = FileStream(fd: stdout)
-
+    public var verbose = false
+    
     public func log(_ text: String) {
+        rawLog("\r" + self.promptTemplate.terminalString + text + "\n")
+    }
+    private func rawLog(_ text: String) {
         _sync {
-            let msg = "\r" + self.promptTemplate.terminalString + text + "\n"
-            stream.write(msg)
+            stream.write(text)
         }
     }
-    
+    private func rawLogNl(_ text: String) {
+        _sync {
+            stream.write("\r" + text + "\n")
+        }
+    }
     // MARK: - Write Stuff
     public func write(_ printer: Printer) {
         _sync {
@@ -52,15 +59,39 @@ public class Terminal {
     }
 }
 
-extension String: Printable {
-    public func printableString(with options: Print.Options) -> String {
-        return self
+fileprivate extension Terminal {
+    func _withPrompt(_ text: String) -> String {
+        return promptTemplate.terminalString + text
     }
+}
+public typealias UI = _UI
+
+extension Terminal: _UI {
+    
+    public func error(_ text: String) {
+        rawLogNl(_withPrompt(text))
+    }
+    public func success(_ text: String) {
+        rawLogNl(_withPrompt(text))
+    }
+    
+    public func message(_ text: String) {
+        rawLogNl(_withPrompt(text))
+    }
+    
+    public func verbose(_ text: String) {
+        guard self.verbose else { return }
+        rawLogNl(_withPrompt(text))
+    }
+    public func print(_ printable: Printable) {
+        rawLog(printable.printableString(with: .defaultOptions()))
+    }
+    
+    public func verbosePrint(_ printable: Printable) {
+        guard self.verbose else { return }
+        rawLog(printable.printableString(with: .defaultOptions()))
+    }
+
 }
 
-extension SubText: Printable {
-    public func printableString(with options: Print.Options) -> String {
-        return terminalString
-    }
-}
 

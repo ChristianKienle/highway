@@ -1,5 +1,6 @@
 import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
 /// This class is doing a lot of things - probably too many things:
 /// - Creates the highway home directory ($HOME/.highway)
@@ -8,7 +9,7 @@ import FSKit
 ///     the repo. 
 public final class Bootstraper {
     // MARK: - Init
-    public init(homeDirectory: AbsoluteUrl, configuration: HomeBundle.Configuration, git: Git.System, context: Context) {
+    public init(homeDirectory: Absolute, configuration: HomeBundle.Configuration, git: Git.System, context: Context) {
         self.homeDirectory = homeDirectory
         self.configuration = configuration
         self.git = git
@@ -16,7 +17,7 @@ public final class Bootstraper {
     }
     
     // MARK: - Properties
-    public let homeDirectory: AbsoluteUrl
+    public let homeDirectory: Absolute
     public let configuration: HomeBundle.Configuration
     public let git: Git.System
     public let context: Context

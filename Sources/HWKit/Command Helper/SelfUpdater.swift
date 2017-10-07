@@ -1,6 +1,8 @@
 import Foundation
 import HighwayCore
-import FSKit
+import FileSystem
+import Task
+import Arguments
 
 /// Updates the highway executable and the highway home directory.
 /// The highway home directory is located at ~/.highway. The bootstrap
@@ -20,8 +22,8 @@ public final class SelfUpdater {
         let cloneOptions = Git.CloneOptions(remoteUrl: homeBundle.localCloneUrl.path, localPath: tempUrl, performMirror: false)
         try git.clone(with: cloneOptions)
         let bootstrapScriptUrl = tempUrl.appending("scripts").appending("bootstrap.sh")
-        let args = ["-c", "(/bin/sleep 2; \(bootstrapScriptUrl.path))&"]
-        let bash = try Task(commandName: "bash", arguments: args, currentDirectoryURL: tempUrl, executableFinder: context.executableFinder)
+        let args = Arguments(["-c", "(/bin/sleep 2; \(bootstrapScriptUrl.path))&"])
+        let bash = try Task(commandName: "bash", arguments: args, currentDirectoryUrl: tempUrl, provider: context.executableProvider)
         let sem = DispatchSemaphore(value: 0)
         DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
             exit(EXIT_SUCCESS)
@@ -29,6 +31,4 @@ public final class SelfUpdater {
         context.executor.execute(task: bash)
         sem.wait()
     }
-    
-
 }

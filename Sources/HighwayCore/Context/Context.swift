@@ -1,26 +1,26 @@
 import Foundation
-import FSKit
+import FileSystem
+import Task
+import Terminal
 
 open class Context {
     // MARK: - Convenience
     public class func local() -> Context {
-        let searchUrls = PathEnvironmentValueParser.local().searchFileURLs
         let fileSystem = LocalFileSystem()
-        let executableFinder = ExecutableFinder(searchURLs: searchUrls, fileSystem: fileSystem)
-        let executor = SystemExecutor()
-        return Context(executableFinder: executableFinder, executor: executor)
+        let provider = SystemExecutableProvider.local()
+        let executor = SystemExecutor(ui: Terminal.shared)
+        return Context(executableProvider: provider, executor: executor, fileSystem: fileSystem)
     }
     
     // MARK: - Init
-    public init(executableFinder: ExecutableFinder, executor: TaskExecutor) {
-        self.executableFinder = executableFinder
+    public init(executableProvider: ExecutableProvider, executor: TaskExecutor, fileSystem: FileSystem) {
+        self.executableProvider = executableProvider
         self.executor = executor
+        self.fileSystem = fileSystem
     }
     
     // MARK: - Properties
-    public var fileSystem: FileSystem { return executableFinder.fileSystem }
-    public let executableFinder: ExecutableFinder
+    public let fileSystem: FileSystem
+    public let executableProvider: ExecutableProvider
     public private(set) var executor: TaskExecutor
 }
-
-

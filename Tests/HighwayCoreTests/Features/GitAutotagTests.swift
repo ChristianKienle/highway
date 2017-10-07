@@ -1,7 +1,9 @@
 import XCTest
 import HighwayCore
 import TestKit
-import FSKit
+import FileSystem
+import Url
+import Task
 
 final class GitAutotagTests: XCTestCase {
     // MARK: - Properties
@@ -25,12 +27,12 @@ final class GitAutotagTests: XCTestCase {
         let executor = context.executorMock
         
         // Fail if directory does not exist
-        XCTAssertThrowsError(try git.autotag(at: AbsoluteUrl("/test")))
+        XCTAssertThrowsError(try git.autotag(at: Absolute("/test")))
         // Create dir
-        XCTAssertNoThrow(try fs.createDirectory(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try fs.createDirectory(at: Absolute("/test")))
         // Now simulate an git failure
-        executor.executions = { $0.state = .finished(.failure) }
-        XCTAssertThrowsError(try git.autotag(at: AbsoluteUrl("/test")))
+        executor.executions = { $0.state = .terminated(.failure) }
+        XCTAssertThrowsError(try git.autotag(at: Absolute("/test")))
         // Now simulate an git success
         executor.executions = {
             let sem = DispatchSemaphore(value: 0)
@@ -42,16 +44,16 @@ final class GitAutotagTests: XCTestCase {
                 handle.close()
             }
             sem.wait()
-            $0.state = .finished(.success)
+            $0.state = .terminated(.success)
         }
-        XCTAssertNoThrow(try git.autotag(at: AbsoluteUrl("/test")))
+        XCTAssertNoThrow(try git.autotag(at: Absolute("/test")))
     }
     
     // MARK: - Helper
     private func _makeGitAutotagAvailable() throws {
-        let bin = AbsoluteUrl("/bin")
+        let bin = Absolute("/bin")
         try context.fileSystem.createDirectory(at: bin)
         try context.fileSystem.writeData(Data(), to: bin.appending("git-autotag"))
-        context.executableFinder.searchURLs = [bin]
+        context.executableProviderMock[bin] = ["git-autotag"]
     }
 }

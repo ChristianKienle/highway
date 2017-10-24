@@ -1,13 +1,8 @@
-import HighwayCore
-import FSKit
+import FileSystem
+import Url
 
-func getNextVersion(cwd: AbsoluteUrl, context: Context) throws -> String {
-    let git = try GitAutotag(context: context)
-    return try git.autotag(at: cwd, dryRun: true)
-}
-
-func update(nextVersion: String, currentDirectoryURL: AbsoluteUrl, fileSystem: FileSystem) throws {
-    let versionFile = AbsoluteUrl(path: "Sources/highway/CurrentVersion.swift", relativeTo: currentDirectoryURL)
+func update(nextVersion: String, currentDirectoryURL: Absolute, fileSystem: FileSystem) throws {
+    let versionFile = Absolute(path: "Sources/highway/CurrentVersion.swift", relativeTo: currentDirectoryURL)
     try fileSystem.assertItem(at: versionFile, is: .file)
 
     let code = "let CurrentVersion = \"\(nextVersion)\""

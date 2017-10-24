@@ -19,12 +19,12 @@ enum AppHighway: String, HighwayType {
     var usage: String {
         switch self {
         case .initialize: return "Initializes a new highway project"
-        case .help: return "Display available commands and options"
+        case .help: return "Displays available commands and options"
         case .generate: return "Generates an Xcode project"
-        case .bootstrap: return "Bootstraps the Highway home directory"
-        case .clean: return "Delete build artifacts of your Highway project"
-        case .self_update: return "Updates Highway & the supporting frameworks"
-        case .version: return "Shows the version of Highway"
+        case .bootstrap: return "Bootstraps the highway home directory"
+        case .clean: return "Delete build artifacts of your highway project"
+        case .self_update: return "Updates highway & the supporting frameworks"
+        case .version: return "Print version information and exit"
         }
     }
 }

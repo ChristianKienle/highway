@@ -79,15 +79,9 @@ final class App: Highway<AppHighway> {
             try _showHelp()
             return
         }
-        
-        do {
-            let project = try XCProjectGenerator(context: context, bundle: bundle).generate()
-            ui.success("DONE. Try:")
-            ui.success("  " + project.openCommand)
-        } catch {
-            ui.error(error.localizedDescription)
-            throw error
-        }
+        let project = try XCProjectGenerator(context: context, bundle: bundle).generate()
+        ui.success("DONE. Try:")
+        ui.success("  " + project.openCommand)
     }
     
     private func _update_highway() throws -> HomeBundle {
@@ -129,7 +123,9 @@ final class App: Highway<AppHighway> {
     }
     
     private func _handleError(error: Swift.Error) {
-        dump(error)
+        var msg: String = ""
+        dump(error, to: &msg)
+        ui.error(msg)
         exit(EXIT_FAILURE)
     }
     

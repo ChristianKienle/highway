@@ -4,8 +4,12 @@ import Result
 import FileSystem
 
 public final class MockLocalSystem: System {
-    public func execute(_ task: Task, then: ExecutionMode) -> Result<Void, ExecutionError> {
-        return local.execute(task, then: then)
+    public func launch(_ task: Task, wait: Bool) -> Result<Void, ExecutionError> {
+        return local.launch(task, wait: true)
+    }
+
+    public func execute(_ task: Task) -> Result<Void, ExecutionError> {
+        return local.execute(task)
     }
     
     public func task(named name: String) -> Result<Task, TaskCreationError> {

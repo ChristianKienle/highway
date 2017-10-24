@@ -1,7 +1,5 @@
 import Foundation
 import Result
-import Errors
-import FileSystem
 
 /// A `System` is able to do two things:
 /// 1. Create new *executable* Tasks. A System can do that because it
@@ -12,17 +10,14 @@ import FileSystem
 /// class for that. It is just a little bit of convenience.
 public protocol System {
     func task(named name: String) -> Result<Task, TaskCreationError>
-    func execute(_ task: Task, then: ExecutionMode) -> Result<Void, ExecutionError>
+    func execute(_ task: Task) -> Result<Void, ExecutionError>
+    func launch(_ task: Task, wait: Bool) -> Result<Void, ExecutionError>
 }
 
 public extension System {
     func execute(_ task: Task) -> Result<Void, ExecutionError> {
-        return execute(task, then: .waitUntilExit)
+        return launch(task, wait: true)
     }
-}
-
-public enum ExecutionMode {
-    case waitUntilExit, `continue`
 }
 
 // MARK: - Errors

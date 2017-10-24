@@ -11,36 +11,18 @@ public final class SystemExecutor: TaskExecutor {
     }
    
     // MARK: - Working with the Executor
-    public func execute(task: Task, then: ExecutionMode) {
+    public func launch(task: Task, wait: Bool) {
         let process = task.toProcess
         ui.verbose(task.description)
         task.state = .executing
         process.launch()
-        if then == .waitUntilExit {
+        if wait {
             process.waitUntilExit()
         }
         if task.successfullyFinished == false {
             ui.error(task.state.description)
         } else {
             ui.verbose(task.state.description)
-        }
-
-    }
-    
-    public func execute(tasks: [Task]) {
-        let processes = tasks.map { $0.toProcess }
-        zip(tasks, processes).forEach { (task, process) in
-            task.state = .executing
-            ui.verbose(task.description)
-            process.launch()
-        }
-        processes.last?.waitUntilExit()
-        tasks.forEach {
-            if $0.successfullyFinished == false {
-                self.ui.error($0.state.description)
-            } else {
-                self.ui.verbose($0.state.description)
-            }
         }
     }
 }

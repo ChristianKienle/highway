@@ -66,12 +66,11 @@ extension HomeBundle {
 
 extension HomeBundle {
     public struct Configuration {
-        public static let standard = Configuration()
-        static func _standard() -> Configuration {
-            var c = Configuration()
-            c.remoteRepositoryUrl = env("HIGHWAY_HOME_BUNDLE_REPOSITORY", defaultValue: "https://github.com/ChristianKienle/highway.git")
-            return c
-        }
+        public static let standard: Configuration = {
+            var config = Configuration()
+            config.remoteRepositoryUrl = env("HIGHWAY_HOME_BUNDLE_REPOSITORY", defaultValue: "https://github.com/ChristianKienle/highway.git")
+            return config
+        }()
         public init() {}
         public var directoryName = ".highway"
         public var remoteRepositoryUrl = "https://github.com/ChristianKienle/highway.git"

@@ -59,8 +59,17 @@ public final class XCBuild {
     // MARK: Testing
     @discardableResult
     public func buildAndTest(using options: TestOptions) throws -> TestReport {
-        let task = try _buildTestTask(using: options).dematerialize()
-        try system.execute(task).assertSuccess()
+        let xcbuild = try _buildTestTask(using: options).dematerialize()
+        
+        if let xcpretty = system.task(named: "xcpretty").value {
+            xcbuild.output = .pipe()
+            xcbuild.environment["NSUnbufferedIO"] = "YES" // otherwise xcpretty might not get everything
+            xcpretty.input = xcbuild.output
+            try system.launch(xcbuild, wait: false).assertSuccess()
+            try system.execute(xcpretty).assertSuccess()
+        } else {
+            try system.execute(xcbuild).assertSuccess()
+        }
         return TestReport()
     }
     

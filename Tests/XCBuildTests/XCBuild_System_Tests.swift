@@ -3,7 +3,7 @@ import XCBuild
 import FileSystem
 import Url
 import HighwayCore
-import Task
+@testable import Task
 import Deliver
 import TestKit
 import Keychain
@@ -70,6 +70,22 @@ final class XCBuildTests: XCTestCase {
         
     }
     // MARK: - Tests
+    func test_test_action() throws {
+        let provider = SystemExecutableProvider.local()
+        provider.searchedUrls += ["/usr/local/bin/"] // a bit hacky - but that enables xcpretty
+        system.executableProvider = provider
+        let projectRoot = fixturesDir.appendingPathComponent("highwayiostest_objc")
+        let projectUrl = projectRoot.appendingPathComponent("highwayiostest.xcodeproj")
+
+        var options = TestOptions()
+        options.project = projectUrl.path
+        options.destination = Destination.simulator(.iOS, name: "iPhone 7", os: .latest, id: nil)
+        options.scheme = "highwayiostest"
+        
+        let xcbuild = XCBuild(system: system, fileSystem: LocalFileSystem())
+        let result = try xcbuild.buildAndTest(using: options)
+        print(result)
+    }
     func testArchive_and_Export_using_object_plist() throws {
         let projectRoot = fixturesDir.appendingPathComponent("highwayiostest_objc")
         let infoPlistUrl = fixturesDir.appendingPathComponent("highwayiostest/highwayiostest/Info.plist")

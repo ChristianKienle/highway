@@ -122,12 +122,11 @@ public final class HighwayBundle {
 extension HighwayBundle {
     public struct Configuration {
         // MARK: - Getting the default Configuration
-        public static let standard = Configuration._standard()
-        static func _standard() -> Configuration {
-            var c = Configuration()
-            c.branch = env("HIGHWAY_BUNDLE_BRANCH", defaultValue: "master")
-            return c
-        }
+        public static let standard: Configuration = {
+            var config = Configuration()
+            config.branch = env("HIGHWAY_BUNDLE_BRANCH", defaultValue: "master")
+            return config
+        }()
         // MARK: - Properties
         public var mainSwiftFileName = "main.swift"
         public var packageSwiftFileName = "Package.swift"

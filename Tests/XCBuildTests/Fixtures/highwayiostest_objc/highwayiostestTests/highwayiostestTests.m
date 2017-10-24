@@ -13,26 +13,23 @@
 
 @implementation highwayiostestTests
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-}
-
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
-}
+- (void)testExample { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample1 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample2 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample3 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample4 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample5 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample6 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample7 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample8 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample9 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample10 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample11 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample12 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample13 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample14 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample15 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample16 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
+- (void)testExample17 { [NSThread sleepForTimeInterval:0.25]; XCTAssertTrue(true); }
 
 @end

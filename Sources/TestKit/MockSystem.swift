@@ -32,13 +32,13 @@ public final class MockSystem {
     public var unhandledExecutionFallback: ExecutionFallback = { task in
         return .failure(.taskDidExitWithFailure(.failure))
     }
-    
 }
 
 private struct Execution {
     let task: Task
     let executionHandler: MockSystem.ExecutionHandler
 }
+
 private struct Creation {
     init(of task: String, _ handler: @escaping MockSystem.CreationHandler) {
         self.taskName = task
@@ -49,6 +49,13 @@ private struct Creation {
 }
 
 extension MockSystem: System {
+    public func launch(_ task: Task, wait: Bool) -> Result<Void, ExecutionError> {
+        guard let execution = (executions.first { $0.task === task }) else {
+            return unhandledExecutionFallback(task)
+        }
+        return execution.executionHandler(task)
+    }
+    
     public func task(named name: String) -> Result<Task, TaskCreationError> {
         let handler = creationsByName[name]?.creationHandler ?? unknownTaskFallback
         let result = handler(name)
@@ -56,10 +63,7 @@ extension MockSystem: System {
         return result
     }
     
-    public func execute(_ task: Task, then: ExecutionMode) -> Result<Void, ExecutionError> {
-        guard let execution = (executions.first { $0.task === task }) else {
-            return unhandledExecutionFallback(task)
-        }
-        return execution.executionHandler(task)
+    public func execute(_ task: Task) -> Result<Void, ExecutionError> {
+        return launch(task, wait: true)
     }
 }

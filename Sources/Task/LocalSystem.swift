@@ -6,7 +6,7 @@ import Terminal
 public final class LocalSystem {
     // MARK: - Properties
     private let executor: TaskExecutor
-    private let executableProvider: ExecutableProvider
+    var executableProvider: ExecutableProvider
     private let fileSystem: FileSystem
     
     // MARK: - Init
@@ -27,18 +27,23 @@ public final class LocalSystem {
 extension LocalSystem: System {
     // MARK: - Working with the System
     public func task(named name: String) -> Result<Task, TaskCreationError> {
-        
         guard let url = executableProvider.urlForExecuable(name) else {
             return .failure(.executableNotFound(commandName: name))
         }
         return .success(Task(executableUrl: url))
     }
     
-    public func execute(_ task: Task, then executionMode: ExecutionMode) -> Result<Void, ExecutionError>  {
+    public func execute(_ task: Task) -> Result<Void, ExecutionError> {
+        return launch(task, wait: true)
+    }
+    
+    public func launch(_ task: Task, wait: Bool) -> Result<Void, ExecutionError> {
         guard task.currentDirectoryExistsIfSet(in: fileSystem) else {
             return .failure(.currentDirectoryDoesNotExist)
         }
-        executor.execute(task: task, then: executionMode)
+        executor.launch(task: task, wait: wait)
+        guard wait else { return .success(()) }
+        
         let state = task.state
         switch state {
         case .waiting, .executing:
@@ -49,6 +54,7 @@ extension LocalSystem: System {
             }
             return .success(())
         }
+
     }
 }
 

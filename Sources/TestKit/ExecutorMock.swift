@@ -35,15 +35,16 @@ private struct ExecutableTask {
 }
 
 extension ExecutorMock: TaskExecutor {
-    public func execute(tasks: [Task]) {
-        tasks.forEach { self.executions($0) }
-    }
-    public func execute(task: Task, then: ExecutionMode) {
+    public func launch(task: Task, wait: Bool) {
         guard let executableTask = _executableTask(for: task) else {
             executions(task)
             return
         }
         executableTask.actions(executableTask.task)
+    }
+    
+    public func execute(task: Task) {
+        launch(task: task, wait: true)
     }
 }
 

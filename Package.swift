@@ -7,6 +7,7 @@ let package = Package(
         // Used by highway projects, aggregates lots of dependencies and offers a nicer api
         .library(name: "HighwayProject", targets: ["HighwayProject"]),
         .library(name: "POSIX", targets: ["POSIX"]),
+        .library(name: "Git", targets: ["Git"]),
         .library(name: "Deliver", targets: ["Deliver"]),
         .library(name: "Arguments", targets: ["Arguments"]),
         .library(name: "Errors", targets: ["Errors"]),
@@ -35,11 +36,11 @@ let package = Package(
                    "HighwayCore",
                    "HWKit",
                    "Terminal",
-                   "TestKit", "Keychain"]
+                   "TestKit", "Keychain", "Git"]
         )
     ],
     targets: [
-        .target(name: "HighwayProject", dependencies: ["POSIX", "Deliver", "HighwayCore", "Terminal", "FileSystem", "XCBuild", "Url", "Task"], path: "./Sources/HighwayProject"),
+        .target(name: "HighwayProject", dependencies: ["Git", "POSIX", "Deliver", "HighwayCore", "Terminal", "FileSystem", "XCBuild", "Url", "Task"], path: "./Sources/HighwayProject"),
         
         // Task: We use the security command line tool to talk to the Keychain.
         // Arguments: Task => Arguments
@@ -50,6 +51,7 @@ let package = Package(
         .target(name: "Arguments", dependencies: ["Errors"]),
         .target(name: "Result"),
         .target(name: "Terminal"),
+        .target(name: "Git", dependencies: ["Arguments", "Url", "Task", "Errors", "Terminal"]),
         .target(name: "POSIX", dependencies: ["Url"]),
 
         .target(name: "Deliver", dependencies: ["POSIX", "Task", "Url", "Result", "Errors", "Arguments", "FileSystem"]),
@@ -58,9 +60,9 @@ let package = Package(
         // Result: SHOULD return Results instead of throwing. FIXME!
         // Errors: Throws Errors.
         .target(name: "FileSystem", dependencies: ["POSIX", "Url", "Result", "Errors"]),
-        .target(name: "HWKit", dependencies: ["POSIX", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),
+        .target(name: "HWKit", dependencies: ["Git", "POSIX", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),
         .target(name: "HighwayCore", dependencies: ["POSIX", "Terminal", "FileSystem", "Task", "Url", "Arguments"]),
-        .target(name: "highway", dependencies: ["POSIX", "HighwayProject", "HWKit", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),        
+        .target(name: "highway", dependencies: ["Git", "POSIX", "HighwayProject", "HWKit", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),        
         .target(name: "XCBuild", dependencies: ["POSIX", "Url", "FileSystem", "Task", "Arguments"]),
 
         // Url: In the end, a Task is always using some kind of files on disk.
@@ -69,7 +71,7 @@ let package = Package(
         // Arguments: A Task has Arguments.
         // Terminal: We have to log
         .target(name: "Task", dependencies: ["Terminal", "Url", "FileSystem", "Errors", "Result", "Arguments"]),
-        .target(name: "TestKit", dependencies: ["POSIX", "HighwayCore", "Url", "Task"]),
+        .target(name: "TestKit", dependencies: ["Git", "POSIX", "HighwayCore", "Url", "Task"]),
 
         // Tests
         .testTarget(name: "DeliverTests", dependencies: ["FileSystem", "Arguments"]),
@@ -86,6 +88,7 @@ let package = Package(
         .testTarget(name: "TaskTests", dependencies: ["Task", "FileSystem", "TestKit"]),
         .testTarget(name: "UrlTests", dependencies: ["Url"]),
         .testTarget(name: "ArgumentsTests", dependencies: ["Arguments"]),
+        .testTarget(name: "GitTests", dependencies: ["TestKit", "FileSystem", "Url", "Git"]),
     ],
     swiftLanguageVersions: [4]
 )

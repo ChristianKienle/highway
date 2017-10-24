@@ -3,6 +3,7 @@ import Terminal
 import FileSystem
 import Url
 import Task
+import Git
 
 /// Updates the dependencies located in the highway home directory.
 /// The home directory contains a mirrored working copy of the
@@ -10,21 +11,22 @@ import Task
 /// The highway binary is not updated.
 public final class HomeBundleUpdater {
     // MARK: - Init
-    public init(homeBundle: HomeBundle, context: Context = .local()) {
+    public init(homeBundle: HomeBundle, context: Context = .local(), git: GitTool) {
         self.homeBundle = homeBundle
         self.context = context
+        self.git = git
     }
     
     // MARK: - Properties
     let homeBundle: HomeBundle
     let context: Context
-        
+    let git: GitTool
+    
     // MARK: - Command
     public func update() throws {
         Terminal.shared.log("Updating highway\(String.elli)")
 
         func __currentTag(at url: Absolute) throws -> String {
-            let git = try GitTool(context: self.context)
             return try git.currentTag(at: url)
         }
         

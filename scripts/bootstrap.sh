@@ -109,7 +109,6 @@ cp ${highway_bin} ${highway_home_bin_dir}
 
 # bootstrap the home bundle
 ${highway_home_bin_dir}/highway bootstrap
-${highway_home_bin_dir}/highway bootstrapAndUpdate
 
 echo "highway downloaded, compiled and ready to be used at:"
 echo ${highway_home_bin}

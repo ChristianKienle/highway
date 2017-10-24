@@ -6,6 +6,7 @@ import HighwayCore
 import Terminal
 import Deliver
 import POSIX
+import Git
 
 open class Highway<T: HighwayType>: _Highway<T> {
     public let fileSystem: FileSystem = LocalFileSystem()
@@ -13,6 +14,9 @@ open class Highway<T: HighwayType>: _Highway<T> {
     public let cwd = abscwd()
     public let system = LocalSystem.local()
     public let ui: UI = Terminal.shared
+    public lazy var git: GitTool = {
+        return _GitTool(system: system)
+    }()
     public lazy var deliver: _Deliver = {
         return Deliver.Local(altool: Altool(system: system, fileSystem: fileSystem))
     }()

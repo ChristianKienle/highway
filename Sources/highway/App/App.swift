@@ -37,7 +37,6 @@ final class App: Highway<AppHighway> {
         let config = HomeBundle.Configuration.standard
         let homeDir = try fileSystem.homeDirectoryUrl()
         let highwayHomeDirectory = homeDir.appending(config.directoryName)
-        let git = try GitTool(context: context)
         let bootstrap = Bootstraper(homeDirectory: highwayHomeDirectory, configuration: config, git: git, context: context)
         return try bootstrap.requestHomeBundle()
     }
@@ -93,7 +92,7 @@ final class App: Highway<AppHighway> {
     
     private func _update_highway() throws -> HomeBundle {
         let homeBundle = try self.__ensureValidHomeBundle()
-        try HomeBundleUpdater(homeBundle: homeBundle, context: context).update()
+        try HomeBundleUpdater(homeBundle: homeBundle, context: context, git: git).update()
         return homeBundle
     }
     
@@ -124,7 +123,7 @@ final class App: Highway<AppHighway> {
     
     private func _self_update() throws {
         let homeBundle = try _update_highway()
-        let updater = SelfUpdater(homeBundle: homeBundle, context: context)
+        let updater = SelfUpdater(homeBundle: homeBundle, git: git, context: context)
         try updater.update()
         exit(EXIT_SUCCESS)
     }

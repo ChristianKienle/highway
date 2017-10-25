@@ -6,6 +6,7 @@ private class Person {
     var lastName: String?
     var age: Int?
 }
+
 final class ArgumentsTests: XCTestCase {
     func testExample() {
         let p = Person()

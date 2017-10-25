@@ -29,7 +29,7 @@ final class App: Highway<AppHighway> {
         guard let bundle = __currentHighwayBundle() else {
             return []
         }
-        return (HighwayProjectTool(compiler: swift, bundle: bundle, context: context).availableHighways())
+        return (HighwayProjectTool(compiler: swift, bundle: bundle, system: system, fileSystem: fileSystem).availableHighways())
     }
     
     @discardableResult
@@ -37,7 +37,7 @@ final class App: Highway<AppHighway> {
         let config = HomeBundle.Configuration.standard
         let homeDir = try fileSystem.homeDirectoryUrl()
         let highwayHomeDirectory = homeDir.appending(config.directoryName)
-        let bootstrap = Bootstraper(homeDirectory: highwayHomeDirectory, configuration: config, git: git, context: context)
+        let bootstrap = Bootstraper(homeDirectory: highwayHomeDirectory, configuration: config, git: git, fileSystem: fileSystem)
         return try bootstrap.requestHomeBundle()
     }
     
@@ -56,7 +56,7 @@ final class App: Highway<AppHighway> {
         }
         do {
             ui.message("Updating support frameworks…")
-            let _highway = HighwayProjectTool(compiler: swift, bundle: bundle, context: context)
+            let _highway = HighwayProjectTool(compiler: swift, bundle: bundle, system: system, fileSystem: fileSystem)
             try _highway.update()
             ui.success("Success")
         } catch {
@@ -79,14 +79,14 @@ final class App: Highway<AppHighway> {
             try _showHelp()
             return
         }
-        let project = try XCProjectGenerator(context: context, bundle: bundle).generate()
+        let project = try XCProjectGenerator(swift: swift, bundle: bundle).generate()
         ui.success("DONE. Try:")
         ui.success("  " + project.openCommand)
     }
     
     private func _update_highway() throws -> HomeBundle {
         let homeBundle = try self.__ensureValidHomeBundle()
-        try HomeBundleUpdater(homeBundle: homeBundle, context: context, git: git).update()
+        try HomeBundleUpdater(bundle: homeBundle, git: git, ui: ui).update()
         return homeBundle
     }
     
@@ -117,7 +117,7 @@ final class App: Highway<AppHighway> {
     
     private func _self_update() throws {
         let homeBundle = try _update_highway()
-        let updater = SelfUpdater(homeBundle: homeBundle, git: git, context: context)
+        let updater = SelfUpdater(homeBundle: homeBundle, git: git, system: system)
         try updater.update()
         exit(EXIT_SUCCESS)
     }
@@ -140,7 +140,7 @@ final class App: Highway<AppHighway> {
         let selfInvocation = CommandLineInvocationProvider().invocation()
         let arguments = (verbose ? ["--verbose"] : []) + [selfInvocation.highway] + selfInvocation.arguments.all
         let args = Arguments(arguments)
-        let projectTool = HighwayProjectTool(compiler: swift, bundle: bundle, context: context)
+        let projectTool = HighwayProjectTool(compiler: swift, bundle: bundle, system: system, fileSystem: fileSystem)
         _ = try projectTool.build(thenExecuteWith: args)
     }
     

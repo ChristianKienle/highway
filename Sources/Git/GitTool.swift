@@ -28,6 +28,10 @@ private extension System {
 }
 
 extension _GitTool: GitTool {
+    public func fetch(at url: Absolute) throws {
+        try system.executeAndThrowOnFailure(try _git(with: ["fetch", "--quiet"], at: url))
+    }
+    
     public func addAll(at url: Absolute) throws {
         try system.executeAndThrowOnFailure(try _git(with: ["add", "."], at: url))
     }

@@ -1,5 +1,4 @@
 import XCTest
-import FileSystem
 import Url
 
 final class AbsoluteURLTests: XCTestCase {

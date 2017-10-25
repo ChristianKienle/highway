@@ -9,15 +9,15 @@ import Git
 /// The highway home directory is located at ~/.highway. The bootstrap
 /// script finds it automatically.
 public final class SelfUpdater {
-    public init(homeBundle: HomeBundle, git: GitTool, context: Context = .local()) {
+    public init(homeBundle: HomeBundle, git: GitTool, system: System = LocalSystem.local()) {
         self.homeBundle = homeBundle
-        self.context = context
+        self.system = system
         self.git = git
     }
     
     // MARK: - Properties
     public let homeBundle: HomeBundle
-    public let context: Context
+    public let system: System
     public let git: GitTool
     
     public func update() throws {
@@ -32,12 +32,14 @@ public final class SelfUpdater {
         // ... and execute the bootstrap script
         let bootstrapScriptUrl = tempUrl.appending("scripts").appending("bootstrap.sh")
         let args = Arguments(["-c", "(/bin/sleep 2; \(bootstrapScriptUrl.path))&"])
-        let bash = try Task(commandName: "bash", arguments: args, currentDirectoryUrl: tempUrl, provider: context.executableProvider)
+        let bash = try system.task(named: "bash").dematerialize()
+        bash.arguments = args
+        bash.currentDirectoryUrl = tempUrl
         let sem = DispatchSemaphore(value: 0)
         DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
             exit(EXIT_SUCCESS)
         }
-        context.executor.execute(task: bash)
+        try system.execute(bash).dematerialize()
         sem.wait()
     }
 }

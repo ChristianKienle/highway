@@ -14,6 +14,7 @@ final class HighwaysTests: XCTestCase {
         highway[.build] ==> { "build" }
         highway[.test] ==> { "test" }
     }
+    
     func testListHighwaysAsJSON() {
         _useDefaultHighways()
         highway.go("listPublicHighwaysAsJSON")
@@ -78,26 +79,23 @@ final class HighwaysTests: XCTestCase {
         }
     }
     
-    func testSimplePositiveCase() {
+    func testSimplePositiveCase() throws {
         _useDefaultHighways()
         
-        do {
-            // Tests
-            highway.go("build")
-            let buildResult: String = try highway.result(for: .build)
-            XCTAssertEqual(buildResult, "build")
-            highway.go("test")
-            let testResult: String = try highway.result(for: .test)
-            XCTAssertEqual(testResult, "test")
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
+        // Tests
+        highway.go("build")
+        let buildResult: String = try highway.result(for: .build)
+        XCTAssertEqual(buildResult, "build")
+        highway.go("test")
+        let testResult: String = try highway.result(for: .test)
+        XCTAssertEqual(testResult, "test")
     }
     
     func testEmptyThrows() {
         highway.go("anything_should_throw")
         XCTAssertThrowsError(try highway.result(for: .build) as String)
     }
+    
     func testDirectDependenciesAreCalled() {
         let buildCalled = expectation(description: "build called")
         let testCalled = expectation(description: "test called")

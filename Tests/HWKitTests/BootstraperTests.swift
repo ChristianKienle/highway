@@ -4,20 +4,13 @@ import TestKit
 import FileSystem
 import Url
 
-class BootstraperTests: XCTestCase {
-    private var context = ContextMock()
-    private var git = GitMock()
-    
-    override func setUp() {
-        super.setUp()
-        context = ContextMock()
-        git = GitMock()
-    }
-    
+final class BootstraperTests: XCTestCase {
     func testSuccess() {
+        let  git = GitMock()
         git.throwsEnabeld = false
         let homeDir = Absolute("/home")
-        let bootstrapper = Bootstraper(homeDirectory: homeDir, configuration: .standard, git: git, context: context)
+        let fileSystem = InMemoryFileSystem()
+        let bootstrapper = Bootstraper(homeDirectory: homeDir, configuration: .standard, git: git, fileSystem: fileSystem)
         let bundle: HomeBundle
         do {
             bundle = try bootstrapper.requestHomeBundle()
@@ -26,6 +19,6 @@ class BootstraperTests: XCTestCase {
             return
         }
         XCTAssertEqual(git.requestedClones.count, 1)
-        XCTAssertNoThrow(try context.fileSystem.assertItem(at: bundle.url, is: .directory))
+        XCTAssertNoThrow(try fileSystem.assertItem(at: bundle.url, is: .directory))
     }
 }

@@ -28,9 +28,7 @@ public final class XCBuild {
         guard let archivePath = options.archivePath else {
             throw "Archive failed. No archivePath set."
         }
-        let archiveUrl = Absolute(archivePath)
-        
-        return try Archive(url: archiveUrl, fileSystem: fileSystem)
+        return try Archive(url: archivePath, fileSystem: fileSystem)
     }
     
     private func _archiveTask(using options: ArchiveOptions) throws -> Result<Task, TaskCreationError> {
@@ -47,7 +45,7 @@ public final class XCBuild {
         guard let exportPath = options.exportPath else {
             throw "Export failed. No archivePath set."
         }
-        return try Export(url: Absolute(exportPath), fileSystem: fileSystem)
+        return try Export(url: exportPath, fileSystem: fileSystem)
     }
     
     private func _exportTask(using options: ExportArchiveOptions) -> Result<Task, TaskCreationError> {
@@ -111,9 +109,9 @@ fileprivate extension ArchiveOptions {
     var arguments: Arguments {
         var args = Arguments.empty
         args += _option("scheme", value: scheme)
-        args += _option("project", value: project)
+        args += _option("project", value: project?.path)
         args += _option("destination", value: destination.map { "\($0.asString)" })
-        args += _option("archivePath", value: archivePath)
+        args += _option("archivePath", value: archivePath?.path)
         args.append("archive")
         return args
     }
@@ -123,8 +121,8 @@ fileprivate extension ExportArchiveOptions {
     var arguments: Arguments {
         var args = Arguments("-exportArchive")
         args += _option("exportOptionsPlist", value: exportOptionsPlist?.url.path)
-        args += _option("archivePath", value: archivePath)
-        args += _option("exportPath", value: exportPath)
+        args += _option("archivePath", value: archivePath?.path)
+        args += _option("exportPath", value: exportPath?.path)
         return args
     }
 }

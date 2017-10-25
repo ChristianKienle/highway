@@ -10,25 +10,24 @@ import Git
 ///     the repo. 
 public final class Bootstraper {
     // MARK: - Init
-    public init(homeDirectory: Absolute, configuration: HomeBundle.Configuration, git: GitTool, context: Context) {
+    public init(homeDirectory: Absolute, configuration: HomeBundle.Configuration, git: GitTool, fileSystem: FileSystem) {
         self.homeDirectory = homeDirectory
         self.configuration = configuration
         self.git = git
-        self.context = context
+        self.fileSystem = fileSystem
     }
     
     // MARK: - Properties
     public let homeDirectory: Absolute
     public let configuration: HomeBundle.Configuration
     public let git: GitTool
-    public let context: Context
+    public let fileSystem: FileSystem
     
     public func requestHomeBundle() throws -> HomeBundle {
-        let fs = context.fileSystem
-        if fs.file(at: homeDirectory).isExistingFile == false {
-            try fs.createDirectory(at: homeDirectory)
+        if fileSystem.file(at: homeDirectory).isExistingFile == false {
+            try fileSystem.createDirectory(at: homeDirectory)
         }
-        let bundle = try HomeBundle(url: homeDirectory, fileSystem: fs)
+        let bundle = try HomeBundle(url: homeDirectory, fileSystem: fileSystem)
         if bundle.missingComponents().contains(.clone) {
             let localCloneUrl = bundle.localCloneUrl
             let remoteCloneUrl = configuration.remoteRepositoryUrl

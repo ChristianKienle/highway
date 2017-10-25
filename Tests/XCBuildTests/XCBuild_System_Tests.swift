@@ -94,16 +94,16 @@ final class XCBuildTests: XCTestCase {
         
         var options = ArchiveOptions()
         options.scheme = "highwayiostest"
-        options.project = projectUrl.path
+        options.project = Absolute(projectUrl)
         options.destination = Destination.device(.iOS, name: nil, isGeneric: true, id: nil)
-        options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive").path
+        options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive")
         
         let build = XCBuild(system: system, fileSystem: fs)
         try build.archive(using: options)
         
         var exportArchiveOptions = ExportArchiveOptions()
         exportArchiveOptions.archivePath = options.archivePath
-        exportArchiveOptions.exportPath = try fs.uniqueTemporaryDirectoryUrl().path
+        exportArchiveOptions.exportPath = try fs.uniqueTemporaryDirectoryUrl()
         
         var exportOptions = ExportOptions()
         exportOptions.method = .appStore
@@ -130,16 +130,16 @@ final class XCBuildTests: XCTestCase {
         
         var options = ArchiveOptions()
         options.scheme = "highwayiostest"
-        options.project = projectUrl.path
+        options.project = Absolute(projectUrl)
         options.destination = Destination.device(.iOS, name: nil, isGeneric: true, id: nil)
-        options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive").path
+        options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive")
         
         let build = XCBuild(system: system, fileSystem: fs)
         try build.archive(using: options)
         
         var exportArchiveOptions = ExportArchiveOptions()
         exportArchiveOptions.archivePath = options.archivePath
-        exportArchiveOptions.exportPath = try fs.uniqueTemporaryDirectoryUrl().path
+        exportArchiveOptions.exportPath = try fs.uniqueTemporaryDirectoryUrl()
         
         
         let plistUrl = Absolute(URL(fileURLWithPath: #file)

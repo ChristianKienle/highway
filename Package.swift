@@ -40,7 +40,7 @@ let package = Package(
         )
     ],
     targets: [
-        .target(name: "HighwayProject", dependencies: ["Git", "POSIX", "Deliver", "HighwayCore", "Terminal", "FileSystem", "XCBuild", "Url", "Task"], path: "./Sources/HighwayProject"),
+        .target(name: "HighwayProject", dependencies: ["SwiftTool", "Git", "POSIX", "Deliver", "HighwayCore", "Terminal", "FileSystem", "XCBuild", "Url", "Task"], path: "./Sources/HighwayProject"),
         
         // Task: We use the security command line tool to talk to the Keychain.
         // Arguments: Task => Arguments
@@ -55,12 +55,13 @@ let package = Package(
         .target(name: "POSIX", dependencies: ["Url"]),
 
         .target(name: "Deliver", dependencies: ["POSIX", "Task", "Url", "Result", "Errors", "Arguments", "FileSystem"]),
+        .target(name: "SwiftTool", dependencies: ["POSIX", "Task", "Url", "Result", "Errors", "Arguments", "FileSystem"]),
 
         // Url: Needs to have a concept of absolute/relative files/urls.
         // Result: SHOULD return Results instead of throwing. FIXME!
         // Errors: Throws Errors.
         .target(name: "FileSystem", dependencies: ["POSIX", "Url", "Result", "Errors"]),
-        .target(name: "HWKit", dependencies: ["Git", "POSIX", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),
+        .target(name: "HWKit", dependencies: ["SwiftTool", "Git", "POSIX", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),
         .target(name: "HighwayCore", dependencies: ["POSIX", "Terminal", "FileSystem", "Task", "Url", "Arguments"]),
         .target(name: "highway", dependencies: ["Git", "POSIX", "HighwayProject", "HWKit", "HighwayCore", "Terminal", "FileSystem", "Arguments"]),        
         .target(name: "XCBuild", dependencies: ["POSIX", "Url", "FileSystem", "Task", "Arguments"]),
@@ -89,6 +90,8 @@ let package = Package(
         .testTarget(name: "UrlTests", dependencies: ["Url"]),
         .testTarget(name: "ArgumentsTests", dependencies: ["Arguments"]),
         .testTarget(name: "GitTests", dependencies: ["TestKit", "FileSystem", "Url", "Git"]),
+        .testTarget(name: "SwiftToolTests", dependencies: ["TestKit", "SwiftTool"]),
+
     ],
     swiftLanguageVersions: [4]
 )

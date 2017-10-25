@@ -31,12 +31,12 @@ public struct ExportArchiveOptions {
     // Type: path
     // Notes: Directory at archivePath already exist. Should be equal to
     //        the directory archivePath from the archive options.
-    public var archivePath: String?
+    public var archivePath: Absolute?
     
     // Option: -exportPath
     // Type: path
     // Notes: Directory at exportPath must not exist already.
-    public var exportPath: String? //
+    public var exportPath: Absolute? //
     
     // Option: -exportOptionsPlist
     // Type: path

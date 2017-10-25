@@ -5,17 +5,6 @@ import FileSystem
 import Url
 
 final class HomeBundleTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
     func testInit() {
         let fs = InMemoryFileSystem()
         let config = HomeBundle.Configuration.standard
@@ -26,7 +15,7 @@ final class HomeBundleTests: XCTestCase {
         XCTAssertNoThrow(try HomeBundle(url: url, fileSystem: fs, configuration: config))
     }
     
-    func testMissingComponents() {
+    func testMissingComponents() throws {
         let fs = InMemoryFileSystem()
         let config = HomeBundle.Configuration.standard
         let url = Absolute.root.appending(config.directoryName)
@@ -40,13 +29,7 @@ final class HomeBundleTests: XCTestCase {
         XCTAssertNoThrow(try fs.writeData(Data(), to: highwayCLIUrl))
         XCTAssertNoThrow(try fs.createDirectory(at: cloneUrl))
         
-        let bundle: HomeBundle
-        do {
-            bundle = try HomeBundle(url: url, fileSystem: fs, configuration: config)
-        } catch {
-            XCTFail(error.localizedDescription)
-            return
-        }
+        let bundle = try HomeBundle(url: url, fileSystem: fs, configuration: config)
         
         // At this point the fs contains a valid home bundle...
         // Make sure HomeBundle acks that.
@@ -66,7 +49,4 @@ final class HomeBundleTests: XCTestCase {
         let all: Set<HomeBundle.Component> = [.binDir, .highwayCLI, .clone]
         XCTAssertEqual(bundle.missingComponents(), all)
     }
-    
-   
-    
 }

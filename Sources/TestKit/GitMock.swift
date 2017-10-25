@@ -12,6 +12,10 @@ public class GitMock {
 }
 
 extension GitMock: GitTool {
+    public func fetch(at url: Absolute) throws {
+        try _throwIfEnabled()
+    }
+    
     public func pull(at url: Absolute) throws {
         try _throwIfEnabled()
     }

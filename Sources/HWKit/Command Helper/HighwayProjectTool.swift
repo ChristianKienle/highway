@@ -6,6 +6,7 @@ import HighwayCore
 import Url
 import Task
 import Arguments
+import SwiftTool
 
 /// This class makes it easy to work with the highway project (aka _highway).
 /// Specifically, this class can:
@@ -14,16 +15,17 @@ import Arguments
 ///     - Execute the highway project executable.
 public class HighwayProjectTool {
     // MARK: - Properties
-    public let context: Context
-    public let compiler: SwiftBuildSystem
+    public let system: System
+    public let compiler: SwiftTool
     public let bundle: HighwayBundle
-    private var fileSystem: FileSystem { return context.fileSystem }
+    public var fileSystem: FileSystem
     
     // MARK: - Init
-    public init(compiler: SwiftBuildSystem, bundle: HighwayBundle, context: Context) {
+    public init(compiler: SwiftTool, bundle: HighwayBundle, system: System, fileSystem: FileSystem) {
         self.compiler = compiler
-        self.context = context
+        self.system = system
         self.bundle = bundle
+        self.fileSystem = fileSystem
     }
     
     // MARK: - Working with the Tool
@@ -35,8 +37,7 @@ public class HighwayProjectTool {
     }
 
     public func update() throws {
-        let package = SwiftPackageTool(context: context)
-        try package.package(arguments: ["update"], currentDirectoryUrl: bundle.url)
+        try compiler.update(projectAt: bundle.url)
     }
     
     public func build() throws -> BuildResult {
@@ -56,9 +57,7 @@ public class HighwayProjectTool {
 
         _highway.enableReadableOutputDataCapturing()
 
-        context.executor.execute(task: _highway)
-        
-        try _highway.throwIfNotSuccess()
+        try system.execute(_highway).assertSuccess()
         
         let output = _highway.capturedOutputData ?? Data()
         return BuildThenExecuteResult(buildResult: buildResult, outputData: output)
@@ -68,13 +67,13 @@ public class HighwayProjectTool {
 public extension HighwayProjectTool {
     public struct BuildResult {
         // MARK: - Init
-        public init(executableUrl: Absolute, artifact: SwiftBuildSystem.Artifact) {
+        public init(executableUrl: Absolute, artifact: Artifact) {
             self.executableUrl = executableUrl
             self.artifact = artifact
         }
         // MARK: - Properties
         public let executableUrl: Absolute
-        public let artifact: SwiftBuildSystem.Artifact
+        public let artifact: Artifact
     }
 }
 

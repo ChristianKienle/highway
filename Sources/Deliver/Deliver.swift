@@ -4,9 +4,8 @@ import Url
 public protocol _Deliver {
     func now(with options: Deliver.Options) throws
 }
-public final class Deliver {
-    
-}
+
+public final class Deliver { }
 
 extension Deliver {
     public struct Options {
@@ -50,7 +49,6 @@ public extension Deliver {
     /// Also used by Altool
     public enum Password {
         case plain(String) // value: plain password
-//        @available(*, unavailable, message: "Does not work because Highway has no access to your Keychain. Use .environment instead.")
         case keychainItem(named: String)
         case environment(named: String)
     }

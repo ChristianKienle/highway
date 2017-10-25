@@ -1,13 +1,41 @@
-import Foundation
-import FileSystem
 import Url
 import Arguments
-import POSIX
+
+public protocol SwiftTool {
+    func test(projectAt url: Absolute) throws
+    func build(projectAt url: Absolute, options: SwiftOptions) throws -> Artifact
+    func generateProject(with options: XcodeprojOptions) throws
+    func update(projectAt url: Absolute) throws
+}
+
+public struct Artifact {
+    public let binUrl: Absolute
+    public let buildOutput: String
+}
+
+public struct XcodeprojOptions {
+    public init(
+        swiftProject: Absolute,
+        outputDir: Absolute,
+        xcconfig: String?
+        ) {
+        self.swiftProject = swiftProject
+        self.outputDir = outputDir
+        self.xcconfig = xcconfig
+    }
+    public let swiftProject: Absolute
+    public let outputDir: Absolute
+    public let xcconfig: String?
+
+    var arguments: Arguments {
+        let xcconfigArg = xcconfig.map { return ["--xcconfig-overrides", $0] } ?? []
+        return Arguments(["generate-xcodeproj"] + xcconfigArg + ["--output", outputDir.path])
+    }
+}
 
 public struct SwiftOptions {
     public struct Result {
-        public let binPath: String
-        public var binURL: URL { return URL(fileURLWithPath: binPath) }
+        public var binUrl: Absolute
         public let buildOutput: String
     }
     
@@ -30,16 +58,14 @@ public struct SwiftOptions {
     }
     
     public static func defaultOptions() -> SwiftOptions { return SwiftOptions() }
-    public init(subject: Subject = .auto, projectDirectory: Absolute = abscwd(), configuration: Configuration = .debug, verbose: Bool = false, buildPath: Absolute? = nil, additionalArguments: Arguments = .empty) {
+    public init(subject: Subject = .auto, configuration: Configuration = .debug, verbose: Bool = false, buildPath: Absolute? = nil, additionalArguments: Arguments = .empty) {
         self.subject = subject
-        self.projectDirectory = projectDirectory
         self.configuration = configuration
         self.verbose = verbose
         self.buildPath = buildPath
         self.additionalArguments = additionalArguments
     }
     public let subject: Subject
-    public let projectDirectory: Absolute
     public let configuration: Configuration
     public var verbose: Bool
     public var buildPath: Absolute?

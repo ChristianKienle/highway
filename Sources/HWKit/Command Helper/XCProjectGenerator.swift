@@ -1,30 +1,28 @@
 import HighwayCore
 import FileSystem
 import Url
+import SwiftTool
 
 // MARK: - Types
-public typealias GeneratedXCProject = SwiftPackageTool.XCProjectOptions
+public typealias GeneratedXCProject = XcodeprojOptions
 
 public class XCProjectGenerator {
     // MARK: - Init
-    public init(context: Context, bundle: HighwayBundle) {
-        self.context = context
+    public init(swift: SwiftTool, bundle: HighwayBundle) {
+        self.swift = swift
         self.bundle = bundle
     }
     
     // MARK: - Properties
-    public let context: Context
+    public let swift: SwiftTool
     public let bundle: HighwayBundle
     
     // MARK: - Command
     public func generate() throws -> Result {
-        let swift_package = SwiftPackageTool(context: context)
         let xcconfigName = bundle.configuration.xcconfigName
         let projectUrl = bundle.xcodeprojectUrl
-        let options = SwiftPackageTool.XCProjectOptions(swiftProjectDirectory: bundle.url,
-                                                        xcprojectDestinationDirectory: projectUrl,
-                                                        xcconfigFileName: xcconfigName)
-        try swift_package.generateXcodeproj(with: options)
+        let options = XcodeprojOptions(swiftProject: bundle.url, outputDir: projectUrl, xcconfig: xcconfigName)
+        try swift.generateProject(with: options)
         return Result(projectUrl: projectUrl)
     }
 }

@@ -7,10 +7,10 @@ import Terminal
 import Deliver
 import POSIX
 import Git
+import SwiftTool
 
 open class Highway<T: HighwayType>: _Highway<T> {
     public let fileSystem: FileSystem = LocalFileSystem()
-    public let context = Context.local()
     public let cwd = abscwd()
     public let system = LocalSystem.local()
     public let ui: UI = Terminal.shared
@@ -23,7 +23,7 @@ open class Highway<T: HighwayType>: _Highway<T> {
     public lazy var xcbuild: XCBuild = {
         return XCBuild(system: system, fileSystem: fileSystem)
     }()
-    public lazy var swift: SwiftBuildSystem = {
-        return SwiftBuildSystem(context: context)
+    public lazy var swift: SwiftTool = {
+        return _SwiftTool(system: system)
     }()
 }

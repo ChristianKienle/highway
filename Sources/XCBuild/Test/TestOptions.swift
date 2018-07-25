@@ -1,4 +1,16 @@
 import Foundation
+import SourceryAutoProtocols
+
+
+public protocol TestOptionsProtocol: AutoMockable {
+    
+    /// sourcery:inline:TestOptions.AutoGenerateProtocol
+    var scheme: String { get }
+    var project: String { get }
+    var destination: Destination { get }
+   
+    /// sourcery:end
+}
 
 /// Options for xcodebuild's build & test actions:
 public struct TestOptions: AutoGenerateProtocol {

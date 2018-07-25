@@ -130,6 +130,8 @@ fileprivate extension ExportArchiveOptions {
 }
 
 fileprivate extension TestOptions {
+    
+    // sourcery:skipProtocol
     var arguments: Arguments {
         var args = Arguments.empty
         args += _option("scheme", value: scheme)

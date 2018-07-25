@@ -10,14 +10,7 @@ import UIKit
 import AppKit
 #endif
 
-#if 🤖Specs
-
-import ZFile
-import ZBotInput
-@testable import ZBot
-
-#endif
-
+import 
 
 {% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 

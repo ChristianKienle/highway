@@ -134,7 +134,7 @@ fileprivate extension TestOptions {
         var args = Arguments.empty
         args += _option("scheme", value: scheme)
         args += _option("project", value: project)
-        args += _option("destination", value: destination.map { "\($0.asString)" })
+        args += _option("destination", value: destination.asString)
         args.append(["build", "test"])
         return args
     }

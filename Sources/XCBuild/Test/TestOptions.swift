@@ -2,11 +2,14 @@ import Foundation
 
 /// Options for xcodebuild's build & test actions:
 public struct TestOptions {
-    // MARK: - Init
-    public init() {}
+    public let scheme: String // -scheme
+    public let project: String // -project [sub-type: path]
+    public let destination: Destination // -destination
     
-    // MARK: - Properties
-    public var scheme: String? // -scheme
-    public var project: String? // -project [sub-type: path]
-    public var destination: Destination? // -destination
+    public init(scheme: String, project: String, destination: Destination) {
+        self.scheme = scheme
+        self.project = project
+        self.destination = destination
+    }
+    
 }

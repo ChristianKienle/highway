@@ -10,7 +10,32 @@ import Foundation
 
 //: # Implementing these protocols will generate code in files named `<Protocol>.generated.swift`
 
-//: Regenerate by  running /Applications/Sourcery.app/Contents/MacOS/Sourcery --templates <#PROJECT_ROOT#>🤖sources/builder/Sources/<0001f9d9><200d>♂<fe0f> --output <#PROJECT_ROOT#>🤖/🤖sources/builder/Sources/<0001f9d9><200d>♂<fe0f> --sources <#PROJECT_ROOT#>🤖/🤖sources/builder
+/*: Generate code with 🧙‍♂️
+ 
+ // ## Mocks
+ 
+ /Applications/Sourcery.app/Contents/MacOS/Sourcery\
+    --templates ./🤖sources/builder/Sources/🧙‍♂️/Mocks\
+    --output ./🤖sources/builder/Sources/🧙‍♂️/Mocks\
+    --sources ./🤖sources/builder\
+ 
+ // to edit template
+ 
+ atom .🤖sources/builder/🧙‍♂️/Mocks/AutoMockable.stencil
+ 
+ 
+ // ## Protocols
+ 
+ /Applications/Sourcery.app/Contents/MacOS/Sourcery\
+     --templates ./🤖sources/builder/Sources/🧙‍♂️/AutoProtocols\
+     --output ./🤖sources/builder/Sources/🧙‍♂️/AutoProtocols\
+     --sources ./🤖sources/builder\
+
+ // to edit template
+ 
+ atom .🤖sources/builder/🧙‍♂️/AutoProtocols/AutoGenerateProtocol.stencil
+ 
+ :*/
 
 //: To be able to create a mock via sourcery
 //: usage: Extend any protocol with this and a mock will be created

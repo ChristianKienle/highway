@@ -10,12 +10,12 @@ import UIKit
 import AppKit
 #endif
 
-import 
+import XCBuild
 
 {% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
-    var {% call swiftifyMethodName method.selectorName %}ThrowableError: Error?
+    public  var {% call swiftifyMethodName method.selectorName %}ThrowableError: Error?
 {% endmacro %}
 
 {% macro methodThrowableErrorUsage method %}
@@ -37,7 +37,7 @@ import
 {% macro methodClosureName method %}{% call swiftifyMethodName method.selectorName %}Closure{% endmacro %}
 
 {% macro methodClosureDeclaration method %}
-    var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{{ method.returnTypeName }}{% endif %})? = nil
+    public var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{{ method.returnTypeName }}{% endif %})? = nil
 {% endmacro %}
 
 {% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
@@ -74,28 +74,28 @@ import
         {% call methodThrowableErrorDeclaration method %}
     {% endif %}
     {% if not method.isInitializer %}
-    var {% call swiftifyMethodName method.selectorName %}CallsCount = 0
-    var {% call swiftifyMethodName method.selectorName %}Called: Bool {
+    public var {% call swiftifyMethodName method.selectorName %}CallsCount = 0
+    public var {% call swiftifyMethodName method.selectorName %}Called: Bool {
         return {% call swiftifyMethodName method.selectorName %}CallsCount > 0
     }
     {% endif %}
     {% if method.parameters.count == 1 %}
-    var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {% if param.isClosure %}({% endif %}{{ param.typeName.unwrappedTypeName }}{% if param.isClosure %}){% endif %}?{% endfor %}
+    public var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {% if param.isClosure %}({% endif %}{{ param.typeName.unwrappedTypeName }}{% if param.isClosure %}){% endif %}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
-    var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
+    public var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}?
+    public var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}?
     {% endif %}
     {% call methodClosureDeclaration method %}
 
     {% if method.isInitializer %}
-    required {{ method.name }}{%if method.throws %} throws{% endif %} {
+    public required {{ method.name }}{%if method.throws %} throws{% endif %} {
         {% call methodReceivedParameters method %}
         {%if method.throws %} try? {%endif%}{% call methodClosureName method %}?({% call methodClosureCallParameters method %})
     }
     {% else %}
-    func {{ method.name }}{% if method.throws %} throws{% endif %}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
+    public func {{ method.name }}{% if method.throws %} throws{% endif %}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
       {% if method.throws %}
 
       {% call methodThrowableErrorUsage method %}
@@ -140,15 +140,15 @@ import
 {% endmacro %}
 
 {% macro mockOptionalVariable variable %}
-    var {% call mockedVariableName variable %}: {{ variable.typeName }}
+    public var {% call mockedVariableName variable %}: {{ variable.typeName }}
 {% endmacro %}
 
 {% macro mockNonOptionalArrayOrDictionaryVariable variable %}
-    var {% call mockedVariableName variable %}: {{ variable.typeName }} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
+    public var {% call mockedVariableName variable %}: {{ variable.typeName }} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
 {% endmacro %}
 
 {% macro mockNonOptionalVariable variable %}
-    var {% call mockedVariableName variable %}: {{ variable.typeName }} {
+    public var {% call mockedVariableName variable %}: {{ variable.typeName }} {
         get { return {% call underlyingMockedVariableName variable %} }
         set(value) { {% call underlyingMockedVariableName variable %} = value }
     }
@@ -169,7 +169,10 @@ import
 
 // MARK: - {{ type.name }}Mock
 
-class {{ type.name }}Mock: {{ type.name }} {
+public class {{ type.name }}Mock: {{ type.name }} {
+
+    public init() {}
+
 {% for variable in type.allVariables|!definedInExtension %}
     {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
 {% endfor %}

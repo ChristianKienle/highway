@@ -7,6 +7,7 @@ import HighwayCore
 import Deliver
 import TestKit
 import Keychain
+import SourceryMocks
 
 final class XCBuildTests: XCTestCase {
     // MARK: - XCTest
@@ -77,7 +78,7 @@ final class XCBuildTests: XCTestCase {
         let projectRoot = fixturesDir.appendingPathComponent("highwayiostest_objc")
         let projectUrl = projectRoot.appendingPathComponent("highwayiostest.xcodeproj")
 
-        var options = TestOptions()
+        let options = TestOptionsProtocolMock()
         options.project = projectUrl.path
         options.destination = Destination.simulator(.iOS, name: "iPhone 7", os: .latest, id: nil)
         options.scheme = "highwayiostest"

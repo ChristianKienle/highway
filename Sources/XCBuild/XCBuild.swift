@@ -58,7 +58,7 @@ public final class XCBuild {
     
     // MARK: Testing
     @discardableResult
-    public func buildAndTest(using options: TestOptions) throws -> TestReport {
+    public func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
         let xcbuild = try _buildTestTask(using: options).dematerialize()
         
         if let xcpretty = system.task(named: "xcpretty").value {
@@ -73,7 +73,7 @@ public final class XCBuild {
         return TestReport()
     }
     
-    private func _buildTestTask(using options: TestOptions) -> Result<Task, TaskCreationError> {
+    private func _buildTestTask(using options: TestOptionsProtocol) -> Result<Task, TaskCreationError> {
         let result = _xcodebuild()
         result.value?.arguments += options.arguments
         return result
@@ -129,7 +129,7 @@ fileprivate extension ExportArchiveOptions {
     }
 }
 
-fileprivate extension TestOptions {
+fileprivate extension TestOptionsProtocol {
     
     // sourcery:skipProtocol
     var arguments: Arguments {

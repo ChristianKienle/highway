@@ -19,7 +19,7 @@ public struct PathEnvironmentParser {
     // MARK: - Init
     public init(value: String, currentDirectoryUrl: Absolute) {
         let paths = value.components(separatedBy: ":")
-        self.urls = paths.flatMap { path in
+        self.urls = paths.compactMap { path in
             guard path != "" else { return nil }
             guard path != "." else { return currentDirectoryUrl }
             

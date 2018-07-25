@@ -102,7 +102,7 @@ public class Parser<O> {
 
 extension Option {
     public func usage(padding: Int) -> String {
-        let ws = String(repeating: " ", count: padding - identifier.characters.count)
+        let ws = String(repeating: " ", count: padding - identifier.count)
         return "\(identifier)\(ws)\(displayableDescription)"
     }
 }

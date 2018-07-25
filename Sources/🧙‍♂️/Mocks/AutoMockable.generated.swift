@@ -13,7 +13,7 @@ import UIKit
 import AppKit
 #endif
 
-import 
+import XCBuild
 
 
 
@@ -31,18 +31,21 @@ import
 
 // MARK: - TestOptionsProtocolMock
 
-class TestOptionsProtocolMock: TestOptionsProtocol {
-    var scheme: String {
+public class TestOptionsProtocolMock: TestOptionsProtocol {
+
+    public init() {}
+
+    public var scheme: String {
         get { return underlyingScheme }
         set(value) { underlyingScheme = value }
     }
     var underlyingScheme: String = "AutoMockable filled value"
-    var project: String {
+    public var project: String {
         get { return underlyingProject }
         set(value) { underlyingProject = value }
     }
     var underlyingProject: String = "AutoMockable filled value"
-    var destination: Destination {
+    public var destination: Destination {
         get { return underlyingDestination }
         set(value) { underlyingDestination = value }
     }

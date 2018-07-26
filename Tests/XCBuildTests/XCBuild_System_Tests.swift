@@ -1,11 +1,10 @@
 import XCTest
 import XCBuild
-import FileSystem
+import ZFile
 import Url
 import HighwayCore
 @testable import Task
 import Deliver
-import TestKit
 import Keychain
 import SourceryMocks
 
@@ -33,7 +32,8 @@ final class XCBuildTests: XCTestCase {
     // MARK: - Helper
     let fixturesDir = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("Fixtures")
     let system = LocalSystem.local()
-    let fs = LocalFileSystem()
+    let fs = FileSystemProtocolMock()
+    
     var credentials: Credentials = Credentials(username: "", password: "")
     
     struct Credentials { let username: String; let password: String }
@@ -83,7 +83,7 @@ final class XCBuildTests: XCTestCase {
         options.destination = Destination.simulator(.iOS, name: "iPhone 7", os: .latest, id: nil)
         options.scheme = "highwayiostest"
         
-        let xcbuild = XCBuild(system: system, fileSystem: LocalFileSystem())
+        let xcbuild = XCBuild(system: system, fileSystem: fs)
         let result = try xcbuild.buildAndTest(using: options)
         print(result)
     }
@@ -93,18 +93,20 @@ final class XCBuildTests: XCTestCase {
         try incrementBuildNumber(plistUrl: infoPlistUrl)
         let projectUrl = projectRoot.appendingPathComponent("highwayiostest.xcodeproj")
         
-        var options = ArchiveOptions()
-        options.scheme = "highwayiostest"
-        options.project = projectUrl.path
-        options.destination = Destination.device(.iOS, name: nil, isGeneric: true, id: nil)
-        options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive").path
+        var options = ArchiveOptions(
+            scheme: "highwayiostest",
+            project: "mock highway project",
+            destination: Destination.device(.iOS, name: nil, isGeneric: true, id: nil),
+            archivePath: "Mock archive path"
+        )
         
         let build = XCBuild(system: system, fileSystem: fs)
         try build.archive(using: options)
         
-        var exportArchiveOptions = ExportArchiveOptions()
-        exportArchiveOptions.archivePath = options.archivePath
-        exportArchiveOptions.exportPath = try fs.uniqueTemporaryDirectoryUrl().path
+        var exportArchiveOptions = ExportArchiveOptions(
+            archivePath: options.archivePath,
+            exportPath: "mock export path"
+        )
         
         var exportOptions = ExportOptions()
         exportOptions.method = .appStore
@@ -114,7 +116,7 @@ final class XCBuildTests: XCTestCase {
         profiles.addProfile(.named("highwayiostest Prod Profile"),
                             forBundleIdentifier: "de.christian-kienle.highway.e2e.ios")
         exportOptions.provisioningProfiles = profiles
-        let plist = try Plist.plist(byWriting: exportOptions, to: fs)
+        let plist = try PlistFactory.plist(byWriting: exportOptions, to: fs)
         exportArchiveOptions.exportOptionsPlist = plist
         let export = try build.export(using: exportArchiveOptions)
         print("ipaUrl: \(export.ipaUrl)")
@@ -129,10 +131,10 @@ final class XCBuildTests: XCTestCase {
         try incrementBuildNumber(plistUrl: infoPlistUrl)
         let projectUrl = projectRoot.appendingPathComponent("highwayiostest.xcodeproj")
         
-        var options = ArchiveOptions()
-        options.scheme = "highwayiostest"
-        options.project = projectUrl.path
-        options.destination = Destination.device(.iOS, name: nil, isGeneric: true, id: nil)
+        var options = ArchiveOptions(
+            scheme: "highwayiostest",
+            project: projectUrl.path,
+            destination: Destinationpr,
         options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive").path
         
         let build = XCBuild(system: system, fileSystem: fs)
@@ -148,7 +150,7 @@ final class XCBuildTests: XCTestCase {
             .appendingPathComponent("Fixtures")
             .appendingPathComponent("highwayiostest_export.plist"))
         
-        exportArchiveOptions.exportOptionsPlist = try? Plist.plist(byReading: plistUrl, in: fs)
+        exportArchiveOptions.exportOptionsPlist = try? PlistFactory.plist(byReading: plistUrl, in: fs)
         
         let export = try build.export(using: exportArchiveOptions)
         print("ipaUrl: \(export.ipaUrl)")

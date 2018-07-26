@@ -1,5 +1,5 @@
 import HighwayCore
-import FileSystem
+import ZFile
 import Url
 import Git
 
@@ -10,7 +10,7 @@ import Git
 ///     the repo. 
 public final class Bootstraper {
     // MARK: - Init
-    public init(homeDirectory: Absolute, configuration: HomeBundle.Configuration, git: GitTool, context: Context) {
+    public init(homeDirectory: FolderProtocol = FileSystem().homeFolder, configuration: HomeBundle.Configuration, git: GitTool, context: Context) {
         self.homeDirectory = homeDirectory
         self.configuration = configuration
         self.git = git
@@ -18,16 +18,14 @@ public final class Bootstraper {
     }
     
     // MARK: - Properties
-    public let homeDirectory: Absolute
+    public let homeDirectory: FolderProtocol
     public let configuration: HomeBundle.Configuration
     public let git: GitTool
     public let context: Context
     
     public func requestHomeBundle() throws -> HomeBundle {
         let fs = context.fileSystem
-        if fs.file(at: homeDirectory).isExistingFile == false {
-            try fs.createDirectory(at: homeDirectory)
-        }
+    
         let bundle = try HomeBundle(url: homeDirectory, fileSystem: fs)
         if bundle.missingComponents().contains(.clone) {
             let localCloneUrl = bundle.localCloneUrl

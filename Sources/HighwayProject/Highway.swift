@@ -1,5 +1,5 @@
 import Foundation
-import FileSystem
+import ZFile
 import XCBuild
 import Task
 import HighwayCore
@@ -9,15 +9,15 @@ import POSIX
 import Git
 
 open class Highway<T: HighwayType>: _Highway<T> {
-    public let fileSystem: FileSystem = LocalFileSystem()
+    public let fileSystem: FileSystemProtocol = FileSystem()
     public let context = Context.local()
     public let cwd = abscwd()
     public let system = LocalSystem.local()
-    public let ui: UI = Terminal.shared
+    public let ui: UIProtocol = Terminal.shared
     public lazy var git: GitTool = {
-        return _GitTool(system: system)
+        return GitTool(system: system)
     }()
-    public lazy var deliver: _Deliver = {
+    public lazy var deliver: Deliver.Local = {
         return Deliver.Local(altool: Altool(system: system, fileSystem: fileSystem))
     }()
     public lazy var xcbuild: XCBuild = {

@@ -1,68 +1,57 @@
 import Foundation
-import FileSystem
+import ZFile
 import Result
 import Terminal
 
 public final class LocalSystem {
     // MARK: - Properties
-    private let executor: TaskExecutor
+    private let executor: TaskExecutorProtocol
     var executableProvider: ExecutableProvider
-    private let fileSystem: FileSystem
-    
+    private let fileSystem: FileSystemProtocol
+
     // MARK: - Init
-    public init(executor: TaskExecutor, executableProvider: ExecutableProvider, fileSystem: FileSystem) {
+    public init(executor: TaskExecutorProtocol, executableProvider: ExecutableProvider, fileSystem: FileSystemProtocol) {
         self.executor = executor
         self.executableProvider = executableProvider
         self.fileSystem = fileSystem
     }
-    
+
     /// Local System
     public class func local() -> LocalSystem {
         return LocalSystem(executor: SystemExecutor(ui: Terminal.shared),
                            executableProvider: SystemExecutableProvider.local(),
-                           fileSystem: LocalFileSystem())
+                           fileSystem: FileSystem())
     }
 }
 
-extension LocalSystem: System {
+extension LocalSystem: SystemProtocol {
     // MARK: - Working with the System
-    public func task(named name: String) -> Result<Task, TaskCreationError> {
-        guard let url = executableProvider.urlForExecuable(name) else {
-            return .failure(.executableNotFound(commandName: name))
-        }
-        return .success(Task(executableUrl: url))
-    }
-    
-    public func execute(_ task: Task) -> Result<Void, ExecutionError> {
-        return launch(task, wait: true)
-    }
-    
-    public func launch(_ task: Task, wait: Bool) -> Result<Void, ExecutionError> {
-        guard task.currentDirectoryExistsIfSet(in: fileSystem) else {
-            return .failure(.currentDirectoryDoesNotExist)
-        }
-        executor.launch(task: task, wait: wait)
-        guard wait else { return .success(()) }
+    public func task(named name: String) throws -> Task {
         
+        return Task(executable: try executableProvider.executable(with: name))
+    }
+
+    public func execute(_ task: Task) throws -> Bool{
+        return try launch(task, wait: true)
+    }
+
+    public func launch(_ task: Task, wait: Bool) throws -> Bool {
+       
+        try executor.launch(task: task, wait: wait)
+        
+        guard wait else { return true }
+
         let state = task.state
         switch state {
         case .waiting, .executing:
-            return .failure(.invalidStateAfterExecuting)
+            throw ExecutionError.invalidStateAfterExecuting
         case .terminated(let termination):
             guard termination.isSuccess else {
-                return .failure(.taskDidExitWithFailure(termination))
+                throw ExecutionError.taskDidExitWithFailure(termination)
             }
-            return .success(())
-        }
-
-    }
-}
-
-private extension Task {
-    func currentDirectoryExistsIfSet(`in` fileSystem: FileSystem) -> Bool {
-        guard let currentDirectoryUrl = currentDirectoryUrl else {
             return true
         }
-        return fileSystem.directory(at: currentDirectoryUrl).isExistingDirectory
+
     }
+    
 }

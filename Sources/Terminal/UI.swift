@@ -1,6 +1,7 @@
 import Foundation
+import SourceryAutoProtocols
 
-public protocol _UI {
+public protocol UIProtocol: AutoMockable {
     func message(_ text: String)
     func success(_ text: String)
 

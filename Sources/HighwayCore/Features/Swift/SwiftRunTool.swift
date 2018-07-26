@@ -1,5 +1,5 @@
 import Foundation
-import FileSystem
+import ZFile
 import Url
 import Task
 import Arguments
@@ -20,7 +20,7 @@ public extension SwiftRun {
             task.currentDirectoryUrl = options.currentWorkingDirectory
             task.enableReadableOutputDataCapturing()
             
-            context.executor.execute(task: task)
+            try context.executor.execute(task: task)
             
             try task.throwIfNotSuccess()
             let output = task.capturedOutputString
@@ -36,8 +36,8 @@ public extension SwiftRun {
     public struct Options {
         public var executable: String? = nil // swift run $executable
         public var arguments: Arguments = .empty
-        public var packageUrl: Absolute? = nil // --package-path
-        public var currentWorkingDirectory: Absolute = abscwd()
+        public var packageUrl: FolderProtocol? = nil // --package-path
+        public var currentWorkingDirectory: FolderProtocol = FileSystem().currentFolder
         public init() {}
         var taskArguments: Arguments {
             var result = Arguments()

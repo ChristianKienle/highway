@@ -1,6 +1,7 @@
 import Foundation
 import Url
-import FileSystem
+import ZFile
+import SourceryAutoProtocols
 
 /**
  Represents an invocation of xcodebuild with "-exportArchive". From the xcodebuild manpage:
@@ -21,9 +22,18 @@ import FileSystem
             -exportOptionsPlist path/to/plist.plist
  ````
 */
-public struct ExportArchiveOptions {
-    // MARK: - Init
-    public init() {}
+
+public protocol ExportArchiveOptionsProtocol: AutoMockable {
+    
+    /// sourcery:inline:ExportArchiveOptions.AutoGenerateProtocol
+    var archivePath: FolderProtocol { get }
+    var exportPath: String { get }
+    var exportOptionsPlist: PlistFactory<ExportOptions> { get }
+   
+    /// sourcery:end
+}
+
+public struct ExportArchiveOptions: ExportArchiveOptionsProtocol, AutoGenerateProtocol {
     
     // MARK: - Properties
     
@@ -31,15 +41,23 @@ public struct ExportArchiveOptions {
     // Type: path
     // Notes: Directory at archivePath already exist. Should be equal to
     //        the directory archivePath from the archive options.
-    public var archivePath: String?
+    public let archivePath: FolderProtocol
     
     // Option: -exportPath
     // Type: path
     // Notes: Directory at exportPath must not exist already.
-    public var exportPath: String? //
+    public let exportPath: String //
     
     // Option: -exportOptionsPlist
     // Type: path
     // Notes: Must exist and be a valid plist file
-    public var exportOptionsPlist: Plist<ExportOptions>?
+    public let exportOptionsPlist: PlistFactory<ExportOptions>
+    
+    // MARK: - Init
+    public init(archivePath: FolderProtocol, exportPath: String, exportOptionsPlist: PlistFactory<ExportOptions>) {
+        self.archivePath = archivePath
+        self.exportPath = exportPath
+        self.exportOptionsPlist = exportOptionsPlist
+    }
+   
 }

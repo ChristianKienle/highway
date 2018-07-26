@@ -1,22 +1,34 @@
 import Foundation
 import Url
-import FileSystem
+import ZFile
+import SourceryAutoProtocols
 
-public struct Export {
+public protocol ExportProtocol: AutoMockable {
+    
+    /// sourcery:inline:Export.AutoGenerateProtocol
+    var folder: FolderProtocol { get }
+    var ipa: FileProtocol { get }
+    /// sourcery:end
+}
+
+public struct Export: ExportProtocol, AutoGenerateProtocol {
     // MARK: - Properties
-    public let url: Absolute
-    public let ipaUrl: Absolute
+    public let folder: FolderProtocol
+    public let ipa: FileProtocol
     
     // MARK: - Init
-    init(url: Absolute, fileSystem: FileSystem) throws {
-        self.url = url
-        let rootDir = fileSystem.directory(at: url)
-        guard rootDir.isExistingDirectory else {
-            throw "File at \(rootDir) is not a directory and thus no valid export."
+    init(folder: FolderProtocol, fileSystem: FileSystemProtocol) throws {
+        self.folder = folder
+        let ipa = folder.makeFileSequence(recursive: false, includeHidden: false).first  { $0.extension == "ipa" }
+        
+        guard let result = ipa else {
+            throw Error.noIpaFound(inFolder: folder)
         }
-        guard let ipaUrl = (try fileSystem.directoryContents(at: url).first { $0.url.pathExtension == "ipa" }) else {
-            throw "No ipa found"
-        }
-        self.ipaUrl = ipaUrl
+        
+        self.ipa = result
+    }
+    
+    enum Error: Swift.Error {
+        case noIpaFound(inFolder: FolderProtocol)
     }
 }

@@ -1,6 +1,6 @@
 import HighwayCore
 import Foundation
-import FileSystem
+import ZFile
 import Terminal
 import HighwayCore
 import Url
@@ -17,7 +17,7 @@ public class HighwayProjectTool {
     public let context: Context
     public let compiler: SwiftBuildSystem
     public let bundle: HighwayBundle
-    private var fileSystem: FileSystem { return context.fileSystem }
+    private var fileSystem: FileSystemProtocol { return context.fileSystem }
     
     // MARK: - Init
     public init(compiler: SwiftBuildSystem, bundle: HighwayBundle, context: Context) {
@@ -41,7 +41,7 @@ public class HighwayProjectTool {
     
     public func build() throws -> BuildResult {
         let artifact = try compiler.compile(bundle: bundle)
-        let url = bundle.executableUrl(swiftBinUrl: artifact.binUrl)
+        let url = try bundle.executableUrl(swiftBinUrl: artifact.binUrl)
         return BuildResult(executableUrl: url, artifact: artifact)
     }
     
@@ -49,32 +49,20 @@ public class HighwayProjectTool {
         let buildResult = try build()
         let executableUrl = buildResult.executableUrl
         
-        try fileSystem.assertItem(at: executableUrl, is: .file)
-        
-        let _highway = Task(executableUrl: executableUrl, arguments: arguments, currentDirectoryUrl: bundle.url.parent)
-        Terminal.shared.log("Launching: \(_highway.executableUrl)")
+        let _highway = Task(executable: executableUrl,
+                            arguments: arguments,
+                            currentDirectoryUrl: try bundle.url.parentFolder()
+        )
+        Terminal.shared.log("Launching: \(_highway.executable)")
 
         _highway.enableReadableOutputDataCapturing()
 
-        context.executor.execute(task: _highway)
+        try context.executor.execute(task: _highway)
         
         try _highway.throwIfNotSuccess()
         
         let output = _highway.capturedOutputData ?? Data()
         return BuildThenExecuteResult(buildResult: buildResult, outputData: output)
-    }
-}
-
-public extension HighwayProjectTool {
-    public struct BuildResult {
-        // MARK: - Init
-        public init(executableUrl: Absolute, artifact: SwiftBuildSystem.Artifact) {
-            self.executableUrl = executableUrl
-            self.artifact = artifact
-        }
-        // MARK: - Properties
-        public let executableUrl: Absolute
-        public let artifact: SwiftBuildSystem.Artifact
     }
 }
 

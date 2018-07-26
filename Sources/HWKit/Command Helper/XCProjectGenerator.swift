@@ -1,5 +1,5 @@
 import HighwayCore
-import FileSystem
+import ZFile
 import Url
 
 // MARK: - Types
@@ -17,23 +17,14 @@ public class XCProjectGenerator {
     public let bundle: HighwayBundle
     
     // MARK: - Command
-    public func generate() throws -> Result {
+    public func generate() throws -> FolderProtocol {
         let swift_package = SwiftPackageTool(context: context)
         let xcconfigName = bundle.configuration.xcconfigName
-        let projectUrl = bundle.xcodeprojectUrl
+        let projectUrl = try bundle.xcodeprojectUrl()
         let options = SwiftPackageTool.XCProjectOptions(swiftProjectDirectory: bundle.url,
                                                         xcprojectDestinationDirectory: projectUrl,
                                                         xcconfigFileName: xcconfigName)
         try swift_package.generateXcodeproj(with: options)
-        return Result(projectUrl: projectUrl)
-    }
-}
-
-public extension XCProjectGenerator {
-    public struct Result {
-        init(projectUrl: Absolute) {
-            openCommand = "open \(projectUrl.path)"
-        }
-        public let openCommand: String
+        return projectUrl
     }
 }

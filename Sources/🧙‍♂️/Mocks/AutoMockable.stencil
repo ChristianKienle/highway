@@ -11,6 +11,16 @@ import AppKit
 #endif
 
 import XCBuild
+import ZFile
+import ZFile
+import Deliver
+import Task
+import Git
+import Keychain
+import SourceryAutoProtocols
+import Terminal
+import HighwayCore
+import HWKit
 
 {% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 
@@ -123,6 +133,7 @@ import XCBuild
                {% if method.throws %}
                  throw error
               {% elif method.returnTypeName.name == "Bool" %}
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
               return false
               {% else %}
               os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")

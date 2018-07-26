@@ -1,5 +1,6 @@
 import Foundation
 import Result
+import SourceryAutoProtocols
 
 /// A `System` is able to do two things:
 /// 1. Create new *executable* Tasks. A System can do that because it
@@ -8,15 +9,18 @@ import Result
 /// Everytime you would write a class that needs to create and execute Tasks
 /// you no longer have to initialize it with both but rather use the System
 /// class for that. It is just a little bit of convenience.
-public protocol System {
-    func task(named name: String) -> Result<Task, TaskCreationError>
-    func execute(_ task: Task) -> Result<Void, ExecutionError>
-    func launch(_ task: Task, wait: Bool) -> Result<Void, ExecutionError>
+public protocol SystemProtocol: AutoMockable {
+    @discardableResult
+    func task(named name: String) throws -> Task
+    @discardableResult
+    func execute(_ task: Task) throws -> Bool
+    @discardableResult
+    func launch(_ task: Task, wait: Bool) throws -> Bool
 }
 
-public extension System {
-    func execute(_ task: Task) -> Result<Void, ExecutionError> {
-        return launch(task, wait: true)
+public extension SystemProtocol {
+    func execute(_ task: Task) throws -> Bool {
+        return try launch(task, wait: true)
     }
 }
 

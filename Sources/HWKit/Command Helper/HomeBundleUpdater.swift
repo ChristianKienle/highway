@@ -1,6 +1,6 @@
 import HighwayCore
 import Terminal
-import FileSystem
+import ZFile
 import Url
 import Task
 import Git
@@ -26,7 +26,7 @@ public final class HomeBundleUpdater {
     public func update() throws {
         Terminal.shared.log("Updating highway\(String.elli)")
 
-        func __currentTag(at url: Absolute) throws -> String {
+        func __currentTag(at url: FolderProtocol) throws -> String {
             return try git.currentTag(at: url)
         }
         
@@ -35,7 +35,8 @@ public final class HomeBundleUpdater {
         let bumpInfo: String
         let task = try Task(commandName: "git", arguments: ["fetch", "--quiet"], currentDirectoryUrl: homeBundle.localCloneUrl, provider: context.executableProvider)
         task.enableReadableOutputDataCapturing()
-        context.executor.execute(task: task)
+        
+        try context.executor.execute(task: task)
         
         guard task.state.successfullyFinished else {
             let error = "Failed to update highway: \(task.state.debugDescription)"

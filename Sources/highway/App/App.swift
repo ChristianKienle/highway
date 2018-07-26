@@ -2,7 +2,7 @@ import Foundation
 import HighwayCore
 import HWKit
 import Terminal
-import FileSystem
+import ZFile
 import Arguments
 import HighwayProject
 import POSIX
@@ -35,17 +35,16 @@ final class App: Highway<AppHighway> {
     @discardableResult
     private func __ensureValidHomeBundle() throws -> HomeBundle {
         let config = HomeBundle.Configuration.standard
-        let homeDir = try fileSystem.homeDirectoryUrl()
-        let highwayHomeDirectory = homeDir.appending(config.directoryName)
+        let homeDir = fileSystem.currentFolder
+        let highwayHomeDirectory = try homeDir.createSubfolderIfNeeded(withName: config.directoryName)
         let bootstrap = Bootstraper(homeDirectory: highwayHomeDirectory, configuration: config, git: git, context: context)
         return try bootstrap.requestHomeBundle()
     }
     
     // MARK: - Helper
     private func __currentHighwayBundle() -> HighwayBundle? {
-        let parentUrl = abscwd()
         return try? HighwayBundle(fileSystem: fileSystem,
-                                  parentUrl: parentUrl,
+                                  parentUrl: FileSystem().currentFolder,
                                   configuration: .standard)
     }
     
@@ -67,7 +66,11 @@ final class App: Highway<AppHighway> {
     // MARK: - Custom Highways
     private func _init() throws {
         try self.__ensureValidHomeBundle()
-        let projectBundle = try HighwayBundle(creatingInParent: abscwd(), fileSystem: fileSystem, configuration: .standard, homeBundleConfiguration: .standard)
+        let projectBundle = try HighwayBundle(creatingInParent: FileSystem().currentFolder,
+                                              fileSystem: fileSystem,
+                                              configuration: .standard,
+                                              homeConfig: .standard
+        )
         ui.message("Created at: \(projectBundle.url). Try 'highway generate'.")
     }
     
@@ -81,7 +84,7 @@ final class App: Highway<AppHighway> {
         }
         let project = try XCProjectGenerator(context: context, bundle: bundle).generate()
         ui.success("DONE. Try:")
-        ui.success("  " + project.openCommand)
+        ui.success("  " + project.name)
     }
     
     private func _update_highway() throws -> HomeBundle {
@@ -95,17 +98,14 @@ final class App: Highway<AppHighway> {
     }
     
     private func _clean() throws  {
-        let config = HighwayBundle.Configuration.standard
+        let config = Configuration.standard
         ui.message("Cleaning \(config.directoryName)\(String.elli)")
         guard let bundle = __currentHighwayBundle() else {
             ui.message("Nothing to do")
             return
         }
-        let result = try bundle.clean()
+        try bundle.clean()
         ui.success("DONE")
-        let lines = result.deletedFiles.map { "Deleted '\($0.path)'" }
-        let list = List(lines: lines)
-        ui.print(list)
         ui.print(String.newline)
     }
     

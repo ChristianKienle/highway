@@ -20,7 +20,6 @@ let package = Package(
         .library(name: "HWKit", targets: ["HWKit"]),
         .library(name: "Keychain", targets: ["Keychain"]),
         .library(name: "Terminal", targets: ["Terminal"]),
-        .library(name: "TestKit", targets: ["TestKit"]),
         .library(name: "SourceryAutoProtocols", targets: ["SourceryAutoProtocols"]),
         .library(name: "SourceryMocks", targets: ["SourceryMocks"]),
         .library(name: "All",
@@ -38,7 +37,7 @@ let package = Package(
                    "HighwayCore",
                    "HWKit",
                    "Terminal",
-                   "TestKit", "Keychain", "Git", "SourceryAutoProtocols", "SourceryMocks"]
+                   "SourceryMocks", "Keychain", "Git", "SourceryAutoProtocols", "SourceryMocks"]
         )
     ],
     targets: [
@@ -83,23 +82,22 @@ let package = Package(
         // Arguments: A Task has Arguments.
         // Terminal: We have to log
         .target(name: "Task", dependencies: ["Terminal", "Url", "ZFile", "Errors", "Result", "Arguments", "SourceryAutoProtocols"]),
-        .target(name: "TestKit", dependencies: ["Git", "POSIX", "HighwayCore", "Url", "Task", "SourceryAutoProtocols", "SourceryMocks"]),
 
         // Tests
         .testTarget(name: "DeliverTests", dependencies: ["ZFile", "Arguments"]),
         .testTarget(name: "POSIXTests", dependencies: ["POSIX", "Url"]),
-        .testTarget(name: "HighwayCoreTests", dependencies: ["HighwayCore", "TestKit", "Arguments"]),
-        .testTarget(name: "HWKitTests", dependencies: ["HWKit", "TestKit", "Arguments"]),
-        .testTarget(name: "TerminalTests", dependencies: ["Terminal", "TestKit"]),
+        .testTarget(name: "HighwayCoreTests", dependencies: ["HighwayCore", "SourceryMocks", "Arguments"]),
+        .testTarget(name: "HWKitTests", dependencies: ["HWKit", "SourceryMocks", "Arguments"]),
+        .testTarget(name: "TerminalTests", dependencies: ["Terminal", "SourceryMocks"]),
         
         // Deliver: We also test the delivery. FIXME: Should be done in another test.
         // Keychain: We use the keychain to access the iTunesConnect password for the system tests.
-        .testTarget(name: "XCBuildTests", dependencies: ["TestKit", "Deliver", "XCBuild", "Keychain", "HighwayCore", "TestKit"], exclude: ["Fixtures"]),
-        .testTarget(name: "ResultTests", dependencies: ["Result", "TestKit"]),
-        .testTarget(name: "TaskTests", dependencies: ["Task", "ZFile", "TestKit"]),
+        .testTarget(name: "XCBuildTests", dependencies: ["SourceryMocks", "Deliver", "XCBuild", "Keychain", "HighwayCore", "SourceryMocks"], exclude: ["Fixtures"]),
+        .testTarget(name: "ResultTests", dependencies: ["Result", "SourceryMocks"]),
+        .testTarget(name: "TaskTests", dependencies: ["Task", "ZFile", "SourceryMocks"]),
         .testTarget(name: "UrlTests", dependencies: ["Url"]),
         .testTarget(name: "ArgumentsTests", dependencies: ["Arguments"]),
-        .testTarget(name: "GitTests", dependencies: ["TestKit", "ZFile", "Url", "Git"]),
+        .testTarget(name: "GitTests", dependencies: ["SourceryMocks", "ZFile", "Url", "Git"]),
     ],
     swiftLanguageVersions: [4]
 )

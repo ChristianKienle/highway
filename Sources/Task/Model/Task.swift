@@ -1,29 +1,30 @@
 import Foundation
-import Url
+import ZFile
 import Arguments
 
 public class Task {
     // MARK: - Init
-    public convenience init(commandName: String, arguments: Arguments = .empty, currentDirectoryUrl: Absolute? = nil, provider: ExecutableProvider) throws {
-        guard let executableUrl = provider.urlForExecuable(commandName) else {
-            throw "Cannot create task named '\(commandName)': No executeable found."
-        }
-        self.init(executableUrl: executableUrl, arguments: arguments, currentDirectoryUrl: currentDirectoryUrl)
+    public convenience init(commandName: String, arguments: Arguments = .empty, currentDirectoryUrl: FolderProtocol? = nil, provider: ExecutableProvider) throws {
+       
+        self.init(executable: try provider.executable(with: commandName),
+                  arguments: arguments,
+                  currentDirectoryUrl: currentDirectoryUrl
+        )
     }
 
-    public init(executableUrl: Absolute, arguments: Arguments = .empty, currentDirectoryUrl: Absolute? = nil) {
-        self.executableUrl = executableUrl
+    public init(executable: FileProtocol, arguments: Arguments = .empty, currentDirectoryUrl: FolderProtocol? = nil) {
+        self.executable = executable
         self.state = .waiting
         self.arguments = arguments
         self.currentDirectoryUrl = currentDirectoryUrl
     }
 
     // MARK: - Properties
-    public var name: String { return executableUrl.lastPathComponent }
-    public var executableUrl: Absolute
+    public var name: String { return executable.name }
+    public var executable: FileProtocol
     public var arguments = Arguments.empty
     public var environment = [String : String]()
-    public var currentDirectoryUrl: Absolute?
+    public var currentDirectoryUrl: FolderProtocol?
     fileprivate var io = IO()
     public var input: Channel {
         get { return io.input }

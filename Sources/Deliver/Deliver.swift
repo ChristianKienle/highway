@@ -1,10 +1,17 @@
 import Foundation
+import ZFile
+import SourceryAutoProtocols
 import Url
 
-public protocol _Deliver {
-    func now(with options: Deliver.Options) throws
+public protocol DeliverProtocol: AutoMockable {
+    
+    /// sourcery:inline:Deliver.Local.AutoGenerateProtocol
+
+    func now(with options: Deliver.Options) throws -> Bool
+    /// sourcery:end
 }
-public final class Deliver {
+
+public final class Deliver: AutoGenerateProtocol {
     
 }
 
@@ -24,10 +31,10 @@ extension Deliver {
 }
 
 extension Deliver {
-    public final class Local: _Deliver {
-        public func now(with options: Deliver.Options) throws {
+    public final class Local: DeliverProtocol, AutoGenerateProtocol {
+        public func now(with options: Deliver.Options) throws -> Bool {
             let alOptions = Altool.Options(action: .upload, file: options.ipaUrl, type: options.platform, username: options.username, password: options.password, outputFormat: .normal)
-            try altool.execute(with: alOptions).assertSuccess()
+            return try altool.execute(with: alOptions)
         }
         
         public init(altool: Altool) {

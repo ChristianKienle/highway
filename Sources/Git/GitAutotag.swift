@@ -2,25 +2,26 @@ import Foundation
 import Url
 import Task
 import Arguments
+import ZFile
 
 public final class GitAutotag {
     // MARK: - Properties
-    public let system: System
+    public let system: SystemProtocol
     
     // MARK: - Init
-    public init(system: System) throws {
+    public init(system: SystemProtocol) throws {
         self.system = system
     }
     
     // MARK: - Tagging
     @discardableResult
-    public func autotag(at url: Absolute, dryRun: Bool = true) throws -> String {
+    public func autotag(at url: FolderProtocol, dryRun: Bool = true) throws -> String {
         let arguments = Arguments(dryRun ? ["-n"] : [])
-        let task = try system.task(named: "git-autotag").dematerialize()
+        let task = try system.task(named: "git-autotag")
         task.arguments = arguments
         task.currentDirectoryUrl = url
         task.enableReadableOutputDataCapturing()
-        try system.execute(task).dematerialize()
+        try system.execute(task)
         guard let rawTag = task.trimmedOutput else {
             throw "Failed to get current tag."
         }

@@ -2,11 +2,11 @@ import Foundation
 import Arguments
 import Terminal
 
-public final class SystemExecutor: TaskExecutor {
-    public var ui: UI
+public final class SystemExecutor: TaskExecutorProtocol {
+    public var ui: UIProtocol
     
     // MARK: - Init
-    public init(ui: UI) {
+    public init(ui: UIProtocol) {
         self.ui = ui
     }
    
@@ -39,7 +39,7 @@ internal extension Task {
     internal var toProcess: Process {
         let result = Process()
         result.arguments = arguments.all
-        result.launchPath = executableUrl.path
+        result.launchPath = executable.path
         if let currentDirectoryPath = currentDirectoryUrl?.path {
             result.currentDirectoryPath = currentDirectoryPath
         }

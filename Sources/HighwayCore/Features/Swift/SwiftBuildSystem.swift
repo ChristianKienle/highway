@@ -1,15 +1,16 @@
 import Foundation
-import FileSystem
+import ZFile
 import Url
 import Task
 import Arguments
 import POSIX
 
+
 public final class SwiftBuildSystem {
     // MARK: - Properties
     public let context: Context
     public var executableProvider: ExecutableProvider { return context.executableProvider }
-    public var fileSystem: FileSystem { return context.fileSystem }
+    public var fileSystem: FileSystemProtocol { return context.fileSystem }
     
     // MARK: - Init
     public init(context: Context = .local()) {
@@ -20,8 +21,9 @@ public final class SwiftBuildSystem {
     public func test() throws {
         let task = try Task(commandName: "swift", provider: executableProvider)
         task.arguments = ["test"]
-        task.currentDirectoryUrl = abscwd()
-        context.executor.execute(task: task)
+        task.currentDirectoryUrl = FileSystem().currentFolder
+        
+        try context.executor.execute(task: task)
         guard task.state.successfullyFinished else {
             throw "Test failed"
         }
@@ -57,7 +59,7 @@ public final class SwiftBuildSystem {
         let buildTask = plan.buildTask
         plan.buildTask.enableReadableOutputDataCapturing()
 
-        context.executor.execute(task: buildTask)
+        try context.executor.execute(task: buildTask)
         guard let rawBuildLog = buildTask.capturedOutputString else {
             throw "failed to convert build log data to string"
         }
@@ -66,7 +68,7 @@ public final class SwiftBuildSystem {
         let showPathTask = plan.showBinPathTask
         plan.showBinPathTask.enableReadableOutputDataCapturing()
         
-        context.executor.execute(task: showPathTask)
+        try context.executor.execute(task: showPathTask)
         try showPathTask.throwIfNotSuccess("failed to determine path to executable. swift returned non-0 exit code.")
         
         guard let rawPath = showPathTask.trimmedOutput else {
@@ -75,16 +77,14 @@ public final class SwiftBuildSystem {
         guard rawPath.isEmpty == false else {
             throw "bin path does not seem to be valid"
         }
-        let url = Absolute(rawPath)
-        try fileSystem.assertItem(at: url, is: .directory)
-        return Artifact(binUrl: url, buildOutput: rawBuildLog)
+      
+        return Artifact(binUrl: try Folder(path: rawPath), buildOutput: rawBuildLog)
     }
 }
 
 public extension SwiftBuildSystem {
     public struct Artifact {
-        public var binPath: String { return binUrl.path }
-        public let binUrl: Absolute
+        public let binUrl: FolderProtocol
         public let buildOutput: String
     }
 }
@@ -106,14 +106,14 @@ public extension SwiftBuildSystem {
 
 extension SwiftOptions {
     //--build-path
-    func task(fileSystem: FileSystem, executableProvider: ExecutableProvider) throws -> Task {
+    func task(fileSystem: FileSystemProtocol, executableProvider: ExecutableProvider) throws -> Task {
         let arguments = ["swift"] + _processArguments
         let task = try Task(commandName: "xcrun", provider: executableProvider)
         task.arguments = arguments
         task.currentDirectoryUrl = projectDirectory
         return task
     }
-    func showBinPathTask(fileSystem: FileSystem, executableProvider: ExecutableProvider) throws -> Task {
+    func showBinPathTask(fileSystem: FileSystemProtocol, executableProvider: ExecutableProvider) throws -> Task {
         let arguments = ["swift"] + _processArgumentsWithoutSettingVerbosity + ["--show-bin-path"]
         let task = try Task(commandName: "xcrun", provider: executableProvider)
         task.arguments = arguments

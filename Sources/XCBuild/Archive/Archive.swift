@@ -1,33 +1,35 @@
 import Foundation
 import Url
-import FileSystem
+import ZFile
+import SourceryAutoProtocols
 
-public struct Archive {
-    // MARK: - Properties
-    public let url: Absolute
-    public var archivePlist: [String: Any]
-    public var appUrl: Absolute
+
+public protocol ArchiveProtocol: AutoMockable {
+    
+    /// sourcery:inline:Archive.AutoGenerateProtocol
+    var archiveFolder: FolderProtocol { get }
+    var appFolder: FolderProtocol { get }
+    var plist: ArchivePlistProtocol { get }
+    /// sourcery:end
+    
+}
+
+public struct Archive: ArchiveProtocol, AutoGenerateProtocol {
+
+    public let archiveFolder: FolderProtocol
+    public let appFolder: FolderProtocol
+    public let plist: ArchivePlistProtocol
+    
     
     // MARK: - Init
-    init(url: Absolute, fileSystem: FileSystem) throws {
-        self.url = url
-        let rootDir = fileSystem.directory(at: url)
-        guard rootDir.isExistingDirectory else {
-            throw "File at \(rootDir) is not a directory and thus no valid xcarchive."
-        }
-        let infoPlistData = try rootDir.file(named: "Info.plist").data()
-        let rawPlist = try PropertyListSerialization.propertyList(from: infoPlistData, options: [], format: nil) as? [String : Any]
-        guard let archivePlist = rawPlist else {
-            throw "invalid"
-        }
-        self.archivePlist = archivePlist
-        guard let applicationProperties = archivePlist["ApplicationProperties"] as? [String:Any] else {
-            throw ""
-        }
-        guard let applicationPath = applicationProperties["ApplicationPath"] as? String else {
-            throw ""
-        }
-        appUrl = url.appending("Products").appending(applicationPath)
-        try fileSystem.assertItem(at: appUrl, is: .directory)
+    
+    init(archiveFolder: FolderProtocol, fileSystem: FileSystemProtocol) throws {
+        self.archiveFolder = archiveFolder
+        
+        let infoPlistData = try archiveFolder.file(named: "Info.plist").read()
+        
+        plist = try PropertyListDecoder().decode(ArchivePlist.self, from: infoPlistData)
+    
+        appFolder = try archiveFolder.subfolder(named: "Products")
     }
 }

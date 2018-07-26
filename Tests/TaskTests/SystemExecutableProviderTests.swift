@@ -1,6 +1,6 @@
 import XCTest
 import Task
-import FileSystem
+import ZFile
 import Url
 
 /// Tests the SystemExecutableProvider with a custom FileSystem

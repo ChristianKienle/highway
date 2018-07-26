@@ -1,5 +1,5 @@
 import Foundation
-import FileSystem
+import ZFile
 import Url
 import Task
 import Arguments
@@ -15,10 +15,14 @@ public final class Fastlane {
     }
     
     // MARK: - Executing Actions
-    public func action(named action: String, additionalArguments: Arguments = .empty, currentDirectoryUrl cwd: Absolute = abscwd()) throws {
+    public func action(named action: String,
+                       additionalArguments: Arguments = .empty,
+                       currentDirectoryUrl cwd: FolderProtocol = FileSystem().currentFolder
+    ) throws {
         let arguments = Arguments(action) + additionalArguments
         let task = try Task(commandName: "fastlane", arguments: arguments, currentDirectoryUrl: cwd, provider: context.executableProvider)
-        context.executor.execute(task: task)
+        try context.executor.execute(task: task)
+        
         guard task.state.successfullyFinished else {
             throw "fastlane failed."
         }

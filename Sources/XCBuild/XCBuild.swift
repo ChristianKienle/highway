@@ -1,6 +1,6 @@
 import Foundation
 import Task
-import FileSystem
+import ZFile
 import Url
 import Arguments
 import Result
@@ -11,11 +11,11 @@ import Result
 /// and finds generated files (ipas, ...). xcrun is also used throughout this class.
 public final class XCBuild {
     // MARK: - Properties
-    public let system: System
-    public let fileSystem: FileSystem
+    public let system: SystemProtocol
+    public let fileSystem: FileSystemProtocol
     
     // MARK: - Init
-    public init(system: System, fileSystem: FileSystem) {
+    public init(system: SystemProtocol, fileSystem: FileSystemProtocol) {
         self.system = system
         self.fileSystem = fileSystem
     }
@@ -23,66 +23,63 @@ public final class XCBuild {
     // MARK: - Archiving
     @discardableResult
     public func archive(using options: ArchiveOptions) throws -> Archive {
-        let task = try _archiveTask(using: options).dematerialize()
-        try system.execute(task).assertSuccess()
-        guard let archivePath = options.archivePath else {
-            throw "Archive failed. No archivePath set."
-        }
-        let archiveUrl = Absolute(archivePath)
+        try system.execute( try _archiveTask(using: options))
         
-        return try Archive(url: archiveUrl, fileSystem: fileSystem)
+        return try Archive(archiveFolder: try Folder(path: options.archivePath), fileSystem: fileSystem)
     }
     
-    private func _archiveTask(using options: ArchiveOptions) throws -> Result<Task, TaskCreationError> {
-        let result = _xcodebuild()
-        result.value?.arguments += options.arguments
+    private func _archiveTask(using options: ArchiveOptions) throws -> Task {
+        let result = try _xcodebuild()
+        result.arguments += options.arguments
         return result
     }
     
     // MARK: Exporting
     @discardableResult
     public func export(using options: ExportArchiveOptions) throws -> Export {
-        let task = try _exportTask(using: options).dematerialize()
-        try system.execute(task).assertSuccess()
-        guard let exportPath = options.exportPath else {
+        let task = try _exportTask(using: options)
+        guard try system.execute(task) else {
             throw "Export failed. No archivePath set."
         }
-        return try Export(url: Absolute(exportPath), fileSystem: fileSystem)
+        return try Export(folder: try Folder(path: options.exportPath), fileSystem: fileSystem)
     }
     
-    private func _exportTask(using options: ExportArchiveOptions) -> Result<Task, TaskCreationError> {
-        let result = _xcodebuild()
-        result.value?.arguments += options.arguments
+    private func _exportTask(using options: ExportArchiveOptions) throws -> Task {
+        let result = try _xcodebuild()
+        result.arguments += options.arguments
+        
         return result
     }
     
     // MARK: Testing
     @discardableResult
     public func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
-        let xcbuild = try _buildTestTask(using: options).dematerialize()
+        let xcbuild = try _buildTestTask(using: options)
         
-        if let xcpretty = system.task(named: "xcpretty").value {
+        do {
+            let xcpretty = try system.task(named: "xcpretty")
             xcbuild.output = .pipe()
             xcbuild.environment["NSUnbufferedIO"] = "YES" // otherwise xcpretty might not get everything
             xcpretty.input = xcbuild.output
-            try system.launch(xcbuild, wait: false).assertSuccess()
-            try system.execute(xcpretty).assertSuccess()
-        } else {
-            try system.execute(xcbuild).assertSuccess()
+            try system.launch(xcbuild, wait: false)
+            try system.execute(xcpretty)
+        } catch {
+            try system.execute(xcbuild)
         }
+        
         return TestReport()
     }
     
-    private func _buildTestTask(using options: TestOptionsProtocol) -> Result<Task, TaskCreationError> {
-        let result = _xcodebuild()
-        result.value?.arguments += options.arguments
+    private func _buildTestTask(using options: TestOptionsProtocol) throws -> Task {
+        let result = try _xcodebuild()
+        result.arguments += options.arguments
         return result
     }
     
     // MARK: Helper
-    private func _xcodebuild() -> Result<Task, TaskCreationError> {
-        let result = system.task(named: "xcrun")
-        result.value?.arguments = ["xcodebuild"]
+    private func _xcodebuild() throws -> Task {
+        let result = try system.task(named: "xcrun")
+        result.arguments = ["xcodebuild"]
         return result
     }
 }
@@ -108,11 +105,12 @@ private func _option(_ name: String, value: String?) -> XCodeBuildOption {
 }
 
 fileprivate extension ArchiveOptions {
+    // sourcery:skipProtocol
     var arguments: Arguments {
         var args = Arguments.empty
         args += _option("scheme", value: scheme)
         args += _option("project", value: project)
-        args += _option("destination", value: destination.map { "\($0.asString)" })
+        args += _option("destination", value: destination.asString)
         args += _option("archivePath", value: archivePath)
         args.append("archive")
         return args
@@ -120,10 +118,11 @@ fileprivate extension ArchiveOptions {
 }
 
 fileprivate extension ExportArchiveOptions {
+    // sourcery:skipProtocol
     var arguments: Arguments {
         var args = Arguments("-exportArchive")
-        args += _option("exportOptionsPlist", value: exportOptionsPlist?.url.path)
-        args += _option("archivePath", value: archivePath)
+        args += _option("exportOptionsPlist", value: exportOptionsPlist.generatedPlist.path)
+        args += _option("archivePath", value: archivePath.path)
         args += _option("exportPath", value: exportPath)
         return args
     }

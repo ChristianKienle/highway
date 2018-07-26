@@ -2,7 +2,7 @@ import XCTest
 import HWKit
 import HighwayCore
 import TestKit
-import FileSystem
+import ZFile
 import Url
 
 final class HighwayBundleCreatorTests: XCTestCase {

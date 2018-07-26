@@ -14,6 +14,16 @@ import AppKit
 #endif
 
 import XCBuild
+import ZFile
+import ZFile
+import Deliver
+import Task
+import Git
+import Keychain
+import SourceryAutoProtocols
+import Terminal
+import HighwayCore
+import HWKit
 
 
 
@@ -27,13 +37,366 @@ import XCBuild
 
 
 
+
+// MARK: - ArchiveOptionsProtocolMock
+
+public class ArchiveOptionsProtocolMock: ArchiveOptionsProtocol {
+
+    public init() {}
+
+    public var scheme: String {
+        get { return underlyingScheme }
+        set(value) { underlyingScheme = value }
+    }
+    var underlyingScheme: String = "AutoMockable filled value"
+    public var project: String {
+        get { return underlyingProject }
+        set(value) { underlyingProject = value }
+    }
+    var underlyingProject: String = "AutoMockable filled value"
+    public var destination: Destination {
+        get { return underlyingDestination }
+        set(value) { underlyingDestination = value }
+    }
+    var underlyingDestination: Destination!
+    public var archivePath: String {
+        get { return underlyingArchivePath }
+        set(value) { underlyingArchivePath = value }
+    }
+    var underlyingArchivePath: String = "AutoMockable filled value"
+
+}
+
+
+// MARK: - ArchivePlistProtocolMock
+
+public class ArchivePlistProtocolMock: ArchivePlistProtocol {
+
+    public init() {}
+
+
+}
+
+
+// MARK: - ArchiveProtocolMock
+
+public class ArchiveProtocolMock: ArchiveProtocol {
+
+    public init() {}
+
+    public var archiveFolder: FolderProtocol {
+        get { return underlyingArchiveFolder }
+        set(value) { underlyingArchiveFolder = value }
+    }
+    var underlyingArchiveFolder: FolderProtocol!
+    public var appFolder: FolderProtocol {
+        get { return underlyingAppFolder }
+        set(value) { underlyingAppFolder = value }
+    }
+    var underlyingAppFolder: FolderProtocol!
+    public var plist: ArchivePlistProtocol {
+        get { return underlyingPlist }
+        set(value) { underlyingPlist = value }
+    }
+    var underlyingPlist: ArchivePlistProtocol!
+
+}
+
+
+// MARK: - BuildResultProtocolMock
+
+public class BuildResultProtocolMock: BuildResultProtocol {
+
+    public init() {}
+
+    public var executableUrl: FileProtocol {
+        get { return underlyingExecutableUrl }
+        set(value) { underlyingExecutableUrl = value }
+    }
+    var underlyingExecutableUrl: FileProtocol!
+    public var artifact: SwiftBuildSystem.Artifact {
+        get { return underlyingArtifact }
+        set(value) { underlyingArtifact = value }
+    }
+    var underlyingArtifact: SwiftBuildSystem.Artifact!
+
+}
+
+
+// MARK: - DeliverProtocolMock
+
+public class DeliverProtocolMock: DeliverProtocol {
+
+    public init() {}
+
+
+    //MARK: - now
+
+    public  var nowWithThrowableError: Error?
+    public var nowWithCallsCount = 0
+    public var nowWithCalled: Bool {
+        return nowWithCallsCount > 0
+    }
+    public var nowWithReceivedOptions: Deliver.Options?
+    public var nowWithReturnValue: Bool?
+    public var nowWithClosure: ((Deliver.Options) throws -> Bool)? = nil
+
+    public func now(with options: Deliver.Options) throws -> Bool {
+
+        if let error = nowWithThrowableError {
+            throw error
+        }
+
+
+      nowWithCallsCount += 1
+        nowWithReceivedOptions = options
+
+
+      guard let closureReturn = nowWithClosure else {
+          guard let returnValue = nowWithReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    nowWith
+                    but this case(s) is(are) not implemented in
+                    DeliverProtocol for method nowWithClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(options)
+    }
+
+}
+
+
+// MARK: - DestinationFactoryProtocolMock
+
+public class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
+
+    public init() {}
+
+
+    //MARK: - macOS
+
+    public var macOSArchitectureCallsCount = 0
+    public var macOSArchitectureCalled: Bool {
+        return macOSArchitectureCallsCount > 0
+    }
+    public var macOSArchitectureReceivedArchitecture: Destination.Architecture?
+    public var macOSArchitectureReturnValue: Destination?
+    public var macOSArchitectureClosure: ((Destination.Architecture) -> Destination)? = nil
+
+    public func macOS(architecture: Destination.Architecture) -> Destination {
+
+      macOSArchitectureCallsCount += 1
+        macOSArchitectureReceivedArchitecture = architecture
+
+
+      guard let closureReturn = macOSArchitectureClosure else {
+          guard let returnValue = macOSArchitectureReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    macOSArchitecture
+                    but this case(s) is(are) not implemented in
+                    DestinationFactoryProtocol for method macOSArchitectureClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
+              return macOSArchitectureReturnValue!
+          }
+          return returnValue
+      }
+
+      return closureReturn(architecture)
+    }
+
+    //MARK: - device
+
+    public var deviceNameIsGenericIdCallsCount = 0
+    public var deviceNameIsGenericIdCalled: Bool {
+        return deviceNameIsGenericIdCallsCount > 0
+    }
+    public var deviceNameIsGenericIdReceivedArguments: (device: Destination.Device, name: String?, isGeneric: Bool, id: String?)?
+    public var deviceNameIsGenericIdReturnValue: Destination?
+    public var deviceNameIsGenericIdClosure: ((Destination.Device, String?, Bool, String?) -> Destination)? = nil
+
+    public func device(_ device: Destination.Device, name: String?, isGeneric: Bool, id: String?) -> Destination {
+
+      deviceNameIsGenericIdCallsCount += 1
+        deviceNameIsGenericIdReceivedArguments = (device: device, name: name, isGeneric: isGeneric, id: id)
+
+
+      guard let closureReturn = deviceNameIsGenericIdClosure else {
+          guard let returnValue = deviceNameIsGenericIdReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    deviceNameIsGenericId
+                    but this case(s) is(are) not implemented in
+                    DestinationFactoryProtocol for method deviceNameIsGenericIdClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
+              return deviceNameIsGenericIdReturnValue!
+          }
+          return returnValue
+      }
+
+      return closureReturn(device, name, isGeneric, id)
+    }
+
+    //MARK: - simulator
+
+    public var simulatorNameOsIdCallsCount = 0
+    public var simulatorNameOsIdCalled: Bool {
+        return simulatorNameOsIdCallsCount > 0
+    }
+    public var simulatorNameOsIdReceivedArguments: (simulator: Destination.Simulator, name: String, os: Destination.OS, id: String?)?
+    public var simulatorNameOsIdReturnValue: Destination?
+    public var simulatorNameOsIdClosure: ((Destination.Simulator, String, Destination.OS, String?) -> Destination)? = nil
+
+    public func simulator(_ simulator: Destination.Simulator, name: String, os: Destination.OS, id: String?) -> Destination {
+
+      simulatorNameOsIdCallsCount += 1
+        simulatorNameOsIdReceivedArguments = (simulator: simulator, name: name, os: os, id: id)
+
+
+      guard let closureReturn = simulatorNameOsIdClosure else {
+          guard let returnValue = simulatorNameOsIdReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    simulatorNameOsId
+                    but this case(s) is(are) not implemented in
+                    DestinationFactoryProtocol for method simulatorNameOsIdClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
+              return simulatorNameOsIdReturnValue!
+          }
+          return returnValue
+      }
+
+      return closureReturn(simulator, name, os, id)
+    }
+
+}
+
+
+// MARK: - DestinationProtocolMock
+
+public class DestinationProtocolMock: DestinationProtocol {
+
+    public init() {}
+
+    public var raw: [String: String] = [:]
+    public var asString: String {
+        get { return underlyingAsString }
+        set(value) { underlyingAsString = value }
+    }
+    var underlyingAsString: String = "AutoMockable filled value"
+
+}
+
+
+// MARK: - ExecutableProviderMock
+
+public class ExecutableProviderMock: ExecutableProvider {
+
+    public init() {}
+
+
+    //MARK: - executable
+
+    public  var executableWithThrowableError: Error?
+    public var executableWithCallsCount = 0
+    public var executableWithCalled: Bool {
+        return executableWithCallsCount > 0
+    }
+    public var executableWithReceivedName: String?
+    public var executableWithReturnValue: FileProtocol?
+    public var executableWithClosure: ((String) throws -> FileProtocol)? = nil
+
+    public func executable(with name: String) throws -> FileProtocol {
+
+        if let error = executableWithThrowableError {
+            throw error
+        }
+
+
+      executableWithCallsCount += 1
+        executableWithReceivedName = name
+
+
+      guard let closureReturn = executableWithClosure else {
+          guard let returnValue = executableWithReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    executableWith
+                    but this case(s) is(are) not implemented in
+                    ExecutableProvider for method executableWithClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(name)
+    }
+
+}
+
+
+// MARK: - ExportArchiveOptionsProtocolMock
+
+public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
+
+    public init() {}
+
+    public var archivePath: FolderProtocol {
+        get { return underlyingArchivePath }
+        set(value) { underlyingArchivePath = value }
+    }
+    var underlyingArchivePath: FolderProtocol!
+    public var exportPath: String {
+        get { return underlyingExportPath }
+        set(value) { underlyingExportPath = value }
+    }
+    var underlyingExportPath: String = "AutoMockable filled value"
+    public var exportOptionsPlist: PlistFactory<ExportOptions> {
+        get { return underlyingExportOptionsPlist }
+        set(value) { underlyingExportOptionsPlist = value }
+    }
+    var underlyingExportOptionsPlist: PlistFactory<ExportOptions>!
+
+}
+
+
+// MARK: - ExportProtocolMock
+
+public class ExportProtocolMock: ExportProtocol {
+
+    public init() {}
+
+    public var folder: FolderProtocol {
+        get { return underlyingFolder }
+        set(value) { underlyingFolder = value }
+    }
+    var underlyingFolder: FolderProtocol!
+    public var ipa: FileProtocol {
+        get { return underlyingIpa }
+        set(value) { underlyingIpa = value }
+    }
+    var underlyingIpa: FileProtocol!
+
+}
 
 
 // MARK: - FileProtocolMock
 
 public class FileProtocolMock: FileProtocol {
-
-    public init() {}
 
     public var localizedDate: String {
         get { return underlyingLocalizedDate }
@@ -426,8 +789,6 @@ public class FileProtocolMock: FileProtocol {
 
 public class FileSystemProtocolMock: FileSystemProtocol {
 
-    public init() {}
-
     public var temporaryFolder: Folder {
         get { return underlyingTemporaryFolder }
         set(value) { underlyingTemporaryFolder = value }
@@ -701,8 +1062,6 @@ public class FileSystemProtocolMock: FileSystemProtocol {
 
 public class FolderProtocolMock: FolderProtocol {
 
-    public init() {}
-
     public var path: String {
         get { return underlyingPath }
         set(value) { underlyingPath = value }
@@ -907,6 +1266,7 @@ public class FolderProtocolMock: FolderProtocol {
                     FolderProtocol for method containsFileNamedClosure.
                 """
               let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
               return false
           }
           return returnValue
@@ -1057,6 +1417,7 @@ public class FolderProtocolMock: FolderProtocol {
                     FolderProtocol for method containsSubfolderNamedClosure.
                 """
               let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
               return false
           }
           return returnValue
@@ -1527,6 +1888,570 @@ public class FolderProtocolMock: FolderProtocol {
 }
 
 
+// MARK: - GitToolProtocolMock
+
+public class GitToolProtocolMock: GitToolProtocol {
+
+    public init() {}
+
+
+    //MARK: - addAll
+
+    public  var addAllAtThrowableError: Error?
+    public var addAllAtCallsCount = 0
+    public var addAllAtCalled: Bool {
+        return addAllAtCallsCount > 0
+    }
+    public var addAllAtReceivedUrl: FolderProtocol?
+    public var addAllAtClosure: ((FolderProtocol) throws -> Void)? = nil
+
+    public func addAll(at url: FolderProtocol) throws {
+
+        if let error = addAllAtThrowableError {
+            throw error
+        }
+
+
+      addAllAtCallsCount += 1
+        addAllAtReceivedUrl = url
+
+
+      try addAllAtClosure?(url)
+
+    }
+
+    //MARK: - commit
+
+    public  var commitAtMessageThrowableError: Error?
+    public var commitAtMessageCallsCount = 0
+    public var commitAtMessageCalled: Bool {
+        return commitAtMessageCallsCount > 0
+    }
+    public var commitAtMessageReceivedArguments: (url: FolderProtocol, message: String)?
+    public var commitAtMessageClosure: ((FolderProtocol, String) throws -> Void)? = nil
+
+    public func commit(at url: FolderProtocol, message: String) throws {
+
+        if let error = commitAtMessageThrowableError {
+            throw error
+        }
+
+
+      commitAtMessageCallsCount += 1
+        commitAtMessageReceivedArguments = (url: url, message: message)
+
+
+      try commitAtMessageClosure?(url, message)
+
+    }
+
+    //MARK: - pushToMaster
+
+    public  var pushToMasterAtThrowableError: Error?
+    public var pushToMasterAtCallsCount = 0
+    public var pushToMasterAtCalled: Bool {
+        return pushToMasterAtCallsCount > 0
+    }
+    public var pushToMasterAtReceivedUrl: FolderProtocol?
+    public var pushToMasterAtClosure: ((FolderProtocol) throws -> Void)? = nil
+
+    public func pushToMaster(at url: FolderProtocol) throws {
+
+        if let error = pushToMasterAtThrowableError {
+            throw error
+        }
+
+
+      pushToMasterAtCallsCount += 1
+        pushToMasterAtReceivedUrl = url
+
+
+      try pushToMasterAtClosure?(url)
+
+    }
+
+    //MARK: - pushTagsToMaster
+
+    public  var pushTagsToMasterAtThrowableError: Error?
+    public var pushTagsToMasterAtCallsCount = 0
+    public var pushTagsToMasterAtCalled: Bool {
+        return pushTagsToMasterAtCallsCount > 0
+    }
+    public var pushTagsToMasterAtReceivedUrl: FolderProtocol?
+    public var pushTagsToMasterAtClosure: ((FolderProtocol) throws -> Void)? = nil
+
+    public func pushTagsToMaster(at url: FolderProtocol) throws {
+
+        if let error = pushTagsToMasterAtThrowableError {
+            throw error
+        }
+
+
+      pushTagsToMasterAtCallsCount += 1
+        pushTagsToMasterAtReceivedUrl = url
+
+
+      try pushTagsToMasterAtClosure?(url)
+
+    }
+
+    //MARK: - pull
+
+    public  var pullAtThrowableError: Error?
+    public var pullAtCallsCount = 0
+    public var pullAtCalled: Bool {
+        return pullAtCallsCount > 0
+    }
+    public var pullAtReceivedUrl: FolderProtocol?
+    public var pullAtClosure: ((FolderProtocol) throws -> Void)? = nil
+
+    public func pull(at url: FolderProtocol) throws {
+
+        if let error = pullAtThrowableError {
+            throw error
+        }
+
+
+      pullAtCallsCount += 1
+        pullAtReceivedUrl = url
+
+
+      try pullAtClosure?(url)
+
+    }
+
+    //MARK: - currentTag
+
+    public  var currentTagAtThrowableError: Error?
+    public var currentTagAtCallsCount = 0
+    public var currentTagAtCalled: Bool {
+        return currentTagAtCallsCount > 0
+    }
+    public var currentTagAtReceivedUrl: FolderProtocol?
+    public var currentTagAtReturnValue: String?
+    public var currentTagAtClosure: ((FolderProtocol) throws -> String)? = nil
+
+    public func currentTag(at url: FolderProtocol) throws -> String {
+
+        if let error = currentTagAtThrowableError {
+            throw error
+        }
+
+
+      currentTagAtCallsCount += 1
+        currentTagAtReceivedUrl = url
+
+
+      guard let closureReturn = currentTagAtClosure else {
+          guard let returnValue = currentTagAtReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    currentTagAt
+                    but this case(s) is(are) not implemented in
+                    GitToolProtocol for method currentTagAtClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(url)
+    }
+
+    //MARK: - clone
+
+    public  var cloneWithThrowableError: Error?
+    public var cloneWithCallsCount = 0
+    public var cloneWithCalled: Bool {
+        return cloneWithCallsCount > 0
+    }
+    public var cloneWithReceivedOptions: CloneOptions?
+    public var cloneWithClosure: ((CloneOptions) throws -> Void)? = nil
+
+    public func clone(with options: CloneOptions) throws {
+
+        if let error = cloneWithThrowableError {
+            throw error
+        }
+
+
+      cloneWithCallsCount += 1
+        cloneWithReceivedOptions = options
+
+
+      try cloneWithClosure?(options)
+
+    }
+
+}
+
+
+// MARK: - HighwayBundleProtocolMock
+
+public class HighwayBundleProtocolMock: HighwayBundleProtocol {
+
+    public init() {}
+
+    public var url: FolderProtocol {
+        get { return underlyingUrl }
+        set(value) { underlyingUrl = value }
+    }
+    var underlyingUrl: FolderProtocol!
+    public var fileSystem: FileSystemProtocol {
+        get { return underlyingFileSystem }
+        set(value) { underlyingFileSystem = value }
+    }
+    var underlyingFileSystem: FileSystemProtocol!
+    public var configuration: Configuration {
+        get { return underlyingConfiguration }
+        set(value) { underlyingConfiguration = value }
+    }
+    var underlyingConfiguration: Configuration!
+    public var xcodeprojectParent: FolderProtocol {
+        get { return underlyingXcodeprojectParent }
+        set(value) { underlyingXcodeprojectParent = value }
+    }
+    var underlyingXcodeprojectParent: FolderProtocol!
+
+    //MARK: - xcodeprojectUrl
+
+    public  var xcodeprojectUrlThrowableError: Error?
+    public var xcodeprojectUrlCallsCount = 0
+    public var xcodeprojectUrlCalled: Bool {
+        return xcodeprojectUrlCallsCount > 0
+    }
+    public var xcodeprojectUrlReturnValue: FolderProtocol?
+    public var xcodeprojectUrlClosure: (() throws -> FolderProtocol)? = nil
+
+    public func xcodeprojectUrl() throws -> FolderProtocol {
+
+        if let error = xcodeprojectUrlThrowableError {
+            throw error
+        }
+
+
+      xcodeprojectUrlCallsCount += 1
+
+
+      guard let closureReturn = xcodeprojectUrlClosure else {
+          guard let returnValue = xcodeprojectUrlReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    xcodeprojectUrl
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method xcodeprojectUrlClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - xcconfigFile
+
+    public  var xcconfigFileThrowableError: Error?
+    public var xcconfigFileCallsCount = 0
+    public var xcconfigFileCalled: Bool {
+        return xcconfigFileCallsCount > 0
+    }
+    public var xcconfigFileReturnValue: FileProtocol?
+    public var xcconfigFileClosure: (() throws -> FileProtocol)? = nil
+
+    public func xcconfigFile() throws -> FileProtocol {
+
+        if let error = xcconfigFileThrowableError {
+            throw error
+        }
+
+
+      xcconfigFileCallsCount += 1
+
+
+      guard let closureReturn = xcconfigFileClosure else {
+          guard let returnValue = xcconfigFileReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    xcconfigFile
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method xcconfigFileClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - gitignore
+
+    public  var gitignoreThrowableError: Error?
+    public var gitignoreCallsCount = 0
+    public var gitignoreCalled: Bool {
+        return gitignoreCallsCount > 0
+    }
+    public var gitignoreReturnValue: FileProtocol?
+    public var gitignoreClosure: (() throws -> FileProtocol)? = nil
+
+    public func gitignore() throws -> FileProtocol {
+
+        if let error = gitignoreThrowableError {
+            throw error
+        }
+
+
+      gitignoreCallsCount += 1
+
+
+      guard let closureReturn = gitignoreClosure else {
+          guard let returnValue = gitignoreReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    gitignore
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method gitignoreClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - mainSwiftFile
+
+    public  var mainSwiftFileThrowableError: Error?
+    public var mainSwiftFileCallsCount = 0
+    public var mainSwiftFileCalled: Bool {
+        return mainSwiftFileCallsCount > 0
+    }
+    public var mainSwiftFileReturnValue: FileProtocol?
+    public var mainSwiftFileClosure: (() throws -> FileProtocol)? = nil
+
+    public func mainSwiftFile() throws -> FileProtocol {
+
+        if let error = mainSwiftFileThrowableError {
+            throw error
+        }
+
+
+      mainSwiftFileCallsCount += 1
+
+
+      guard let closureReturn = mainSwiftFileClosure else {
+          guard let returnValue = mainSwiftFileReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    mainSwiftFile
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method mainSwiftFileClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - package
+
+    public  var packageThrowableError: Error?
+    public var packageCallsCount = 0
+    public var packageCalled: Bool {
+        return packageCallsCount > 0
+    }
+    public var packageReturnValue: FileProtocol?
+    public var packageClosure: (() throws -> FileProtocol)? = nil
+
+    public func package() throws -> FileProtocol {
+
+        if let error = packageThrowableError {
+            throw error
+        }
+
+
+      packageCallsCount += 1
+
+
+      guard let closureReturn = packageClosure else {
+          guard let returnValue = packageReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    package
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method packageClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - pinsFileUrl
+
+    public  var pinsFileUrlThrowableError: Error?
+    public var pinsFileUrlCallsCount = 0
+    public var pinsFileUrlCalled: Bool {
+        return pinsFileUrlCallsCount > 0
+    }
+    public var pinsFileUrlReturnValue: FileProtocol?
+    public var pinsFileUrlClosure: (() throws -> FileProtocol)? = nil
+
+    public func pinsFileUrl() throws -> FileProtocol {
+
+        if let error = pinsFileUrlThrowableError {
+            throw error
+        }
+
+
+      pinsFileUrlCallsCount += 1
+
+
+      guard let closureReturn = pinsFileUrlClosure else {
+          guard let returnValue = pinsFileUrlReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    pinsFileUrl
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method pinsFileUrlClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - buildDirectory
+
+    public  var buildDirectoryThrowableError: Error?
+    public var buildDirectoryCallsCount = 0
+    public var buildDirectoryCalled: Bool {
+        return buildDirectoryCallsCount > 0
+    }
+    public var buildDirectoryReturnValue: FolderProtocol?
+    public var buildDirectoryClosure: (() throws -> FolderProtocol)? = nil
+
+    public func buildDirectory() throws -> FolderProtocol {
+
+        if let error = buildDirectoryThrowableError {
+            throw error
+        }
+
+
+      buildDirectoryCallsCount += 1
+
+
+      guard let closureReturn = buildDirectoryClosure else {
+          guard let returnValue = buildDirectoryReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    buildDirectory
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method buildDirectoryClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - clean
+
+    public  var cleanThrowableError: Error?
+    public var cleanCallsCount = 0
+    public var cleanCalled: Bool {
+        return cleanCallsCount > 0
+    }
+    public var cleanReturnValue: Bool?
+    public var cleanClosure: (() throws -> Bool)? = nil
+
+    public func clean() throws -> Bool {
+
+        if let error = cleanThrowableError {
+            throw error
+        }
+
+
+      cleanCallsCount += 1
+
+
+      guard let closureReturn = cleanClosure else {
+          guard let returnValue = cleanReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    clean
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method cleanClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - executableUrl
+
+    public  var executableUrlSwiftBinUrlThrowableError: Error?
+    public var executableUrlSwiftBinUrlCallsCount = 0
+    public var executableUrlSwiftBinUrlCalled: Bool {
+        return executableUrlSwiftBinUrlCallsCount > 0
+    }
+    public var executableUrlSwiftBinUrlReceivedSwiftBinUrl: FolderProtocol?
+    public var executableUrlSwiftBinUrlReturnValue: FileProtocol?
+    public var executableUrlSwiftBinUrlClosure: ((FolderProtocol) throws -> FileProtocol)? = nil
+
+    public func executableUrl(swiftBinUrl: FolderProtocol) throws -> FileProtocol {
+
+        if let error = executableUrlSwiftBinUrlThrowableError {
+            throw error
+        }
+
+
+      executableUrlSwiftBinUrlCallsCount += 1
+        executableUrlSwiftBinUrlReceivedSwiftBinUrl = swiftBinUrl
+
+
+      guard let closureReturn = executableUrlSwiftBinUrlClosure else {
+          guard let returnValue = executableUrlSwiftBinUrlReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    executableUrlSwiftBinUrl
+                    but this case(s) is(are) not implemented in
+                    HighwayBundleProtocol for method executableUrlSwiftBinUrlClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(swiftBinUrl)
+    }
+
+}
+
+
 // MARK: - ItemProtocolMock
 
 public class ItemProtocolMock: ItemProtocol {
@@ -1698,6 +2623,252 @@ public class ItemProtocolMock: ItemProtocol {
 }
 
 
+// MARK: - KeychainProtocolMock
+
+public class KeychainProtocolMock: KeychainProtocol {
+
+    public init() {}
+
+    public var system: SystemProtocol {
+        get { return underlyingSystem }
+        set(value) { underlyingSystem = value }
+    }
+    var underlyingSystem: SystemProtocol!
+
+    //MARK: - password
+
+    public  var passwordMatchingThrowableError: Error?
+    public var passwordMatchingCallsCount = 0
+    public var passwordMatchingCalled: Bool {
+        return passwordMatchingCallsCount > 0
+    }
+    public var passwordMatchingReceivedQuery: Keychain.PasswordQuery?
+    public var passwordMatchingReturnValue: String?
+    public var passwordMatchingClosure: ((Keychain.PasswordQuery) throws -> String)? = nil
+
+    public func password(matching query: Keychain.PasswordQuery) throws -> String {
+
+        if let error = passwordMatchingThrowableError {
+            throw error
+        }
+
+
+      passwordMatchingCallsCount += 1
+        passwordMatchingReceivedQuery = query
+
+
+      guard let closureReturn = passwordMatchingClosure else {
+          guard let returnValue = passwordMatchingReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    passwordMatching
+                    but this case(s) is(are) not implemented in
+                    KeychainProtocol for method passwordMatchingClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(query)
+    }
+
+}
+
+
+// MARK: - SystemProtocolMock
+
+public class SystemProtocolMock: SystemProtocol {
+
+    public init() {}
+
+
+    //MARK: - task
+
+    public  var taskNamedThrowableError: Error?
+    public var taskNamedCallsCount = 0
+    public var taskNamedCalled: Bool {
+        return taskNamedCallsCount > 0
+    }
+    public var taskNamedReceivedName: String?
+    public var taskNamedReturnValue: Task?
+    public var taskNamedClosure: ((String) throws -> Task)? = nil
+
+    public func task(named name: String) throws -> Task {
+
+        if let error = taskNamedThrowableError {
+            throw error
+        }
+
+
+      taskNamedCallsCount += 1
+        taskNamedReceivedName = name
+
+
+      guard let closureReturn = taskNamedClosure else {
+          guard let returnValue = taskNamedReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    taskNamed
+                    but this case(s) is(are) not implemented in
+                    SystemProtocol for method taskNamedClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(name)
+    }
+
+    //MARK: - execute
+
+    public  var executeThrowableError: Error?
+    public var executeCallsCount = 0
+    public var executeCalled: Bool {
+        return executeCallsCount > 0
+    }
+    public var executeReceivedTask: Task?
+    public var executeReturnValue: Bool?
+    public var executeClosure: ((Task) throws -> Bool)? = nil
+
+    public func execute(_ task: Task) throws -> Bool {
+
+        if let error = executeThrowableError {
+            throw error
+        }
+
+
+      executeCallsCount += 1
+        executeReceivedTask = task
+
+
+      guard let closureReturn = executeClosure else {
+          guard let returnValue = executeReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    execute
+                    but this case(s) is(are) not implemented in
+                    SystemProtocol for method executeClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(task)
+    }
+
+    //MARK: - launch
+
+    public  var launchWaitThrowableError: Error?
+    public var launchWaitCallsCount = 0
+    public var launchWaitCalled: Bool {
+        return launchWaitCallsCount > 0
+    }
+    public var launchWaitReceivedArguments: (task: Task, wait: Bool)?
+    public var launchWaitReturnValue: Bool?
+    public var launchWaitClosure: ((Task, Bool) throws -> Bool)? = nil
+
+    public func launch(_ task: Task, wait: Bool) throws -> Bool {
+
+        if let error = launchWaitThrowableError {
+            throw error
+        }
+
+
+      launchWaitCallsCount += 1
+        launchWaitReceivedArguments = (task: task, wait: wait)
+
+
+      guard let closureReturn = launchWaitClosure else {
+          guard let returnValue = launchWaitReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    launchWait
+                    but this case(s) is(are) not implemented in
+                    SystemProtocol for method launchWaitClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(task, wait)
+    }
+
+}
+
+
+// MARK: - TaskExecutorProtocolMock
+
+public class TaskExecutorProtocolMock: TaskExecutorProtocol {
+
+    public init() {}
+
+    public var ui: UIProtocol {
+        get { return underlyingUi }
+        set(value) { underlyingUi = value }
+    }
+    var underlyingUi: UIProtocol!
+
+    //MARK: - execute
+
+    public  var executeTaskThrowableError: Error?
+    public var executeTaskCallsCount = 0
+    public var executeTaskCalled: Bool {
+        return executeTaskCallsCount > 0
+    }
+    public var executeTaskReceivedTask: Task?
+    public var executeTaskClosure: ((Task) throws -> Void)? = nil
+
+    public func execute(task: Task) throws {
+
+        if let error = executeTaskThrowableError {
+            throw error
+        }
+
+
+      executeTaskCallsCount += 1
+        executeTaskReceivedTask = task
+
+
+      try executeTaskClosure?(task)
+
+    }
+
+    //MARK: - launch
+
+    public  var launchTaskWaitThrowableError: Error?
+    public var launchTaskWaitCallsCount = 0
+    public var launchTaskWaitCalled: Bool {
+        return launchTaskWaitCallsCount > 0
+    }
+    public var launchTaskWaitReceivedArguments: (task: Task, wait: Bool)?
+    public var launchTaskWaitClosure: ((Task, Bool) throws -> Void)? = nil
+
+    public func launch(task: Task, wait: Bool) throws {
+
+        if let error = launchTaskWaitThrowableError {
+            throw error
+        }
+
+
+      launchTaskWaitCallsCount += 1
+        launchTaskWaitReceivedArguments = (task: task, wait: wait)
+
+
+      try launchTaskWaitClosure?(task, wait)
+
+    }
+
+}
+
+
 // MARK: - TestOptionsProtocolMock
 
 public class TestOptionsProtocolMock: TestOptionsProtocol {
@@ -1719,6 +2890,130 @@ public class TestOptionsProtocolMock: TestOptionsProtocol {
         set(value) { underlyingDestination = value }
     }
     var underlyingDestination: Destination!
+
+}
+
+
+// MARK: - UIProtocolMock
+
+public class UIProtocolMock: UIProtocol {
+
+    public init() {}
+
+
+    //MARK: - message
+
+    public var messageCallsCount = 0
+    public var messageCalled: Bool {
+        return messageCallsCount > 0
+    }
+    public var messageReceivedText: String?
+    public var messageClosure: ((String) -> Void)? = nil
+
+    public func message(_ text: String) {
+
+      messageCallsCount += 1
+        messageReceivedText = text
+
+
+      messageClosure?(text)
+
+    }
+
+    //MARK: - success
+
+    public var successCallsCount = 0
+    public var successCalled: Bool {
+        return successCallsCount > 0
+    }
+    public var successReceivedText: String?
+    public var successClosure: ((String) -> Void)? = nil
+
+    public func success(_ text: String) {
+
+      successCallsCount += 1
+        successReceivedText = text
+
+
+      successClosure?(text)
+
+    }
+
+    //MARK: - verbose
+
+    public var verboseCallsCount = 0
+    public var verboseCalled: Bool {
+        return verboseCallsCount > 0
+    }
+    public var verboseReceivedText: String?
+    public var verboseClosure: ((String) -> Void)? = nil
+
+    public func verbose(_ text: String) {
+
+      verboseCallsCount += 1
+        verboseReceivedText = text
+
+
+      verboseClosure?(text)
+
+    }
+
+    //MARK: - error
+
+    public var errorCallsCount = 0
+    public var errorCalled: Bool {
+        return errorCallsCount > 0
+    }
+    public var errorReceivedText: String?
+    public var errorClosure: ((String) -> Void)? = nil
+
+    public func error(_ text: String) {
+
+      errorCallsCount += 1
+        errorReceivedText = text
+
+
+      errorClosure?(text)
+
+    }
+
+    //MARK: - print
+
+    public var printCallsCount = 0
+    public var printCalled: Bool {
+        return printCallsCount > 0
+    }
+    public var printReceivedPrintable: Printable?
+    public var printClosure: ((Printable) -> Void)? = nil
+
+    public func print(_ printable: Printable) {
+
+      printCallsCount += 1
+        printReceivedPrintable = printable
+
+
+      printClosure?(printable)
+
+    }
+
+    //MARK: - verbosePrint
+
+    public var verbosePrintCallsCount = 0
+    public var verbosePrintCalled: Bool {
+        return verbosePrintCallsCount > 0
+    }
+    public var verbosePrintReceivedPrintable: Printable?
+    public var verbosePrintClosure: ((Printable) -> Void)? = nil
+
+    public func verbosePrint(_ printable: Printable) {
+
+      verbosePrintCallsCount += 1
+        verbosePrintReceivedPrintable = printable
+
+
+      verbosePrintClosure?(printable)
+
+    }
 
 }
 

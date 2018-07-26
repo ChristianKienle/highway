@@ -1,6 +1,6 @@
 import XCTest
 import HighwayCore
-import FileSystem
+import ZFile
 import Url
 
 final class HighwayBundleTests: XCTestCase {

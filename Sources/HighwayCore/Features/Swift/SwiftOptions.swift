@@ -1,5 +1,5 @@
 import Foundation
-import FileSystem
+import ZFile
 import Url
 import Arguments
 import POSIX
@@ -30,7 +30,7 @@ public struct SwiftOptions {
     }
     
     public static func defaultOptions() -> SwiftOptions { return SwiftOptions() }
-    public init(subject: Subject = .auto, projectDirectory: Absolute = abscwd(), configuration: Configuration = .debug, verbose: Bool = false, buildPath: Absolute? = nil, additionalArguments: Arguments = .empty) {
+    public init(subject: Subject = .auto, projectDirectory: FolderProtocol = FileSystem().currentFolder, configuration: Configuration = .debug, verbose: Bool = false, buildPath: FolderProtocol? = nil, additionalArguments: Arguments = .empty) {
         self.subject = subject
         self.projectDirectory = projectDirectory
         self.configuration = configuration
@@ -39,10 +39,10 @@ public struct SwiftOptions {
         self.additionalArguments = additionalArguments
     }
     public let subject: Subject
-    public let projectDirectory: Absolute
+    public let projectDirectory: FolderProtocol
     public let configuration: Configuration
     public var verbose: Bool
-    public var buildPath: Absolute?
+    public var buildPath: FolderProtocol?
     public mutating func appending(arguments: Arguments) {
         additionalArguments += arguments
     }

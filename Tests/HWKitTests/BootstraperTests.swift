@@ -1,7 +1,7 @@
 import XCTest
 import HWKit
 import TestKit
-import FileSystem
+import ZFile
 import Url
 
 class BootstraperTests: XCTestCase {

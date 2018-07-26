@@ -56,3 +56,21 @@ public protocol AutoEquatable {
 public protocol AutoCases {
 }
 
+// MARK: - Sourcery Errors
+
+public enum SourceryMockError: Swift.Error, CustomDebugStringConvertible {
+    case implementErrorCaseFor(String)
+    
+    public var debugDescription: String {
+        switch self {
+        case let .implementErrorCaseFor(message):
+            return  """
+            \n
+            🧙‍♂️ \(SourceryMockError.self) Implement a case for:
+            \n
+            \(message)
+            \n
+            """
+        }
+    }
+}

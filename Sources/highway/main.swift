@@ -1,6 +1,6 @@
 import Foundation
 import HighwayCore
-import FileSystem
+import ZFile
 import Terminal
 
 let invocation = CommandLineInvocationProvider().invocation()

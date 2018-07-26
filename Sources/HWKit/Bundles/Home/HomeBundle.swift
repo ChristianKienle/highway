@@ -1,18 +1,13 @@
 import Foundation
 import HighwayCore
-import FileSystem
+import ZFile
 import Url
+import os
 
 public final class HomeBundle {
     // MARK: - Init
-    public init(url: Absolute, fileSystem fs: FileSystem, configuration: Configuration = .standard) throws {
-        do {
-            guard try fs.itemMetadata(at: url).type == .directory else {
-                throw "Highway home directory does not exist at \(url.path)."
-            }
-        } catch {
-            throw "Highway home directory could not be examined. FS Error at \(url.path)."
-        }
+    public init(url: FolderProtocol, fileSystem fs: FileSystemProtocol, configuration: Configuration = .standard) throws {
+
 
         self.url = url
         self.fileSystem = fs
@@ -20,27 +15,27 @@ public final class HomeBundle {
     }
     
     // MARK: - Properties
-    public let url: Absolute
-    public let fileSystem: FileSystem
+    public let url: FolderProtocol
+    public let fileSystem: FileSystemProtocol
     public let configuration: Configuration
-    public var localCloneUrl: Absolute {
-        return url.appending(Component.clone.path)
+    public var localCloneUrl: FolderProtocol {
+        do { return try url.subfolder(atPath: Component.clone.path.asString) } catch {
+            os_log("🔥 %@", type: .error, "failing cot clone local, defaulting to temp directory")
+            return FileSystem().temporaryFolder
+        }
     }
     
     public func missingComponents() -> Set<Component> {
         let all = Component.all
         let missing = all.filter { component in
-            let componentUrl = url.appending(component.path)
-            let expectation = component.fsRequirement
-            let isMissing: Bool
+
             do {
-                let componentValid = try self.fileSystem.itemMetadata(at: componentUrl).type == expectation
-                isMissing = !componentValid
+                _  = try url.subfolder(atPath: component.path.asString)
+                return  true
             } catch {
-                isMissing = true
+                return  false
             }
             
-            return isMissing
         }
         return missing
     }
@@ -51,14 +46,7 @@ extension HomeBundle {
         case binDir = "bin"
         case highwayCLI = "bin/highway"
         case clone = "highway"
-        var fsRequirement: Metadata.ItemType {
-            switch self {
-            case .binDir, .clone:
-                return .directory
-            case .highwayCLI:
-                return .file
-            }
-        }
+        
         static let all: Set<Component> = [.binDir, .highwayCLI, .clone]
         var path: Relative { return rawValue }
     }

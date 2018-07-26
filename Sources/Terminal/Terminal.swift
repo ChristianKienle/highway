@@ -64,9 +64,8 @@ fileprivate extension Terminal {
         return promptTemplate.terminalString + text
     }
 }
-public typealias UI = _UI
 
-extension Terminal: _UI {
+extension Terminal: UIProtocol {
     
     public func error(_ text: String) {
         rawLogNl(_withPrompt(text))

@@ -1,51 +1,29 @@
 import Foundation
+import SourceryAutoProtocols
+
+
+public protocol DestinationProtocol: AutoMockable {
+    
+    /// sourcery:inline:Destination.AutoGenerateProtocol
+    var raw: [String: String] { get set }
+    var asString: String { get }
+    /// sourcery:end
+}
 
 /// See https://developer.apple.com/library/content/technotes/tn2339/_index.html
 /// also: http://www.mokacoding.com/blog/xcodebuild-destination-options/
 /// List all known devices:
 /// instruments -s devices
 
-public struct Destination {
-    var raw = [String: String]()
-    private init(_ properties: [String: String]) {
+public struct Destination: DestinationProtocol, AutoGenerateProtocol  {
+    public var raw = [String: String]()
+    init(_ properties: [String: String]) {
         raw = properties
     }
     public var asString: String {
         return raw.map { "\($0.key)=\($0.value)" }.joined(separator: ",")
     }
 
-    public static func macOS(architecture: Architecture) -> Destination {
-        return Destination(
-            [
-                "platform" : PlatformType.macOS.rawValue,
-                "arch" : architecture.rawValue
-            ]
-        )
-    }
-    
-    public static func device(_ device: Device, name: String?, isGeneric: Bool = true, id: String?) -> Destination {
-        var properties = [String: String]()
-        properties["\(isGeneric ? "generic/" : "")platform"] = device.name
-        if let name = name {
-            properties["name"] = name
-        }
-        if let id = id {
-            properties["id"] = id
-        }
-        return Destination(properties)
-    }
-    
-    public static func simulator(_ simulator: Simulator, name: String, os: OS, id: String?) -> Destination {
-        var properties = [String: String]()
-        
-        properties["platform"] = simulator.name
-        properties["OS"] = os.name
-        properties["name"] = name
-        if let id = id {
-            properties["id"] = id
-        }
-        return Destination(properties)
-    }
 }
 
 extension Destination {

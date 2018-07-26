@@ -1,6 +1,16 @@
 Highway
 =================
 
+# Building
+
+```
+alias swiftxcode="swift package generate-xcodeproj --xcconfig-overrides Package.xcconfig"
+alias swiftbuildMacOS='swift build -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.13"'
+alias swifttest='swift test -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.13"
+
+```
+## How to use
+
 `highway` allows you to quickly automate the build, test and release cycle of your iOS or macOS app. Since `highway` builds on technologies you already know  (Swift & the Swift Package Manager, Foundation, ...) getting started is super easy.
 
 # Cheat Sheet
@@ -43,7 +53,7 @@ Table of Contents
 * [Updating](#updating)
   * [Dependencies](#dependencies)
   * [CLI](#cli)
-  
+
 ---
 
 # <a name="getting-started" />Getting started

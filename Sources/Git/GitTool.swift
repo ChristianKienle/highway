@@ -1,57 +1,52 @@
-import FileSystem
+import ZFile
 import Url
 import Task
 import Arguments
+import SourceryAutoProtocols
 
-public final class _GitTool {
+public struct GitTool: AutoGenerateProtocol {
     // MARK: - Init
-    public init(system: System) {
+    public init(system: SystemProtocol) {
         self.system = system
     }
     
     // MARK: - Properties
-    private let system: System
+    private let system: SystemProtocol
     
     // MARK: - Helper
-    private func _git(with arguments: Arguments, at url: Absolute) throws -> Task {
-        let task = try system.task(named: "git").dematerialize()
+    private func _git(with arguments: Arguments, at url: FolderProtocol) throws -> Task {
+        let task = try system.task(named: "git")
         task.arguments = arguments
         task.currentDirectoryUrl = url
         return task
     }
 }
 
-private extension System {
-    func executeAndThrowOnFailure(_ task: Task) throws {
-        try execute(task).dematerialize()
-    }
-}
-
-extension _GitTool: GitTool {
-    public func addAll(at url: Absolute) throws {
-        try system.executeAndThrowOnFailure(try _git(with: ["add", "."], at: url))
+extension GitTool: GitToolProtocol {
+    public func addAll(at url: FolderProtocol) throws {
+        try system.execute(try _git(with: ["add", "."], at: url))
     }
     
-    public func commit(at url: Absolute, message: String) throws {
-        try system.executeAndThrowOnFailure(try _git(with: ["commit", "-m", message], at: url))
+    public func commit(at url: FolderProtocol, message: String) throws {
+        try system.execute(try _git(with: ["commit", "-m", message], at: url))
     }
     
-    public func pushToMaster(at url: Absolute) throws {
-        try system.executeAndThrowOnFailure(try _git(with: ["push", "origin", "master"], at: url))
+    public func pushToMaster(at url: FolderProtocol) throws {
+        try system.execute(try _git(with: ["push", "origin", "master"], at: url))
     }
     
-    public func pushTagsToMaster(at url: Absolute) throws {
-        try system.executeAndThrowOnFailure(try _git(with: ["push", "--tags"], at: url))
+    public func pushTagsToMaster(at url: FolderProtocol) throws {
+        try system.execute(try _git(with: ["push", "--tags"], at: url))
     }
     
-    public func pull(at url: Absolute) throws {
-        try system.executeAndThrowOnFailure(try _git(with: ["pull"], at: url))
+    public func pull(at url: FolderProtocol) throws {
+        try system.execute(try _git(with: ["pull"], at: url))
     }
     
-    public func currentTag(at url: Absolute) throws -> String {
+    public func currentTag(at url: FolderProtocol) throws -> String {
         let task = try _git(with: ["describe", "--tags"], at: url)
         task.enableReadableOutputDataCapturing()
-        try system.execute(task).dematerialize()
+        try system.execute(task)
         
         guard let rawTag = task.trimmedOutput else {
             throw "Failed to get current tag."
@@ -72,8 +67,9 @@ extension _GitTool: GitTool {
     }
     
     public func clone(with options: CloneOptions) throws {
-        let arguments = Arguments(["clone"] + (options.performMirror ? ["--mirror"] : []) + [options.remoteUrl, options.localPath.path])
-        try system.executeAndThrowOnFailure(try _git(with: arguments, at: .root))
+        let input: [String] = ["clone"] + (options.performMirror ? ["--mirror"] : []) + [options.remoteUrl, options.localPath.path]
+        let arguments = Arguments(input)
+        try system.execute(try _git(with: arguments, at: try Folder(path: "/")))
     }
 }
 

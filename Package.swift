@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "Deliver", targets: ["Deliver"]),
         .library(name: "Arguments", targets: ["Arguments"]),
         .library(name: "Errors", targets: ["Errors"]),
-        .library(name: "FileSystem", targets: ["FileSystem"]),
+        .library(name: "ZFile", targets: ["ZFile"]),
         .library(name: "Url", targets: ["Url"]),
         .library(name: "Result", targets: ["Result"]),
         .library(name: "Task", targets: ["Task"]),
@@ -30,7 +30,7 @@ let package = Package(
                    "Deliver",
                    "Arguments",
                    "Errors",
-                   "FileSystem",
+                   "ZFile",
                    "Url",
                    "Result",
                    "Task",
@@ -51,7 +51,7 @@ let package = Package(
         ),
         
         .target(name: "HighwayProject",
-                dependencies: ["Git", "POSIX", "Deliver", "HighwayCore", "Terminal", "FileSystem", "XCBuild", "Url", "Task", "SourceryAutoProtocols"],
+                dependencies: ["Git", "POSIX", "Deliver", "HighwayCore", "Terminal", "ZFile", "XCBuild", "Url", "Task", "SourceryAutoProtocols"],
                 path: "./Sources/HighwayProject"),
         
         // Task: We use the security command line tool to talk to the Keychain.
@@ -66,29 +66,28 @@ let package = Package(
         .target(name: "Git", dependencies: ["Arguments", "Url", "Task", "Errors", "Terminal", "SourceryAutoProtocols"]),
         .target(name: "POSIX", dependencies: ["Url", "SourceryAutoProtocols"]),
 
-        .target(name: "Deliver", dependencies: ["POSIX", "Task", "Url", "Result", "Errors", "Arguments", "FileSystem", "SourceryAutoProtocols"]),
+        .target(name: "Deliver", dependencies: ["POSIX", "Task", "Url", "Result", "Errors", "Arguments", "ZFile", "SourceryAutoProtocols"]),
 
         // Url: Needs to have a concept of absolute/relative files/urls.
         // Result: SHOULD return Results instead of throwing. FIXME!
         // Errors: Throws Errors.
-        .target(name: "FileSystem", dependencies: ["POSIX", "Url", "Result", "Errors", "SourceryAutoProtocols"]),
-        .target(name: "HWKit", dependencies: ["Git", "POSIX", "HighwayCore", "Terminal", "FileSystem", "Arguments", "SourceryAutoProtocols"]),
-        .target(name: "HighwayCore", dependencies: ["POSIX", "Terminal", "FileSystem", "Task", "Url", "Arguments", "SourceryAutoProtocols"]),
-        .target(name: "highway", dependencies: ["Git", "POSIX", "HighwayProject", "HWKit", "HighwayCore", "Terminal", "FileSystem", "Arguments", "SourceryAutoProtocols"]),
-        .target(name: "XCBuild", dependencies: ["POSIX", "Url", "FileSystem", "Task", "Arguments", "SourceryAutoProtocols"]),
+        .target(name: "ZFile", dependencies: ["SourceryAutoProtocols"]),
+        .target(name: "HWKit", dependencies: ["Git", "POSIX", "HighwayCore", "Terminal", "ZFile", "Arguments", "SourceryAutoProtocols"]),
+        .target(name: "HighwayCore", dependencies: ["POSIX", "Terminal", "ZFile", "Task", "Url", "Arguments", "SourceryAutoProtocols"]),
+        .target(name: "highway", dependencies: ["Git", "POSIX", "HighwayProject", "HWKit", "HighwayCore", "Terminal", "ZFile", "Arguments", "SourceryAutoProtocols"]),
+        .target(name: "XCBuild", dependencies: ["POSIX", "Url", "ZFile", "Task", "Arguments", "SourceryAutoProtocols"]),
 
         // Url: In the end, a Task is always using some kind of files on disk.
-        // FileSystem: The framework checks (in certain cases) the existence of files.
+        // ZFile: The framework checks (in certain cases) the existence of files.
         //             For example the current working directory of a Task before it is executed.
         // Arguments: A Task has Arguments.
         // Terminal: We have to log
-        .target(name: "Task", dependencies: ["Terminal", "Url", "FileSystem", "Errors", "Result", "Arguments", "SourceryAutoProtocols"]),
+        .target(name: "Task", dependencies: ["Terminal", "Url", "ZFile", "Errors", "Result", "Arguments", "SourceryAutoProtocols"]),
         .target(name: "TestKit", dependencies: ["Git", "POSIX", "HighwayCore", "Url", "Task", "SourceryAutoProtocols", "SourceryMocks"]),
 
         // Tests
-        .testTarget(name: "DeliverTests", dependencies: ["FileSystem", "Arguments"]),
+        .testTarget(name: "DeliverTests", dependencies: ["ZFile", "Arguments"]),
         .testTarget(name: "POSIXTests", dependencies: ["POSIX", "Url"]),
-        .testTarget(name: "FileSystemTests", dependencies: ["TestKit"]),
         .testTarget(name: "HighwayCoreTests", dependencies: ["HighwayCore", "TestKit", "Arguments"]),
         .testTarget(name: "HWKitTests", dependencies: ["HWKit", "TestKit", "Arguments"]),
         .testTarget(name: "TerminalTests", dependencies: ["Terminal", "TestKit"]),
@@ -97,10 +96,10 @@ let package = Package(
         // Keychain: We use the keychain to access the iTunesConnect password for the system tests.
         .testTarget(name: "XCBuildTests", dependencies: ["TestKit", "Deliver", "XCBuild", "Keychain", "HighwayCore", "TestKit"], exclude: ["Fixtures"]),
         .testTarget(name: "ResultTests", dependencies: ["Result", "TestKit"]),
-        .testTarget(name: "TaskTests", dependencies: ["Task", "FileSystem", "TestKit"]),
+        .testTarget(name: "TaskTests", dependencies: ["Task", "ZFile", "TestKit"]),
         .testTarget(name: "UrlTests", dependencies: ["Url"]),
         .testTarget(name: "ArgumentsTests", dependencies: ["Arguments"]),
-        .testTarget(name: "GitTests", dependencies: ["TestKit", "FileSystem", "Url", "Git"]),
+        .testTarget(name: "GitTests", dependencies: ["TestKit", "ZFile", "Url", "Git"]),
     ],
     swiftLanguageVersions: [4]
 )

@@ -36,7 +36,7 @@ public final class XCBuild {
     
     // MARK: Exporting
     @discardableResult
-    public func export(using options: ExportArchiveOptions) throws -> Export {
+    public func export(using options: ExportArchiveOptionsProtocol) throws -> Export {
         let task = try _exportTask(using: options)
         guard try system.execute(task) else {
             throw "Export failed. No archivePath set."
@@ -44,7 +44,7 @@ public final class XCBuild {
         return try Export(folder: try Folder(path: options.exportPath), fileSystem: fileSystem)
     }
     
-    private func _exportTask(using options: ExportArchiveOptions) throws -> Task {
+    private func _exportTask(using options: ExportArchiveOptionsProtocol) throws -> Task {
         let result = try _xcodebuild()
         result.arguments += options.arguments
         
@@ -104,7 +104,7 @@ private func _option(_ name: String, value: String?) -> XCodeBuildOption {
     return XCodeBuildOption(name: name, value: value)
 }
 
-fileprivate extension ArchiveOptions {
+fileprivate extension ArchiveOptionsProtocol {
     // sourcery:skipProtocol
     var arguments: Arguments {
         var args = Arguments.empty
@@ -117,13 +117,16 @@ fileprivate extension ArchiveOptions {
     }
 }
 
-fileprivate extension ExportArchiveOptions {
+fileprivate extension ExportArchiveOptionsProtocol {
     // sourcery:skipProtocol
     var arguments: Arguments {
+       
+        let exportOptionsPlistPath = "\(exportPath)/generated.plist"
         var args = Arguments("-exportArchive")
-        args += _option("exportOptionsPlist", value: exportOptionsPlist.generatedPlist.path)
+        args += _option("exportOptionsPlist", value: exportOptionsPlistPath)
         args += _option("archivePath", value: archivePath.path)
         args += _option("exportPath", value: exportPath)
+        
         return args
     }
 }

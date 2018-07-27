@@ -11,6 +11,7 @@ import SourceryAutoProtocols
 // MARK: - FileSystemProtocol
 
 // sourcery:AutoMockable
+// sourcery:skipPublicInit
 public protocol FileSystemProtocol {
     
     /// sourcery:inline:FileSystem.AutoGenerateSelectiveProtocol
@@ -44,6 +45,7 @@ public protocol FileSystemIterable {
 // MARK: - ItemProtocol
 
 // sourcery:AutoMockable
+// sourcery:skipPublicInit
 public protocol ItemProtocol {
     
     /// sourcery:inline:FileSystem.Item.AutoGenerateSelectiveProtocol

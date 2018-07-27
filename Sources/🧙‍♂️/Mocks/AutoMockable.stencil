@@ -182,7 +182,7 @@ import HWKit
 
 public class {{ type.name }}Mock: {{ type.name }} {
 
-    public init() {}
+    {%if not type.annotations.skipPublicInit %}public init() {}{% endif %}
 
 {% for variable in type.allVariables|!definedInExtension %}
     {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}

@@ -1,19 +1,19 @@
 import Foundation
-import Url
+import ZFile
 import Arguments
 
 extension Altool {
     public struct Options {
         // MARK: - Properties
         public let action: Action
-        public let file: Absolute
+        public let file: FileProtocol
         public let type: Platform
         public let username: String
         public let password: Password
         public let outputFormat: OutputFormat
         
         // MARK: - Init
-        public init(action: Action, file: Absolute, type: Platform, username: String, password: Password, outputFormat: OutputFormat) {
+        public init(action: Action, file: FileProtocol, type: Platform, username: String, password: Password, outputFormat: OutputFormat) {
             self.action = action
             self.file = file
             self.type = type

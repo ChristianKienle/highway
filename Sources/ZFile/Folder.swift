@@ -13,6 +13,7 @@ import os
  *  You initialize this class with a path, or by asking a folder to return a subfolder for a given name
  */
 // sourcery:AutoMockable
+// sourcery:skipPublicInit
 public protocol FolderProtocol: ItemProtocol, FileSystemIterable {
     
     /// sourcery:inline:Folder.AutoGenerateSelectiveProtocol

@@ -80,7 +80,7 @@ final class XCBuildTests: XCTestCase {
 
         let options = TestOptionsProtocolMock()
         options.project = projectUrl.path
-        options.destination = Destination.simulator(.iOS, name: "iPhone 7", os: .latest, id: nil)
+        options.destination = DestinationProtocolMock()
         options.scheme = "highwayiostest"
         
         let xcbuild = XCBuild(system: system, fileSystem: fs)
@@ -96,15 +96,15 @@ final class XCBuildTests: XCTestCase {
         var options = ArchiveOptions(
             scheme: "highwayiostest",
             project: "mock highway project",
-            destination: Destination.device(.iOS, name: nil, isGeneric: true, id: nil),
+            destination: DestinationProtocolMock(),
             archivePath: "Mock archive path"
         )
         
         let build = XCBuild(system: system, fileSystem: fs)
         try build.archive(using: options)
         
-        var exportArchiveOptions = ExportArchiveOptions(
-            archivePath: options.archivePath,
+        let exportArchiveOptions = ExportArchiveOptions(
+            archivePath: FolderProtocolMock(),
             exportPath: "mock export path"
         )
         
@@ -116,13 +116,16 @@ final class XCBuildTests: XCTestCase {
         profiles.addProfile(.named("highwayiostest Prod Profile"),
                             forBundleIdentifier: "de.christian-kienle.highway.e2e.ios")
         exportOptions.provisioningProfiles = profiles
-        let plist = try PlistFactory.plist(byWriting: exportOptions, to: fs)
-        exportArchiveOptions.exportOptionsPlist = plist
+        
         let export = try build.export(using: exportArchiveOptions)
-        print("ipaUrl: \(export.ipaUrl)")
+        
         let deliver = Deliver.Local(altool: Altool(system: system, fileSystem: fs))
-        try deliver.now(with: Deliver.Options(ipaUrl: export.ipaUrl, username: credentials.username, password: .plain(credentials.password), platform: .iOS))
-        print("DONE")
+        
+        try deliver.now(with: Deliver.Options(ipaUrl: FileProtocolMock(),
+                                              username: credentials.username,
+                                              password: .plain(credentials.password),
+                                              platform: .iOS)
+        )
     }
     
     func testArchive_and_Export_using_file_plist() throws {
@@ -134,28 +137,19 @@ final class XCBuildTests: XCTestCase {
         var options = ArchiveOptions(
             scheme: "highwayiostest",
             project: projectUrl.path,
-            destination: Destinationpr,
-        options.archivePath = try fs.uniqueTemporaryDirectoryUrl().appending("uud.xcarchive").path
+            destination: DestinationProtocolMock(),
+            archivePath: "Mock archive path"
+        )
         
         let build = XCBuild(system: system, fileSystem: fs)
         try build.archive(using: options)
         
-        var exportArchiveOptions = ExportArchiveOptions()
-        exportArchiveOptions.archivePath = options.archivePath
-        exportArchiveOptions.exportPath = try fs.uniqueTemporaryDirectoryUrl().path
+        let exportArchiveOptions = try ExportArchiveOptionsProtocolMock(from: DecoderMock<ExportArchiveOptions.CodingKeys>() as Decoder)
         
         
-        let plistUrl = Absolute(URL(fileURLWithPath: #file)
-            .deletingLastPathComponent()
-            .appendingPathComponent("Fixtures")
-            .appendingPathComponent("highwayiostest_export.plist"))
-        
-        exportArchiveOptions.exportOptionsPlist = try? PlistFactory.plist(byReading: plistUrl, in: fs)
         
         let export = try build.export(using: exportArchiveOptions)
-        print("ipaUrl: \(export.ipaUrl)")
         let deliver = Deliver.Local(altool: Altool(system: system, fileSystem: fs))
-        try deliver.now(with: Deliver.Options(ipaUrl: export.ipaUrl, username: credentials.username, password: .plain(credentials.password), platform: .iOS))
-        print("DONE")
+        try deliver.now(with: Deliver.Options(ipaUrl: export.ipa, username: credentials.username, password: .plain(credentials.password), platform: .iOS))
     }
 }

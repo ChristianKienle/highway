@@ -13,6 +13,7 @@ import Foundation
  *  You initialize this class with a path, or by asking a folder to return a file for a given name
  */
 // sourcery:AutoMockable
+// sourcery:skipPublicInit
 public protocol FileProtocol: ItemProtocol, FileSystemIterable {
     
     /// sourcery:inline:File.AutoGenerateSelectiveProtocol

@@ -38,6 +38,7 @@ import HWKit
 
 
 
+
 // MARK: - ArchiveOptionsProtocolMock
 
 public class ArchiveOptionsProtocolMock: ArchiveOptionsProtocol {
@@ -54,11 +55,11 @@ public class ArchiveOptionsProtocolMock: ArchiveOptionsProtocol {
         set(value) { underlyingProject = value }
     }
     var underlyingProject: String = "AutoMockable filled value"
-    public var destination: Destination {
+    public var destination: DestinationProtocol {
         get { return underlyingDestination }
         set(value) { underlyingDestination = value }
     }
-    var underlyingDestination: Destination!
+    var underlyingDestination: DestinationProtocol!
     public var archivePath: String {
         get { return underlyingArchivePath }
         set(value) { underlyingArchivePath = value }
@@ -74,6 +75,16 @@ public class ArchivePlistProtocolMock: ArchivePlistProtocol {
 
     public init() {}
 
+    public var applicationProperties: String {
+        get { return underlyingApplicationProperties }
+        set(value) { underlyingApplicationProperties = value }
+    }
+    var underlyingApplicationProperties: String = "AutoMockable filled value"
+    public var applicationPath: String {
+        get { return underlyingApplicationPath }
+        set(value) { underlyingApplicationPath = value }
+    }
+    var underlyingApplicationPath: String = "AutoMockable filled value"
 
 }
 
@@ -365,12 +376,14 @@ public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
         set(value) { underlyingExportPath = value }
     }
     var underlyingExportPath: String = "AutoMockable filled value"
-    public var exportOptionsPlist: PlistFactory<ExportOptions> {
-        get { return underlyingExportOptionsPlist }
-        set(value) { underlyingExportOptionsPlist = value }
-    }
-    var underlyingExportOptionsPlist: PlistFactory<ExportOptions>!
 
+    public required init(from decoder: Decoder) throws {
+        
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+    }
 }
 
 
@@ -397,6 +410,7 @@ public class ExportProtocolMock: ExportProtocol {
 // MARK: - FileProtocolMock
 
 public class FileProtocolMock: FileProtocol {
+
 
     public var localizedDate: String {
         get { return underlyingLocalizedDate }
@@ -789,6 +803,7 @@ public class FileProtocolMock: FileProtocol {
 
 public class FileSystemProtocolMock: FileSystemProtocol {
 
+
     public var temporaryFolder: Folder {
         get { return underlyingTemporaryFolder }
         set(value) { underlyingTemporaryFolder = value }
@@ -1061,6 +1076,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
 // MARK: - FolderProtocolMock
 
 public class FolderProtocolMock: FolderProtocol {
+
 
     public var path: String {
         get { return underlyingPath }
@@ -2456,7 +2472,6 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
 
 public class ItemProtocolMock: ItemProtocol {
 
-    public init() {}
 
     public var path: String {
         get { return underlyingPath }
@@ -2885,11 +2900,11 @@ public class TestOptionsProtocolMock: TestOptionsProtocol {
         set(value) { underlyingProject = value }
     }
     var underlyingProject: String = "AutoMockable filled value"
-    public var destination: Destination {
+    public var destination: DestinationProtocol {
         get { return underlyingDestination }
         set(value) { underlyingDestination = value }
     }
-    var underlyingDestination: Destination!
+    var underlyingDestination: DestinationProtocol!
 
 }
 

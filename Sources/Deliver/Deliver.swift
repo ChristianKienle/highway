@@ -17,13 +17,13 @@ public final class Deliver: AutoGenerateProtocol {
 
 extension Deliver {
     public struct Options {
-        public init(ipaUrl: Absolute, username: String, password: Password, platform: Platform = .iOS) {
+        public init(ipaUrl: FileProtocol, username: String, password: Password, platform: Platform = .iOS) {
             self.ipaUrl = ipaUrl
             self.username = username
             self.password = password
             self.platform = platform
         }
-        public let ipaUrl: Absolute
+        public let ipaUrl: FileProtocol
         public let platform: Platform
         public let username: String // apple id username
         public let password: Password

@@ -6,7 +6,7 @@ public protocol ArchiveOptionsProtocol: AutoMockable {
     /// sourcery:inline:ArchiveOptions.AutoGenerateProtocol
     var scheme: String { get }
     var project: String { get }
-    var destination: Destination { get }
+    var destination: DestinationProtocol { get }
     var archivePath: String { get }
     /// sourcery:end
 }
@@ -17,7 +17,7 @@ public struct ArchiveOptions: ArchiveOptionsProtocol, AutoGenerateProtocol {
     // MARK: - Properties
     public let scheme: String // -scheme
     public let project: String // -project [sub-type: path]
-    public let destination: Destination // -destination
+    public let destination: DestinationProtocol // -destination
     
     // Option: -archivePath
     // Type: path
@@ -25,7 +25,7 @@ public struct ArchiveOptions: ArchiveOptionsProtocol, AutoGenerateProtocol {
     public let archivePath: String
     
     // MARK: - Init
-    public init(scheme: String, project: String, destination: Destination, archivePath: String) {
+    public init(scheme: String, project: String, destination: DestinationProtocol, archivePath: String) {
         self.scheme = scheme
         self.project = project
         self.destination = destination

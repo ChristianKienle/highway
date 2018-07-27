@@ -25,6 +25,8 @@ public protocol DestinationFactoryProtocol: AutoMockable {
 
 public struct DestinationFactory: AutoGenerateProtocol {
     
+    public init() { }
+    
     public func macOS(architecture: Destination.Architecture) -> Destination {
         return Destination(
             [

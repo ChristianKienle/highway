@@ -7,6 +7,7 @@
 import Foundation
 import os
 import XCBuild
+import Task
 
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
@@ -116,6 +117,90 @@ open class ArchiveProtocolMock: ArchiveProtocol {
 }
 
 
+// MARK: - ArgumentExecutableProtocolMock
+
+open class ArgumentExecutableProtocolMock: ArgumentExecutableProtocol {
+
+    public init() {}
+
+
+    //MARK: - arguments
+
+    public  var argumentsThrowableError: Error?
+    public var argumentsCallsCount = 0
+    public var argumentsCalled: Bool {
+        return argumentsCallsCount > 0
+    }
+    public var argumentsReturnValue: Arguments?
+    public var argumentsClosure: (() throws -> Arguments)? = nil
+
+    open func arguments() throws -> Arguments {
+
+        if let error = argumentsThrowableError {
+            throw error
+        }
+
+
+      argumentsCallsCount += 1
+
+
+      guard let closureReturn = argumentsClosure else {
+          guard let returnValue = argumentsReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    arguments
+                    but this case(s) is(are) not implemented in
+                    ArgumentExecutableProtocol for method argumentsClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - executableFile
+
+    public  var executableFileThrowableError: Error?
+    public var executableFileCallsCount = 0
+    public var executableFileCalled: Bool {
+        return executableFileCallsCount > 0
+    }
+    public var executableFileReturnValue: FileProtocol?
+    public var executableFileClosure: (() throws -> FileProtocol)? = nil
+
+    open func executableFile() throws -> FileProtocol {
+
+        if let error = executableFileThrowableError {
+            throw error
+        }
+
+
+      executableFileCallsCount += 1
+
+
+      guard let closureReturn = executableFileClosure else {
+          guard let returnValue = executableFileReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    executableFile
+                    but this case(s) is(are) not implemented in
+                    ExecutableProtocol for method executableFileClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+}
+
+
 // MARK: - BuildResultProtocolMock
 
 open class BuildResultProtocolMock: BuildResultProtocol {
@@ -132,6 +217,31 @@ open class BuildResultProtocolMock: BuildResultProtocol {
         set(value) { underlyingArtifact = value }
     }
     public var underlyingArtifact: SwiftBuildSystem.Artifact!
+
+}
+
+
+// MARK: - ContextProtocolMock
+
+open class ContextProtocolMock: ContextProtocol {
+
+    public init() {}
+
+    public var fileSystem: FileSystemProtocol {
+        get { return underlyingFileSystem }
+        set(value) { underlyingFileSystem = value }
+    }
+    public var underlyingFileSystem: FileSystemProtocol!
+    public var executableProvider: ExecutableProviderProtocol {
+        get { return underlyingExecutableProvider }
+        set(value) { underlyingExecutableProvider = value }
+    }
+    public var underlyingExecutableProvider: ExecutableProviderProtocol!
+    public var executor: TaskExecutorProtocol {
+        get { return underlyingExecutor }
+        set(value) { underlyingExecutor = value }
+    }
+    public var underlyingExecutor: TaskExecutorProtocol!
 
 }
 
@@ -313,12 +423,65 @@ open class DestinationProtocolMock: DestinationProtocol {
 }
 
 
-// MARK: - ExecutableProviderMock
+// MARK: - ExecutableProtocolMock
 
-open class ExecutableProviderMock: ExecutableProvider {
+open class ExecutableProtocolMock: ExecutableProtocol {
 
     public init() {}
 
+
+    //MARK: - executableFile
+
+    public  var executableFileThrowableError: Error?
+    public var executableFileCallsCount = 0
+    public var executableFileCalled: Bool {
+        return executableFileCallsCount > 0
+    }
+    public var executableFileReturnValue: FileProtocol?
+    public var executableFileClosure: (() throws -> FileProtocol)? = nil
+
+    open func executableFile() throws -> FileProtocol {
+
+        if let error = executableFileThrowableError {
+            throw error
+        }
+
+
+      executableFileCallsCount += 1
+
+
+      guard let closureReturn = executableFileClosure else {
+          guard let returnValue = executableFileReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    executableFile
+                    but this case(s) is(are) not implemented in
+                    ExecutableProtocol for method executableFileClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+}
+
+
+// MARK: - ExecutableProviderProtocolMock
+
+open class ExecutableProviderProtocolMock: ExecutableProviderProtocol {
+
+    public init() {}
+
+    public var searchedUrls: [FolderProtocol] = []
+    public var fileSystem: FileSystemProtocol {
+        get { return underlyingFileSystem }
+        set(value) { underlyingFileSystem = value }
+    }
+    public var underlyingFileSystem: FileSystemProtocol!
 
     //MARK: - executable
 
@@ -327,11 +490,11 @@ open class ExecutableProviderMock: ExecutableProvider {
     public var executableWithCalled: Bool {
         return executableWithCallsCount > 0
     }
-    public var executableWithReceivedName: String?
+    public var executableWithReceivedExecutableName: String?
     public var executableWithReturnValue: FileProtocol?
     public var executableWithClosure: ((String) throws -> FileProtocol)? = nil
 
-    open func executable(with name: String) throws -> FileProtocol {
+    open func executable(with executableName: String) throws -> FileProtocol {
 
         if let error = executableWithThrowableError {
             throw error
@@ -339,7 +502,7 @@ open class ExecutableProviderMock: ExecutableProvider {
 
 
       executableWithCallsCount += 1
-        executableWithReceivedName = name
+        executableWithReceivedExecutableName = executableName
 
 
       guard let closureReturn = executableWithClosure else {
@@ -348,7 +511,7 @@ open class ExecutableProviderMock: ExecutableProvider {
                 🧙‍♂️ 🔥asked to return a value for name parameters:
                     executableWith
                     but this case(s) is(are) not implemented in
-                    ExecutableProvider for method executableWithClosure.
+                    ExecutableProviderProtocol for method executableWithClosure.
                 """
               let error = SourceryMockError.implementErrorCaseFor(message)
                  throw error
@@ -356,7 +519,7 @@ open class ExecutableProviderMock: ExecutableProvider {
           return returnValue
       }
 
-      return try closureReturn(name)
+      return try closureReturn(executableName)
     }
 
 }
@@ -2504,6 +2667,116 @@ open class HighwayBundleProtocolMock: HighwayBundleProtocol {
 }
 
 
+// MARK: - HomeBundleProtocolMock
+
+open class HomeBundleProtocolMock: HomeBundleProtocol {
+
+    public init() {}
+
+    public var url: FolderProtocol {
+        get { return underlyingUrl }
+        set(value) { underlyingUrl = value }
+    }
+    public var underlyingUrl: FolderProtocol!
+    public var fileSystem: FileSystemProtocol {
+        get { return underlyingFileSystem }
+        set(value) { underlyingFileSystem = value }
+    }
+    public var underlyingFileSystem: FileSystemProtocol!
+    public var configuration: HomeBundle.Configuration {
+        get { return underlyingConfiguration }
+        set(value) { underlyingConfiguration = value }
+    }
+    public var underlyingConfiguration: HomeBundle.Configuration!
+    public var localCloneUrl: FolderProtocol {
+        get { return underlyingLocalCloneUrl }
+        set(value) { underlyingLocalCloneUrl = value }
+    }
+    public var underlyingLocalCloneUrl: FolderProtocol!
+
+    //MARK: - missingComponents
+
+    public var missingComponentsCallsCount = 0
+    public var missingComponentsCalled: Bool {
+        return missingComponentsCallsCount > 0
+    }
+    public var missingComponentsReturnValue: Set<HomeBundle.Component>?
+    public var missingComponentsClosure: (() -> Set<HomeBundle.Component>)? = nil
+
+    open func missingComponents() -> Set<HomeBundle.Component> {
+
+      missingComponentsCallsCount += 1
+
+
+      guard let closureReturn = missingComponentsClosure else {
+          guard let returnValue = missingComponentsReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    missingComponents
+                    but this case(s) is(are) not implemented in
+                    HomeBundleProtocol for method missingComponentsClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
+              return missingComponentsReturnValue!
+          }
+          return returnValue
+      }
+
+      return closureReturn()
+    }
+
+}
+
+
+// MARK: - HomeBundleUpdaterProtocolMock
+
+open class HomeBundleUpdaterProtocolMock: HomeBundleUpdaterProtocol {
+
+    public init() {}
+
+    public var homeBundle: HomeBundleProtocol {
+        get { return underlyingHomeBundle }
+        set(value) { underlyingHomeBundle = value }
+    }
+    public var underlyingHomeBundle: HomeBundleProtocol!
+    public var context: ContextProtocol {
+        get { return underlyingContext }
+        set(value) { underlyingContext = value }
+    }
+    public var underlyingContext: ContextProtocol!
+    public var git: GitToolProtocol {
+        get { return underlyingGit }
+        set(value) { underlyingGit = value }
+    }
+    public var underlyingGit: GitToolProtocol!
+
+    //MARK: - update
+
+    public  var updateThrowableError: Error?
+    public var updateCallsCount = 0
+    public var updateCalled: Bool {
+        return updateCallsCount > 0
+    }
+    public var updateClosure: (() throws -> Void)? = nil
+
+    open func update() throws {
+
+        if let error = updateThrowableError {
+            throw error
+        }
+
+
+      updateCallsCount += 1
+
+
+      try updateClosure?()
+
+    }
+
+}
+
+
 // MARK: - ItemProtocolMock
 
 open class ItemProtocolMock: ItemProtocol {
@@ -2723,6 +2996,54 @@ open class KeychainProtocolMock: KeychainProtocol {
       }
 
       return try closureReturn(query)
+    }
+
+}
+
+
+// MARK: - SelfUpdaterProtocolMock
+
+open class SelfUpdaterProtocolMock: SelfUpdaterProtocol {
+
+    public init() {}
+
+    public var homeBundle: HomeBundleProtocol {
+        get { return underlyingHomeBundle }
+        set(value) { underlyingHomeBundle = value }
+    }
+    public var underlyingHomeBundle: HomeBundleProtocol!
+    public var context: ContextProtocol {
+        get { return underlyingContext }
+        set(value) { underlyingContext = value }
+    }
+    public var underlyingContext: ContextProtocol!
+    public var git: GitTool {
+        get { return underlyingGit }
+        set(value) { underlyingGit = value }
+    }
+    public var underlyingGit: GitTool!
+
+    //MARK: - update
+
+    public  var updateThrowableError: Error?
+    public var updateCallsCount = 0
+    public var updateCalled: Bool {
+        return updateCallsCount > 0
+    }
+    public var updateClosure: (() throws -> Void)? = nil
+
+    open func update() throws {
+
+        if let error = updateThrowableError {
+            throw error
+        }
+
+
+      updateCallsCount += 1
+
+
+      try updateClosure?()
+
     }
 
 }
@@ -3044,6 +3365,80 @@ open class TestOptionsProtocolMock: TestOptionsProtocol {
         set(value) { underlyingResultBundlePath = value }
     }
     public var underlyingResultBundlePath: String = "AutoMockable filled value"
+
+    //MARK: - arguments
+
+    public  var argumentsThrowableError: Error?
+    public var argumentsCallsCount = 0
+    public var argumentsCalled: Bool {
+        return argumentsCallsCount > 0
+    }
+    public var argumentsReturnValue: Arguments?
+    public var argumentsClosure: (() throws -> Arguments)? = nil
+
+    open func arguments() throws -> Arguments {
+
+        if let error = argumentsThrowableError {
+            throw error
+        }
+
+
+      argumentsCallsCount += 1
+
+
+      guard let closureReturn = argumentsClosure else {
+          guard let returnValue = argumentsReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    arguments
+                    but this case(s) is(are) not implemented in
+                    ArgumentExecutableProtocol for method argumentsClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
+
+    //MARK: - executableFile
+
+    public  var executableFileThrowableError: Error?
+    public var executableFileCallsCount = 0
+    public var executableFileCalled: Bool {
+        return executableFileCallsCount > 0
+    }
+    public var executableFileReturnValue: FileProtocol?
+    public var executableFileClosure: (() throws -> FileProtocol)? = nil
+
+    open func executableFile() throws -> FileProtocol {
+
+        if let error = executableFileThrowableError {
+            throw error
+        }
+
+
+      executableFileCallsCount += 1
+
+
+      guard let closureReturn = executableFileClosure else {
+          guard let returnValue = executableFileReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    executableFile
+                    but this case(s) is(are) not implemented in
+                    ExecutableProtocol for method executableFileClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn()
+    }
 
 }
 

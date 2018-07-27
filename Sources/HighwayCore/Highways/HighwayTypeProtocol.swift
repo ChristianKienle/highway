@@ -12,7 +12,7 @@ public struct Example: Codable {
     }
 }
 
-public protocol HighwayType: Hashable {
+public protocol HighwayTypeProtocol: Hashable {
     // MARK: - Init
     init?(name: String)
 
@@ -22,20 +22,20 @@ public protocol HighwayType: Hashable {
     var examples: [Example] { get }
 }
 
-extension HighwayType {
+extension HighwayTypeProtocol {
     var examples: [Example] {
         return []
     }
 }
 
 /// Default Implementation
-extension HighwayType {
+extension HighwayTypeProtocol {
     public var hashValue: Int { return name.hashValue }
     var usage: String { return "No usage provided." }
 }
 
 /// Default Implementation for RawRepresentable (enums in most cases)
-public extension HighwayType where Self: RawRepresentable, Self.RawValue == String {
+public extension HighwayTypeProtocol where Self: RawRepresentable, Self.RawValue == String {
     // MARK: - Init
     init?(name: String) {
         self.init(rawValue: name)

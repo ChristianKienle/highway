@@ -1,7 +1,7 @@
 import Foundation
 import HighwayCore
 
-enum AppHighway: String, HighwayType {
+enum AppHighway: String, HighwayTypeProtocol {
     case initialize
     case help
     case generate

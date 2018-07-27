@@ -8,12 +8,12 @@ import POSIX
 
 public final class SwiftBuildSystem {
     // MARK: - Properties
-    public let context: Context
-    public var executableProvider: ExecutableProvider { return context.executableProvider }
+    public let context: ContextProtocol
+    public var executableProvider: ExecutableProviderProtocol { return context.executableProvider }
     public var fileSystem: FileSystemProtocol { return context.fileSystem }
     
     // MARK: - Init
-    public init(context: Context = .local()) {
+    public init(context: ContextProtocol) {
         self.context = context
     }
     
@@ -106,14 +106,14 @@ public extension SwiftBuildSystem {
 
 extension SwiftOptions {
     //--build-path
-    func task(fileSystem: FileSystemProtocol, executableProvider: ExecutableProvider) throws -> Task {
+    func task(fileSystem: FileSystemProtocol, executableProvider: ExecutableProviderProtocol) throws -> Task {
         let arguments = ["swift"] + _processArguments
         let task = try Task(commandName: "xcrun", provider: executableProvider)
         task.arguments = arguments
         task.currentDirectoryUrl = projectDirectory
         return task
     }
-    func showBinPathTask(fileSystem: FileSystemProtocol, executableProvider: ExecutableProvider) throws -> Task {
+    func showBinPathTask(fileSystem: FileSystemProtocol, executableProvider: ExecutableProviderProtocol) throws -> Task {
         let arguments = ["swift"] + _processArgumentsWithoutSettingVerbosity + ["--show-bin-path"]
         let task = try Task(commandName: "xcrun", provider: executableProvider)
         task.arguments = arguments

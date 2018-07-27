@@ -10,12 +10,12 @@ import SourceryAutoProtocols
 /// you no longer have to initialize it with both but rather use the System
 /// class for that. It is just a little bit of convenience.
 public protocol SystemProtocol: AutoMockable {
-    @discardableResult
-    func task(named name: String) throws -> Task
-    @discardableResult
-    func execute(_ task: Task) throws -> Bool
-    @discardableResult
-    func launch(_ task: Task, wait: Bool) throws -> Bool
+    
+    /// sourcery:inline:LocalSystem.AutoGenerateProtocol
+    @discardableResult func task(named name: String) throws -> Task
+    @discardableResult func execute(_ task: Task) throws -> Bool
+    @discardableResult func launch(_ task: Task, wait: Bool) throws -> Bool
+    /// sourcery:end
 }
 
 public extension SystemProtocol {

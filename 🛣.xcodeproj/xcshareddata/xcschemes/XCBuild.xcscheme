@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "highway::POSIX"
+               BuildableName = "POSIX.framework"
+               BlueprintName = "POSIX"
+               ReferencedContainer = "container:&#x1f6e3;.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "highway::Arguments"
                BuildableName = "Arguments.framework"
                BlueprintName = "Arguments"
@@ -126,20 +140,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "highway::POSIX"
-               BuildableName = "POSIX.framework"
-               BlueprintName = "POSIX"
-               ReferencedContainer = "container:&#x1f6e3;.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "highway::Result"
                BuildableName = "Result.framework"
                BlueprintName = "Result"
@@ -196,6 +196,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "highway::XCBuild"
+               BuildableName = "XCBuild.framework"
+               BlueprintName = "XCBuild"
+               ReferencedContainer = "container:&#x1f6e3;.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "highway::Terminal"
                BuildableName = "Terminal.framework"
                BlueprintName = "Terminal"
@@ -227,20 +241,6 @@
                BlueprintIdentifier = "highway::ZFile"
                BuildableName = "ZFile.framework"
                BlueprintName = "ZFile"
-               ReferencedContainer = "container:&#x1f6e3;.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "highway::XCBuild"
-               BuildableName = "XCBuild.framework"
-               BlueprintName = "XCBuild"
                ReferencedContainer = "container:&#x1f6e3;.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

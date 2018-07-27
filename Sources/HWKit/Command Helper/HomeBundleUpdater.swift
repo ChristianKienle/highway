@@ -4,23 +4,35 @@ import ZFile
 import Url
 import Task
 import Git
+import SourceryAutoProtocols
+
+public protocol HomeBundleUpdaterProtocol: AutoMockable {
+    
+    /// sourcery:inline:HomeBundleUpdater.AutoGenerateProtocol
+    var homeBundle: HomeBundleProtocol { get }
+    var context: ContextProtocol { get }
+    var git: GitToolProtocol { get }
+
+    func update() throws 
+    /// sourcery:end
+}
 
 /// Updates the dependencies located in the highway home directory.
 /// The home directory contains a mirrored working copy of the
 /// highway repository. This copy is updated by this class.
 /// The highway binary is not updated.
-public final class HomeBundleUpdater {
+public final class HomeBundleUpdater: AutoMockable, AutoGenerateProtocol {
     // MARK: - Init
-    public init(homeBundle: HomeBundle, context: Context = .local(), git: GitTool) {
+    public init(homeBundle: HomeBundle, context: ContextProtocol? = nil, git: GitTool) throws {
         self.homeBundle = homeBundle
-        self.context = context
+        self.context = (context == nil) ? try Context() : context!
         self.git = git
     }
     
     // MARK: - Properties
-    let homeBundle: HomeBundle
-    let context: Context
-    let git: GitTool
+    let homeBundle: HomeBundleProtocol
+    let context: ContextProtocol
+    let git: GitToolProtocol
     
     // MARK: - Command
     public func update() throws {

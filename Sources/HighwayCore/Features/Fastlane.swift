@@ -10,7 +10,7 @@ public final class Fastlane {
     public let context: Context
 
     // MARK: - Init
-    public init(context: Context = .local()) {
+    public init(context: Context) {
         self.context = context
     }
     

@@ -3,8 +3,22 @@ import HighwayCore
 import ZFile
 import Url
 import os
+import SourceryAutoProtocols
 
-public final class HomeBundle {
+public protocol HomeBundleProtocol: AutoMockable {
+    
+    /// sourcery:inline:HomeBundle.AutoGenerateProtocol
+    var url: FolderProtocol { get }
+    var fileSystem: FileSystemProtocol { get }
+    var configuration: HomeBundle.Configuration { get }
+    var localCloneUrl: FolderProtocol { get }
+
+    func missingComponents()-> Set<HomeBundle.Component>
+    
+    /// sourcery:end
+}
+
+public final class HomeBundle: HomeBundleProtocol, AutoGenerateProtocol {
     // MARK: - Init
     public init(url: FolderProtocol, fileSystem fs: FileSystemProtocol, configuration: Configuration = .standard) throws {
 

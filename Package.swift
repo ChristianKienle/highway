@@ -81,7 +81,7 @@ let package = Package(
         //             For example the current working directory of a Task before it is executed.
         // Arguments: A Task has Arguments.
         // Terminal: We have to log
-        .target(name: "Task", dependencies: ["Terminal", "Url", "ZFile", "Errors", "Result", "Arguments", "SourceryAutoProtocols"]),
+        .target(name: "Task", dependencies: ["Terminal", "Url", "ZFile", "Errors", "Result", "Arguments", "SourceryAutoProtocols", "POSIX"]),
 
         // Tests
         .testTarget(name: "DeliverTests", dependencies: ["ZFile", "Arguments"]),

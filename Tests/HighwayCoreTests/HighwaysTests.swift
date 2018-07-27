@@ -240,6 +240,6 @@ extension Invocation: InvocationProvider {
     }
 }
 
-enum MockHighway: String, HighwayType {
+enum MockHighway: String, HighwayTypeProtocol {
     case build, test, clean, release
 }

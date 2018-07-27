@@ -10,14 +10,14 @@ public enum PrivateHighway {
 
 public typealias HighwayBody = (Invocation) throws -> Any?
 
-open class _Highway<T: HighwayType> {
+open class _Highway<T: HighwayTypeProtocol> {
     // MARK: - Types
     public typealias ErrorHandler = (Error) -> ()
     public typealias EmptyHandler = () throws -> ()
     public typealias UnrecognizedCommandHandler = (_ arguments: Arguments) throws -> ()
 
     // MARK: - Init
-    public init(_ highwayType: T.Type) {
+    public init(_ highwayType: T.Type) throws {
         setupHighways()
     }
     
@@ -139,7 +139,7 @@ open class _Highway<T: HighwayType> {
         fflush(stdout)
     }
     
-    public class Raw<T: HighwayType> {
+    public class Raw<T: HighwayTypeProtocol> {
         // MARK: - Types
         typealias HighwayBody = (Invocation) throws -> Any?
         

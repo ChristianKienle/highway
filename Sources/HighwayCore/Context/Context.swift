@@ -2,18 +2,30 @@ import Foundation
 import ZFile
 import Task
 import Terminal
+import SourceryAutoProtocols
 
-open class Context {
+
+public protocol ContextProtocol: AutoMockable {
+    
+    /// sourcery:inline:Context.AutoGenerateProtocol
+    var fileSystem: FileSystemProtocol { get }
+    var executableProvider: ExecutableProviderProtocol { get }
+    var executor: TaskExecutorProtocol { get }
+    
+    /// sourcery:end
+}
+
+
+open class Context: ContextProtocol, AutoGenerateProtocol {
     // MARK: - Convenience
-    public class func local() -> Context {
-        let fileSystem = FileSystem()
-        let provider = SystemExecutableProvider.local()
-        let executor = SystemExecutor(ui: Terminal.shared)
-        return Context(executableProvider: provider, executor: executor, fileSystem: fileSystem)
+    public init() throws {
+        self.fileSystem = FileSystem()
+        self.executableProvider = try SystemExecutableProvider()
+        self.executor = SystemExecutor(ui: Terminal.shared)
     }
     
     // MARK: - Init
-    public init(executableProvider: ExecutableProvider, executor: TaskExecutorProtocol, fileSystem: FileSystemProtocol) {
+    public init(executableProvider: ExecutableProviderProtocol, executor: TaskExecutorProtocol, fileSystem: FileSystemProtocol) {
         self.executableProvider = executableProvider
         self.executor = executor
         self.fileSystem = fileSystem
@@ -21,6 +33,7 @@ open class Context {
     
     // MARK: - Properties
     public let fileSystem: FileSystemProtocol
-    public let executableProvider: ExecutableProvider
+    public let executableProvider: ExecutableProviderProtocol
+    
     public private(set) var executor: TaskExecutorProtocol
 }

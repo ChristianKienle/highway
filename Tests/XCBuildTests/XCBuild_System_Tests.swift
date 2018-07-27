@@ -31,14 +31,14 @@ final class XCBuildTests: XCTestCase {
     
     // MARK: - Helper
     let fixturesDir = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("Fixtures")
-    let system = LocalSystem.local()
+    var system = try! LocalSystem()
     let fs = FileSystemProtocolMock()
     
     var credentials: Credentials = Credentials(username: "", password: "")
     
     struct Credentials { let username: String; let password: String }
     private func retrieveCredentials() throws -> Credentials {
-        let keychain = Keychain(system: LocalSystem.local())
+        let keychain = Keychain(system: try LocalSystem())
         do {
             let password = try keychain.password(matching: .init(account: "HIGHWAY_DELIVER_PASSWORD", service: "HIGHWAY_DELIVER_PASSWORD"))
             let username = try keychain.password(matching: .init(account: "HIGHWAY_DELIVER_USERNAME", service: "HIGHWAY_DELIVER_USERNAME"))
@@ -72,9 +72,10 @@ final class XCBuildTests: XCTestCase {
     }
     // MARK: - Tests
     func test_test_action() throws {
-        let provider = SystemExecutableProvider.local()
-        provider.searchedUrls += ["/usr/local/bin/"] // a bit hacky - but that enables xcpretty
-        system.executableProvider = provider
+        let provider = try SystemExecutableProvider()
+        provider.searchedUrls += [try Folder(path: "/usr/local/bin/")] // a bit hacky - but that enables xcpretty
+        system = try LocalSystem(executableProvider: provider)
+        
         let projectRoot = fixturesDir.appendingPathComponent("highwayiostest_objc")
         let projectUrl = projectRoot.appendingPathComponent("highwayiostest.xcodeproj")
 

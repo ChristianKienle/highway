@@ -8,15 +8,25 @@ import Deliver
 import POSIX
 import Git
 
-open class Highway<T: HighwayType>: _Highway<T> {
+open class Highway<T: HighwayTypeProtocol>: _Highway<T> {
     public let fileSystem: FileSystemProtocol = FileSystem()
-    public let context = Context.local()
-    public let cwd = abscwd()
-    public let system = LocalSystem.local()
+    public let context: ContextProtocol
+    public let cwd: FolderProtocol
+    public let system: SystemProtocol
     public let ui: UIProtocol = Terminal.shared
+    
+    public override init(_ highwayType: T.Type) throws  {
+        context = try Context()
+        cwd = FileSystem().currentFolder
+        system = try LocalSystem()
+        
+        try super.init(highwayType)
+    }
+    
     public lazy var git: GitTool = {
         return GitTool(system: system)
     }()
+    
     public lazy var deliver: Deliver.Local = {
         return Deliver.Local(altool: Altool(system: system, fileSystem: fileSystem))
     }()

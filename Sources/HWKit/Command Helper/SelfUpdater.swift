@@ -4,20 +4,33 @@ import ZFile
 import Task
 import Arguments
 import Git
+import SourceryAutoProtocols
+
+public protocol SelfUpdaterProtocol: AutoMockable {
+    
+    /// sourcery:inline:SelfUpdater.AutoGenerateProtocol
+    var homeBundle: HomeBundleProtocol { get }
+    var context: ContextProtocol { get }
+    var git: GitTool { get }
+
+    func update() throws 
+    /// sourcery:end
+    
+}
 
 /// Updates the highway executable and the highway home directory.
 /// The highway home directory is located at ~/.highway. The bootstrap
 /// script finds it automatically.
-public final class SelfUpdater {
-    public init(homeBundle: HomeBundle, git: GitTool, context: Context = .local()) {
+public final class SelfUpdater:  AutoGenerateProtocol {
+    public init(homeBundle: HomeBundle, git: GitTool, context: Context?) throws {
         self.homeBundle = homeBundle
-        self.context = context
+        self.context = (context == nil) ? try Context() : context!
         self.git = git
     }
     
     // MARK: - Properties
-    public let homeBundle: HomeBundle
-    public let context: Context
+    public let homeBundle: HomeBundleProtocol
+    public let context: ContextProtocol
     public let git: GitTool
     
     public func update() throws {

@@ -1,6 +1,7 @@
 import Foundation
-import Url
+import ZFile
 import POSIX
+import Url
 
 /// Parser that extracts urls from a String-Array of paths.
 /// Usually used to parse the contents of the PATH-environment
@@ -10,28 +11,28 @@ import POSIX
 /// standardizes the path).
 public struct PathEnvironmentParser {
     // MARK: - Convenience
-    public static func local() -> PathEnvironmentParser {
+    public static func local() throws -> PathEnvironmentParser {
         let env = ProcessInfo.processInfo.environment
         let path = env["PATH"] ?? ""
-        return self.init(value: path, currentDirectoryUrl: abscwd())
+        return try self.init(value: path, currentDirectoryUrl: FileSystem().currentFolder)
     }
     
     // MARK: - Init
-    public init(value: String, currentDirectoryUrl: Absolute) {
+    public init(value: String, currentDirectoryUrl: FolderProtocol) throws {
         let paths = value.components(separatedBy: ":")
-        self.urls = paths.compactMap { path in
+        self.urls = try paths.compactMap { path in
             guard path != "" else { return nil }
             guard path != "." else { return currentDirectoryUrl }
             
             let isRelative = path.hasPrefix("/") == false
-            guard isRelative else { return Absolute(path) }
-            return Absolute(path: path, relativeTo: currentDirectoryUrl)
+            guard isRelative else { return try Folder(path: path) }
+            return try currentDirectoryUrl.subfolder(atPath: path)
         }
         self.currentDirectoryUrl = currentDirectoryUrl
     }
     
     // MARK: - Properties
-    public let currentDirectoryUrl: Absolute
-    public var urls: [Absolute]
+    public let currentDirectoryUrl: FolderProtocol
+    public var urls: [FolderProtocol]
 }
 

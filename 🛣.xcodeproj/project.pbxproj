@@ -65,6 +65,9 @@
 		FD326D9F210A0F5F00AE3A98 /* HighwayCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::HighwayCore::Product" /* HighwayCore.framework */; };
 		FD326DA1210A134000AE3A98 /* DestinationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326DA0210A134000AE3A98 /* DestinationFactory.swift */; };
 		FD326DA3210B125200AE3A98 /* DecoderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326DA2210B125200AE3A98 /* DecoderMock.swift */; };
+		FDAC932A210B595100B0D045 /* POSIX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::POSIX::Product" /* POSIX.framework */; };
+		FDAC9351210B7D4A00B0D045 /* TerminalTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC9350210B7D4A00B0D045 /* TerminalTasks.swift */; };
+		FDAC9353210B7F1E00B0D045 /* ExcecutableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC932C210B5C4500B0D045 /* ExcecutableProtocol.swift */; };
 		OBJ_1011 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_126 /* File.swift */; };
 		OBJ_1012 /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_127 /* FileSystem.swift */; };
 		OBJ_1013 /* FileSystemInterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_128 /* FileSystemInterator.swift */; };
@@ -204,7 +207,7 @@
 		OBJ_500 /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_36 /* OrderedDictionary.swift */; };
 		OBJ_501 /* String+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* String+Convenience.swift */; };
 		OBJ_502 /* HighwayDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_39 /* HighwayDescription.swift */; };
-		OBJ_503 /* HighwayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* HighwayType.swift */; };
+		OBJ_503 /* HighwayTypeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* HighwayTypeProtocol.swift */; };
 		OBJ_504 /* Invocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_42 /* Invocation.swift */; };
 		OBJ_505 /* InvocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_43 /* InvocationProvider.swift */; };
 		OBJ_506 /* _Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_44 /* _Highway.swift */; };
@@ -301,7 +304,6 @@
 		OBJ_716 /* Arguments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::Arguments::Product" /* Arguments.framework */; };
 		OBJ_717 /* Errors.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::Errors::Product" /* Errors.framework */; };
 		OBJ_718 /* SourceryAutoProtocols.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::SourceryAutoProtocols::Product" /* SourceryAutoProtocols.framework */; };
-		OBJ_737 /* ExecutableProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_134 /* ExecutableProvider.swift */; };
 		OBJ_738 /* PathEnvironmentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_135 /* PathEnvironmentParser.swift */; };
 		OBJ_739 /* SystemExecutableProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_136 /* SystemExecutableProvider.swift */; };
 		OBJ_740 /* SystemExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_137 /* SystemExecutor.swift */; };
@@ -2241,6 +2243,8 @@
 		FD326D9B210A094300AE3A98 /* BuildResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildResult.swift; sourceTree = "<group>"; };
 		FD326DA0210A134000AE3A98 /* DestinationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationFactory.swift; sourceTree = "<group>"; };
 		FD326DA2210B125200AE3A98 /* DecoderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderMock.swift; sourceTree = "<group>"; };
+		FDAC932C210B5C4500B0D045 /* ExcecutableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExcecutableProtocol.swift; sourceTree = "<group>"; };
+		FDAC9350210B7D4A00B0D045 /* TerminalTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerminalTasks.swift; sourceTree = "<group>"; };
 		OBJ_10 /* Archive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Archive.swift; sourceTree = "<group>"; };
 		OBJ_100 /* AutoMockable.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoMockable.generated.swift; sourceTree = "<group>"; };
 		OBJ_102 /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
@@ -2268,7 +2272,6 @@
 		OBJ_129 /* FileSystemSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemSequence.swift; sourceTree = "<group>"; };
 		OBJ_130 /* FilesGeneral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesGeneral.swift; sourceTree = "<group>"; };
 		OBJ_131 /* Folder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folder.swift; sourceTree = "<group>"; };
-		OBJ_134 /* ExecutableProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutableProvider.swift; sourceTree = "<group>"; };
 		OBJ_135 /* PathEnvironmentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathEnvironmentParser.swift; sourceTree = "<group>"; };
 		OBJ_136 /* SystemExecutableProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemExecutableProvider.swift; sourceTree = "<group>"; };
 		OBJ_137 /* SystemExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemExecutor.swift; sourceTree = "<group>"; };
@@ -2330,7 +2333,7 @@
 		OBJ_36 /* OrderedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
 		OBJ_37 /* String+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Convenience.swift"; sourceTree = "<group>"; };
 		OBJ_39 /* HighwayDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighwayDescription.swift; sourceTree = "<group>"; };
-		OBJ_40 /* HighwayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighwayType.swift; sourceTree = "<group>"; };
+		OBJ_40 /* HighwayTypeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighwayTypeProtocol.swift; sourceTree = "<group>"; };
 		OBJ_42 /* Invocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invocation.swift; sourceTree = "<group>"; };
 		OBJ_43 /* InvocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationProvider.swift; sourceTree = "<group>"; };
 		OBJ_44 /* _Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _Highway.swift; sourceTree = "<group>"; };
@@ -2712,6 +2715,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+				FDAC932A210B595100B0D045 /* POSIX.framework in Frameworks */,
 				OBJ_752 /* Arguments.framework in Frameworks */,
 				OBJ_753 /* Result.framework in Frameworks */,
 				OBJ_754 /* Errors.framework in Frameworks */,
@@ -2945,6 +2949,8 @@
 				OBJ_139 /* LocalSystem.swift */,
 				OBJ_140 /* Model */,
 				OBJ_148 /* SystemProtocol.swift */,
+				FDAC9350210B7D4A00B0D045 /* TerminalTasks.swift */,
+				FDAC932C210B5C4500B0D045 /* ExcecutableProtocol.swift */,
 			);
 			name = Task;
 			path = Sources/Task;
@@ -2953,7 +2959,6 @@
 		OBJ_133 /* Finding and Executing */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_134 /* ExecutableProvider.swift */,
 				OBJ_135 /* PathEnvironmentParser.swift */,
 				OBJ_136 /* SystemExecutableProvider.swift */,
 				OBJ_137 /* SystemExecutor.swift */,
@@ -3234,7 +3239,7 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_39 /* HighwayDescription.swift */,
-				OBJ_40 /* HighwayType.swift */,
+				OBJ_40 /* HighwayTypeProtocol.swift */,
 				OBJ_41 /* Invocation */,
 				OBJ_44 /* _Highway.swift */,
 			);
@@ -4390,7 +4395,7 @@
 				OBJ_500 /* OrderedDictionary.swift in Sources */,
 				OBJ_501 /* String+Convenience.swift in Sources */,
 				OBJ_502 /* HighwayDescription.swift in Sources */,
-				OBJ_503 /* HighwayType.swift in Sources */,
+				OBJ_503 /* HighwayTypeProtocol.swift in Sources */,
 				OBJ_504 /* Invocation.swift in Sources */,
 				OBJ_505 /* InvocationProvider.swift in Sources */,
 				OBJ_506 /* _Highway.swift in Sources */,
@@ -4477,9 +4482,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_737 /* ExecutableProvider.swift in Sources */,
+				FDAC9351210B7D4A00B0D045 /* TerminalTasks.swift in Sources */,
 				OBJ_738 /* PathEnvironmentParser.swift in Sources */,
 				OBJ_739 /* SystemExecutableProvider.swift in Sources */,
+				FDAC9353210B7F1E00B0D045 /* ExcecutableProtocol.swift in Sources */,
 				OBJ_740 /* SystemExecutor.swift in Sources */,
 				OBJ_741 /* TaskExecutorProtocol.swift in Sources */,
 				OBJ_742 /* LocalSystem.swift in Sources */,
@@ -6934,6 +6940,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SWIFT_PACKAGE HighwayTask";
 				SWIFT_VERSION = 4.0;
 				TARGET_NAME = Task;
 			};
@@ -6958,6 +6965,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SWIFT_PACKAGE HighwayTask";
 				SWIFT_VERSION = 4.0;
 				TARGET_NAME = Task;
 			};

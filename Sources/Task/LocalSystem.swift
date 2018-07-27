@@ -2,29 +2,32 @@ import Foundation
 import ZFile
 import Result
 import Terminal
+import SourceryAutoProtocols
 
-public final class LocalSystem {
+public final class LocalSystem: SystemProtocol, AutoGenerateProtocol {
+    
+    
     // MARK: - Properties
     private let executor: TaskExecutorProtocol
-    var executableProvider: ExecutableProvider
+    private let executableProvider: ExecutableProviderProtocol
     private let fileSystem: FileSystemProtocol
 
     // MARK: - Init
-    public init(executor: TaskExecutorProtocol, executableProvider: ExecutableProvider, fileSystem: FileSystemProtocol) {
+    public init(executor: TaskExecutorProtocol, executableProvider: ExecutableProviderProtocol, fileSystem: FileSystemProtocol) {
         self.executor = executor
         self.executableProvider = executableProvider
         self.fileSystem = fileSystem
     }
 
     /// Local System
-    public class func local() -> LocalSystem {
-        return LocalSystem(executor: SystemExecutor(ui: Terminal.shared),
-                           executableProvider: SystemExecutableProvider.local(),
-                           fileSystem: FileSystem())
+    public init(executableProvider: SystemExecutableProvider? = nil) throws {
+        self.executor = SystemExecutor(ui: Terminal.shared)
+        self.executableProvider = (executableProvider == nil) ? try SystemExecutableProvider() : executableProvider!
+        self.fileSystem = FileSystem()
     }
 }
 
-extension LocalSystem: SystemProtocol {
+extension LocalSystem {
     // MARK: - Working with the System
     public func task(named name: String) throws -> Task {
         

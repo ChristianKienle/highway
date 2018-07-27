@@ -6,7 +6,7 @@ import Arguments
 
 public final class SwiftPackageTool {
     // MARK: - Init
-    public init(context: Context = .local()) {
+    public init(context: Context) {
         self.context = context
     }
     // MARK: - Properties

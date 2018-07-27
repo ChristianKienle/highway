@@ -10,7 +10,7 @@ public enum SwiftRun { }
 public extension SwiftRun {
     public final class Tool {
         public let context: Context
-        public init(context: Context = .local()) {
+        public init(context: Context) {
             self.context = context
         }
         public func run(with options: Options) throws -> Result {

@@ -1,22 +1,33 @@
 import Foundation
 import ZFile
 import Url
+import SourceryAutoProtocols
 
-public final class SystemExecutableProvider {
+/// Maps names command line tools/executables to file urls.
+public protocol ExecutableProviderProtocol: AutoMockable {
+    
+    /// sourcery:inline:SystemExecutableProvider.AutoGenerateProtocol
+    var searchedUrls: [FolderProtocol] { get set }
+    var fileSystem: FileSystemProtocol { get }
+
+    func executable(with executableName: String) throws -> FileProtocol
+    /// sourcery:end
+}
+
+public final class SystemExecutableProvider: ExecutableProviderProtocol, AutoGenerateProtocol {
     // MARK: - Init
-    public init(searchedUrls: [Absolute], fileSystem: FileSystemProtocol) {
+    public init(searchedUrls: [FolderProtocol], fileSystem: FileSystemProtocol) {
         self.searchedUrls = searchedUrls
         self.fileSystem = fileSystem
     }
     // MARK: - Convenience
-    public static func local() -> SystemExecutableProvider {
-        let urls = PathEnvironmentParser.local().urls
-        let fs = FileSystem()
-        return SystemExecutableProvider(searchedUrls: urls, fileSystem: fs)
+    public init() throws {
+        self.searchedUrls = try PathEnvironmentParser.local().urls
+        self.fileSystem = FileSystem()
     }
 
     // MARK: - Properties
-    public var searchedUrls = [Absolute]()
+    public var searchedUrls = [FolderProtocol]()
     public let fileSystem: FileSystemProtocol
     
     // MARKL: - Error
@@ -26,7 +37,9 @@ public final class SystemExecutableProvider {
     }
 }
 
-extension SystemExecutableProvider: ExecutableProvider {
+// MARK: - ExecutableProviderProtocol
+
+extension SystemExecutableProvider  {
    
     public func executable(with executableName: String) throws -> FileProtocol {
         for url in searchedUrls {

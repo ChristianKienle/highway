@@ -85,7 +85,7 @@ public final class XCBuild: XCBuildProtocol, AutoGenerateProtocol {
     
     private func _buildTestTask(using options: TestOptionsProtocol) throws -> Task {
         let result = try _xcodebuild()
-        result.arguments += options.arguments
+        result.arguments += try options.arguments()
         return result
     }
     
@@ -97,8 +97,8 @@ public final class XCBuild: XCBuildProtocol, AutoGenerateProtocol {
     }
 }
 
-fileprivate struct XCodeBuildOption {
-    fileprivate init(name: String, value: String?) {
+public struct XCodeBuildOption {
+    public init(name: String, value: String?) {
         self.name = name
         self.value = value
     }
@@ -107,13 +107,13 @@ fileprivate struct XCodeBuildOption {
 }
 
 extension XCodeBuildOption: ArgumentsConvertible {
-    func arguments() -> Arguments? {
+    public func arguments() -> Arguments? {
         guard let value = value else { return nil }
         return Arguments(["-" + name, value])
     }
 }
 
-private func _option(_ name: String, value: String?) -> XCodeBuildOption {
+func _option(_ name: String, value: String?) -> XCodeBuildOption {
     return XCodeBuildOption(name: name, value: value)
 }
 
@@ -140,21 +140,6 @@ fileprivate extension ExportArchiveOptionsProtocol {
         args += _option("archivePath", value: archivePath.path)
         args += _option("exportPath", value: exportPath)
         
-        return args
-    }
-}
-
-fileprivate extension TestOptionsProtocol {
-    
-    // sourcery:skipProtocol
-    var arguments: Arguments {
-        var args = Arguments.empty
-        args += _option("scheme", value: scheme)
-        args += _option("project", value: project)
-        args += _option("destination", value: destination.asString)
-        args += _option("resultBundlePath", value: resultBundlePath)
-        args += _option("quiet", value: nil)
-        args.append(["build", "test"])
         return args
     }
 }

@@ -29,7 +29,7 @@ public protocol TaskProtocol: AutoMockable {
 public class Task: TaskProtocol, AutoGenerateProtocol {
     
     // MARK: - Init
-    public convenience init(commandName: String, arguments: Arguments = .empty, currentDirectoryUrl: FolderProtocol? = nil, provider: ExecutableProvider) throws {
+    public convenience init(commandName: String, arguments: Arguments = .empty, currentDirectoryUrl: FolderProtocol? = nil, provider: ExecutableProviderProtocol) throws {
        
         self.init(executable: try provider.executable(with: commandName),
                   arguments: arguments,

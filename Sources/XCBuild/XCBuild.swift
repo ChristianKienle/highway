@@ -4,12 +4,25 @@ import ZFile
 import Url
 import Arguments
 import Result
+import SourceryAutoProtocols
+
+public protocol XCBuildProtocol: AutoMockable {
+    
+    /// sourcery:inline:XCBuild.AutoGenerateProtocol
+    var system: SystemProtocol { get }
+    var fileSystem: FileSystemProtocol { get }
+
+    func archive(using options: ArchiveOptionsProtocol) throws -> ArchiveProtocol
+    func export(using options: ExportArchiveOptionsProtocol) throws -> ExportProtocol
+    func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport
+    /// sourcery:end
+}
 
 /// Low-level Wrapper around xcodebuild. This is a starting point for additonal wrappers that do things like auto detection
 /// of certain settings/options. However there are some things XCBuild already does which makes it a little bit more than
 /// just a wrapper. It offers a nice struct around the export-plist, it interprets the results of executed commands
 /// and finds generated files (ipas, ...). xcrun is also used throughout this class.
-public final class XCBuild {
+public final class XCBuild: XCBuildProtocol, AutoGenerateProtocol {
     // MARK: - Properties
     public let system: SystemProtocol
     public let fileSystem: FileSystemProtocol
@@ -22,13 +35,13 @@ public final class XCBuild {
     
     // MARK: - Archiving
     @discardableResult
-    public func archive(using options: ArchiveOptions) throws -> Archive {
+    public func archive(using options: ArchiveOptionsProtocol) throws -> ArchiveProtocol {
         try system.execute( try _archiveTask(using: options))
         
         return try Archive(archiveFolder: try Folder(path: options.archivePath), fileSystem: fileSystem)
     }
     
-    private func _archiveTask(using options: ArchiveOptions) throws -> Task {
+    private func _archiveTask(using options: ArchiveOptionsProtocol) throws -> Task {
         let result = try _xcodebuild()
         result.arguments += options.arguments
         return result
@@ -36,7 +49,7 @@ public final class XCBuild {
     
     // MARK: Exporting
     @discardableResult
-    public func export(using options: ExportArchiveOptionsProtocol) throws -> Export {
+    public func export(using options: ExportArchiveOptionsProtocol) throws -> ExportProtocol {
         let task = try _exportTask(using: options)
         guard try system.execute(task) else {
             throw "Export failed. No archivePath set."

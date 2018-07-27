@@ -377,13 +377,6 @@ public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
     }
     var underlyingExportPath: String = "AutoMockable filled value"
 
-    public required init(from decoder: Decoder) throws {
-        
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        
-    }
 }
 
 
@@ -2884,6 +2877,16 @@ public class TaskExecutorProtocolMock: TaskExecutorProtocol {
 }
 
 
+// MARK: - TaskProtocolMock
+
+public class TaskProtocolMock: TaskProtocol {
+
+    public init() {}
+
+
+}
+
+
 // MARK: - TestOptionsProtocolMock
 
 public class TestOptionsProtocolMock: TestOptionsProtocol {
@@ -3028,6 +3031,143 @@ public class UIProtocolMock: UIProtocol {
 
       verbosePrintClosure?(printable)
 
+    }
+
+}
+
+
+// MARK: - XCBuildProtocolMock
+
+public class XCBuildProtocolMock: XCBuildProtocol {
+
+    public init() {}
+
+    public var system: SystemProtocol {
+        get { return underlyingSystem }
+        set(value) { underlyingSystem = value }
+    }
+    var underlyingSystem: SystemProtocol!
+    public var fileSystem: FileSystemProtocol {
+        get { return underlyingFileSystem }
+        set(value) { underlyingFileSystem = value }
+    }
+    var underlyingFileSystem: FileSystemProtocol!
+
+    //MARK: - archive
+
+    public  var archiveUsingThrowableError: Error?
+    public var archiveUsingCallsCount = 0
+    public var archiveUsingCalled: Bool {
+        return archiveUsingCallsCount > 0
+    }
+    public var archiveUsingReceivedOptions: ArchiveOptionsProtocol?
+    public var archiveUsingReturnValue: ArchiveProtocol?
+    public var archiveUsingClosure: ((ArchiveOptionsProtocol) throws -> ArchiveProtocol)? = nil
+
+    public func archive(using options: ArchiveOptionsProtocol) throws -> ArchiveProtocol {
+
+        if let error = archiveUsingThrowableError {
+            throw error
+        }
+
+
+      archiveUsingCallsCount += 1
+        archiveUsingReceivedOptions = options
+
+
+      guard let closureReturn = archiveUsingClosure else {
+          guard let returnValue = archiveUsingReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    archiveUsing
+                    but this case(s) is(are) not implemented in
+                    XCBuildProtocol for method archiveUsingClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(options)
+    }
+
+    //MARK: - export
+
+    public  var exportUsingThrowableError: Error?
+    public var exportUsingCallsCount = 0
+    public var exportUsingCalled: Bool {
+        return exportUsingCallsCount > 0
+    }
+    public var exportUsingReceivedOptions: ExportArchiveOptionsProtocol?
+    public var exportUsingReturnValue: ExportProtocol?
+    public var exportUsingClosure: ((ExportArchiveOptionsProtocol) throws -> ExportProtocol)? = nil
+
+    public func export(using options: ExportArchiveOptionsProtocol) throws -> ExportProtocol {
+
+        if let error = exportUsingThrowableError {
+            throw error
+        }
+
+
+      exportUsingCallsCount += 1
+        exportUsingReceivedOptions = options
+
+
+      guard let closureReturn = exportUsingClosure else {
+          guard let returnValue = exportUsingReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    exportUsing
+                    but this case(s) is(are) not implemented in
+                    XCBuildProtocol for method exportUsingClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(options)
+    }
+
+    //MARK: - buildAndTest
+
+    public  var buildAndTestUsingThrowableError: Error?
+    public var buildAndTestUsingCallsCount = 0
+    public var buildAndTestUsingCalled: Bool {
+        return buildAndTestUsingCallsCount > 0
+    }
+    public var buildAndTestUsingReceivedOptions: TestOptionsProtocol?
+    public var buildAndTestUsingReturnValue: TestReport?
+    public var buildAndTestUsingClosure: ((TestOptionsProtocol) throws -> TestReport)? = nil
+
+    public func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
+
+        if let error = buildAndTestUsingThrowableError {
+            throw error
+        }
+
+
+      buildAndTestUsingCallsCount += 1
+        buildAndTestUsingReceivedOptions = options
+
+
+      guard let closureReturn = buildAndTestUsingClosure else {
+          guard let returnValue = buildAndTestUsingReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    buildAndTestUsing
+                    but this case(s) is(are) not implemented in
+                    XCBuildProtocol for method buildAndTestUsingClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+                 throw error
+          }
+          return returnValue
+      }
+
+      return try closureReturn(options)
     }
 
 }

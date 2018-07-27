@@ -1,8 +1,33 @@
 import Foundation
 import ZFile
 import Arguments
+import SourceryAutoProtocols
 
-public class Task {
+public protocol TaskProtocol: AutoMockable {
+
+    // sourcery:inline:Task.AutoGenerateProtocol
+    var name: String { get }
+    var executable: FileProtocol { get set }
+    var arguments: Arguments { get set }
+    var environment: [String : String] { get set }
+    var currentDirectoryUrl: FolderProtocol? { get set }
+    var input: Channel { get set }
+    var output: Channel { get set }
+    var state: State { get set }
+    var capturedOutputData: Data? { get }
+    var readOutputString: String? { get }
+    var trimmedOutput: String? { get }
+    var capturedOutputString: String? { get }
+    var successfullyFinished: Bool { get }
+    var description: String { get }
+
+    func enableReadableOutputDataCapturing()
+    func throwIfNotSuccess(_ error: Swift.Error) throws 
+    // sourcery:end
+}
+
+public class Task: TaskProtocol, AutoGenerateProtocol {
+    
     // MARK: - Init
     public convenience init(commandName: String, arguments: Arguments = .empty, currentDirectoryUrl: FolderProtocol? = nil, provider: ExecutableProvider) throws {
        
@@ -25,7 +50,7 @@ public class Task {
     public var arguments = Arguments.empty
     public var environment = [String : String]()
     public var currentDirectoryUrl: FolderProtocol?
-    fileprivate var io = IO()
+    
     public var input: Channel {
         get { return io.input }
         set { io.input = newValue }
@@ -39,11 +64,8 @@ public class Task {
     public func enableReadableOutputDataCapturing() {
         io.enableReadableOutputDataCapturing()
     }
-    @available(*, unavailable, renamed: "capturedOutputData")
-    public var readOutputData: Data? { return io.readOutputData }
     public var capturedOutputData: Data? { return io.readOutputData }
 
-    @available(*, unavailable, renamed: "capturedOutputString")
     public var readOutputString: String? {
         return capturedOutputString
     }
@@ -61,14 +83,17 @@ public class Task {
     public var successfullyFinished: Bool {
         return state.successfullyFinished
     }
-    public func throwIfNotSuccess(_ error: Swift.Error? = nil) throws {
+    
+    public func throwIfNotSuccess(_ error: Swift.Error) throws {
         guard successfullyFinished else {
-            if let error = error {
-                throw error
-            }
-            throw "\(name) not finished successfully."
+            throw "🛣 🔥 \(name) with customError: \n \(error).\n"
         }
     }
+    
+    // MARK: - Private
+    
+    private var io = IO()
+    
 }
 
 extension Task: CustomStringConvertible {

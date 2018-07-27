@@ -22,7 +22,7 @@ public extension SwiftRun {
             
             try context.executor.execute(task: task)
             
-            try task.throwIfNotSuccess()
+            try task.throwIfNotSuccess("🛣🔥 \(SwiftRun.Tool.self) failed running task\n\(task).")
             let output = task.capturedOutputString
             return Result(output: output ?? "")
         }

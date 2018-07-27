@@ -35,8 +35,10 @@ private extension Process {
 }
 
 // internal because it is tested
-internal extension Task {
-    internal var toProcess: Process {
+extension Task {
+    
+    // sourcery:skipProtocol
+    var toProcess: Process {
         let result = Process()
         result.arguments = arguments.all
         result.launchPath = executable.path

@@ -59,7 +59,7 @@ public class HighwayProjectTool {
 
         try context.executor.execute(task: _highway)
         
-        try _highway.throwIfNotSuccess()
+        try _highway.throwIfNotSuccess("🛣🔥 \(HighwayProjectTool.self) failed running highway\n\(_highway).")
         
         let output = _highway.capturedOutputData ?? Data()
         return BuildThenExecuteResult(buildResult: buildResult, outputData: output)

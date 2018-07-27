@@ -86,6 +86,7 @@ final class XCBuildTests: XCTestCase {
         let xcbuild = XCBuild(system: system, fileSystem: fs)
         let result = try xcbuild.buildAndTest(using: options)
         print(result)
+        
     }
     func testArchive_and_Export_using_object_plist() throws {
         let projectRoot = fixturesDir.appendingPathComponent("highwayiostest_objc")

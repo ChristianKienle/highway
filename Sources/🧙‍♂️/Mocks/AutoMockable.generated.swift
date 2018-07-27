@@ -24,6 +24,7 @@ import SourceryAutoProtocols
 import Terminal
 import HighwayCore
 import HWKit
+import Arguments
 
 
 
@@ -41,7 +42,7 @@ import HWKit
 
 // MARK: - ArchiveOptionsProtocolMock
 
-public class ArchiveOptionsProtocolMock: ArchiveOptionsProtocol {
+open class ArchiveOptionsProtocolMock: ArchiveOptionsProtocol {
 
     public init() {}
 
@@ -49,29 +50,29 @@ public class ArchiveOptionsProtocolMock: ArchiveOptionsProtocol {
         get { return underlyingScheme }
         set(value) { underlyingScheme = value }
     }
-    var underlyingScheme: String = "AutoMockable filled value"
+    public var underlyingScheme: String = "AutoMockable filled value"
     public var project: String {
         get { return underlyingProject }
         set(value) { underlyingProject = value }
     }
-    var underlyingProject: String = "AutoMockable filled value"
+    public var underlyingProject: String = "AutoMockable filled value"
     public var destination: DestinationProtocol {
         get { return underlyingDestination }
         set(value) { underlyingDestination = value }
     }
-    var underlyingDestination: DestinationProtocol!
+    public var underlyingDestination: DestinationProtocol!
     public var archivePath: String {
         get { return underlyingArchivePath }
         set(value) { underlyingArchivePath = value }
     }
-    var underlyingArchivePath: String = "AutoMockable filled value"
+    public var underlyingArchivePath: String = "AutoMockable filled value"
 
 }
 
 
 // MARK: - ArchivePlistProtocolMock
 
-public class ArchivePlistProtocolMock: ArchivePlistProtocol {
+open class ArchivePlistProtocolMock: ArchivePlistProtocol {
 
     public init() {}
 
@@ -79,19 +80,19 @@ public class ArchivePlistProtocolMock: ArchivePlistProtocol {
         get { return underlyingApplicationProperties }
         set(value) { underlyingApplicationProperties = value }
     }
-    var underlyingApplicationProperties: String = "AutoMockable filled value"
+    public var underlyingApplicationProperties: String = "AutoMockable filled value"
     public var applicationPath: String {
         get { return underlyingApplicationPath }
         set(value) { underlyingApplicationPath = value }
     }
-    var underlyingApplicationPath: String = "AutoMockable filled value"
+    public var underlyingApplicationPath: String = "AutoMockable filled value"
 
 }
 
 
 // MARK: - ArchiveProtocolMock
 
-public class ArchiveProtocolMock: ArchiveProtocol {
+open class ArchiveProtocolMock: ArchiveProtocol {
 
     public init() {}
 
@@ -99,24 +100,24 @@ public class ArchiveProtocolMock: ArchiveProtocol {
         get { return underlyingArchiveFolder }
         set(value) { underlyingArchiveFolder = value }
     }
-    var underlyingArchiveFolder: FolderProtocol!
+    public var underlyingArchiveFolder: FolderProtocol!
     public var appFolder: FolderProtocol {
         get { return underlyingAppFolder }
         set(value) { underlyingAppFolder = value }
     }
-    var underlyingAppFolder: FolderProtocol!
+    public var underlyingAppFolder: FolderProtocol!
     public var plist: ArchivePlistProtocol {
         get { return underlyingPlist }
         set(value) { underlyingPlist = value }
     }
-    var underlyingPlist: ArchivePlistProtocol!
+    public var underlyingPlist: ArchivePlistProtocol!
 
 }
 
 
 // MARK: - BuildResultProtocolMock
 
-public class BuildResultProtocolMock: BuildResultProtocol {
+open class BuildResultProtocolMock: BuildResultProtocol {
 
     public init() {}
 
@@ -124,19 +125,19 @@ public class BuildResultProtocolMock: BuildResultProtocol {
         get { return underlyingExecutableUrl }
         set(value) { underlyingExecutableUrl = value }
     }
-    var underlyingExecutableUrl: FileProtocol!
+    public var underlyingExecutableUrl: FileProtocol!
     public var artifact: SwiftBuildSystem.Artifact {
         get { return underlyingArtifact }
         set(value) { underlyingArtifact = value }
     }
-    var underlyingArtifact: SwiftBuildSystem.Artifact!
+    public var underlyingArtifact: SwiftBuildSystem.Artifact!
 
 }
 
 
 // MARK: - DeliverProtocolMock
 
-public class DeliverProtocolMock: DeliverProtocol {
+open class DeliverProtocolMock: DeliverProtocol {
 
     public init() {}
 
@@ -152,7 +153,7 @@ public class DeliverProtocolMock: DeliverProtocol {
     public var nowWithReturnValue: Bool?
     public var nowWithClosure: ((Deliver.Options) throws -> Bool)? = nil
 
-    public func now(with options: Deliver.Options) throws -> Bool {
+    open func now(with options: Deliver.Options) throws -> Bool {
 
         if let error = nowWithThrowableError {
             throw error
@@ -185,7 +186,7 @@ public class DeliverProtocolMock: DeliverProtocol {
 
 // MARK: - DestinationFactoryProtocolMock
 
-public class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
+open class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
 
     public init() {}
 
@@ -200,7 +201,7 @@ public class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
     public var macOSArchitectureReturnValue: Destination?
     public var macOSArchitectureClosure: ((Destination.Architecture) -> Destination)? = nil
 
-    public func macOS(architecture: Destination.Architecture) -> Destination {
+    open func macOS(architecture: Destination.Architecture) -> Destination {
 
       macOSArchitectureCallsCount += 1
         macOSArchitectureReceivedArchitecture = architecture
@@ -234,7 +235,7 @@ public class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
     public var deviceNameIsGenericIdReturnValue: Destination?
     public var deviceNameIsGenericIdClosure: ((Destination.Device, String?, Bool, String?) -> Destination)? = nil
 
-    public func device(_ device: Destination.Device, name: String?, isGeneric: Bool, id: String?) -> Destination {
+    open func device(_ device: Destination.Device, name: String?, isGeneric: Bool, id: String?) -> Destination {
 
       deviceNameIsGenericIdCallsCount += 1
         deviceNameIsGenericIdReceivedArguments = (device: device, name: name, isGeneric: isGeneric, id: id)
@@ -268,7 +269,7 @@ public class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
     public var simulatorNameOsIdReturnValue: Destination?
     public var simulatorNameOsIdClosure: ((Destination.Simulator, String, Destination.OS, String?) -> Destination)? = nil
 
-    public func simulator(_ simulator: Destination.Simulator, name: String, os: Destination.OS, id: String?) -> Destination {
+    open func simulator(_ simulator: Destination.Simulator, name: String, os: Destination.OS, id: String?) -> Destination {
 
       simulatorNameOsIdCallsCount += 1
         simulatorNameOsIdReceivedArguments = (simulator: simulator, name: name, os: os, id: id)
@@ -297,7 +298,7 @@ public class DestinationFactoryProtocolMock: DestinationFactoryProtocol {
 
 // MARK: - DestinationProtocolMock
 
-public class DestinationProtocolMock: DestinationProtocol {
+open class DestinationProtocolMock: DestinationProtocol {
 
     public init() {}
 
@@ -306,14 +307,14 @@ public class DestinationProtocolMock: DestinationProtocol {
         get { return underlyingAsString }
         set(value) { underlyingAsString = value }
     }
-    var underlyingAsString: String = "AutoMockable filled value"
+    public var underlyingAsString: String = "AutoMockable filled value"
 
 }
 
 
 // MARK: - ExecutableProviderMock
 
-public class ExecutableProviderMock: ExecutableProvider {
+open class ExecutableProviderMock: ExecutableProvider {
 
     public init() {}
 
@@ -329,7 +330,7 @@ public class ExecutableProviderMock: ExecutableProvider {
     public var executableWithReturnValue: FileProtocol?
     public var executableWithClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func executable(with name: String) throws -> FileProtocol {
+    open func executable(with name: String) throws -> FileProtocol {
 
         if let error = executableWithThrowableError {
             throw error
@@ -362,7 +363,7 @@ public class ExecutableProviderMock: ExecutableProvider {
 
 // MARK: - ExportArchiveOptionsProtocolMock
 
-public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
+open class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
 
     public init() {}
 
@@ -370,12 +371,12 @@ public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
         get { return underlyingArchivePath }
         set(value) { underlyingArchivePath = value }
     }
-    var underlyingArchivePath: FolderProtocol!
+    public var underlyingArchivePath: FolderProtocol!
     public var exportPath: String {
         get { return underlyingExportPath }
         set(value) { underlyingExportPath = value }
     }
-    var underlyingExportPath: String = "AutoMockable filled value"
+    public var underlyingExportPath: String = "AutoMockable filled value"
 
     public required init(from decoder: Decoder) throws {
         
@@ -389,7 +390,7 @@ public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
 
 // MARK: - ExportProtocolMock
 
-public class ExportProtocolMock: ExportProtocol {
+open class ExportProtocolMock: ExportProtocol {
 
     public init() {}
 
@@ -397,52 +398,52 @@ public class ExportProtocolMock: ExportProtocol {
         get { return underlyingFolder }
         set(value) { underlyingFolder = value }
     }
-    var underlyingFolder: FolderProtocol!
+    public var underlyingFolder: FolderProtocol!
     public var ipa: FileProtocol {
         get { return underlyingIpa }
         set(value) { underlyingIpa = value }
     }
-    var underlyingIpa: FileProtocol!
+    public var underlyingIpa: FileProtocol!
 
 }
 
 
 // MARK: - FileProtocolMock
 
-public class FileProtocolMock: FileProtocol {
+open class FileProtocolMock: FileProtocol {
 
 
     public var localizedDate: String {
         get { return underlyingLocalizedDate }
         set(value) { underlyingLocalizedDate = value }
     }
-    var underlyingLocalizedDate: String = "AutoMockable filled value"
+    public var underlyingLocalizedDate: String = "AutoMockable filled value"
     public var path: String {
         get { return underlyingPath }
         set(value) { underlyingPath = value }
     }
-    var underlyingPath: String = "AutoMockable filled value"
+    public var underlyingPath: String = "AutoMockable filled value"
     public var name: String {
         get { return underlyingName }
         set(value) { underlyingName = value }
     }
-    var underlyingName: String = "AutoMockable filled value"
+    public var underlyingName: String = "AutoMockable filled value"
     public var nameExcludingExtension: String {
         get { return underlyingNameExcludingExtension }
         set(value) { underlyingNameExcludingExtension = value }
     }
-    var underlyingNameExcludingExtension: String = "AutoMockable filled value"
+    public var underlyingNameExcludingExtension: String = "AutoMockable filled value"
     public var `extension`: String?
     public var modificationDate: Date {
         get { return underlyingModificationDate }
         set(value) { underlyingModificationDate = value }
     }
-    var underlyingModificationDate: Date = Date()
+    public var underlyingModificationDate: Date = Date()
     public var description: String {
         get { return underlyingDescription }
         set(value) { underlyingDescription = value }
     }
-    var underlyingDescription: String = "AutoMockable filled value"
+    public var underlyingDescription: String = "AutoMockable filled value"
 
     //MARK: - readAllLines
 
@@ -454,7 +455,7 @@ public class FileProtocolMock: FileProtocol {
     public var readAllLinesReturnValue: [String]?
     public var readAllLinesClosure: (() throws -> [String])? = nil
 
-    public func readAllLines() throws -> [String] {
+    open func readAllLines() throws -> [String] {
 
         if let error = readAllLinesThrowableError {
             throw error
@@ -491,7 +492,7 @@ public class FileProtocolMock: FileProtocol {
     public var readReturnValue: Data?
     public var readClosure: (() throws -> Data)? = nil
 
-    public func read() throws -> Data {
+    open func read() throws -> Data {
 
         if let error = readThrowableError {
             throw error
@@ -528,7 +529,7 @@ public class FileProtocolMock: FileProtocol {
     public var readAsStringReturnValue: String?
     public var readAsStringClosure: (() throws -> String)? = nil
 
-    public func readAsString() throws -> String {
+    open func readAsString() throws -> String {
 
         if let error = readAsStringThrowableError {
             throw error
@@ -565,7 +566,7 @@ public class FileProtocolMock: FileProtocol {
     public var writeDataReceivedData: Data?
     public var writeDataClosure: ((Data) throws -> Void)? = nil
 
-    public func write(data: Data) throws {
+    open func write(data: Data) throws {
 
         if let error = writeDataThrowableError {
             throw error
@@ -590,7 +591,7 @@ public class FileProtocolMock: FileProtocol {
     public var writeStringEncodingReceivedArguments: (string: String, encoding: String.Encoding)?
     public var writeStringEncodingClosure: ((String, String.Encoding) throws -> Void)? = nil
 
-    public func write(string: String, encoding: String.Encoding) throws {
+    open func write(string: String, encoding: String.Encoding) throws {
 
         if let error = writeStringEncodingThrowableError {
             throw error
@@ -616,7 +617,7 @@ public class FileProtocolMock: FileProtocol {
     public var copyToReturnValue: FileProtocol?
     public var copyToClosure: ((Folder) throws -> FileProtocol)? = nil
 
-    public func copy(to folder: Folder) throws -> FileProtocol {
+    open func copy(to folder: Folder) throws -> FileProtocol {
 
         if let error = copyToThrowableError {
             throw error
@@ -654,7 +655,7 @@ public class FileProtocolMock: FileProtocol {
     public var parentFolderReturnValue: FolderProtocol?
     public var parentFolderClosure: (() throws -> FolderProtocol)? = nil
 
-    public func parentFolder() throws -> FolderProtocol {
+    open func parentFolder() throws -> FolderProtocol {
 
         if let error = parentFolderThrowableError {
             throw error
@@ -691,7 +692,7 @@ public class FileProtocolMock: FileProtocol {
     public var renameToReceivedNewName: String?
     public var renameToClosure: ((String) throws -> Void)? = nil
 
-    public func rename(to newName: String) throws {
+    open func rename(to newName: String) throws {
 
         if let error = renameToThrowableError {
             throw error
@@ -716,7 +717,7 @@ public class FileProtocolMock: FileProtocol {
     public var renameToKeepExtensionReceivedArguments: (newName: String, keepExtension: Bool)?
     public var renameToKeepExtensionClosure: ((String, Bool) throws -> Void)? = nil
 
-    public func rename(to newName: String, keepExtension: Bool) throws {
+    open func rename(to newName: String, keepExtension: Bool) throws {
 
         if let error = renameToKeepExtensionThrowableError {
             throw error
@@ -741,7 +742,7 @@ public class FileProtocolMock: FileProtocol {
     public var moveToReceivedNewParent: Folder?
     public var moveToClosure: ((Folder) throws -> Void)? = nil
 
-    public func move(to newParent: Folder) throws {
+    open func move(to newParent: Folder) throws {
 
         if let error = moveToThrowableError {
             throw error
@@ -765,7 +766,7 @@ public class FileProtocolMock: FileProtocol {
     }
     public var deleteClosure: (() throws -> Void)? = nil
 
-    public func delete() throws {
+    open func delete() throws {
 
         if let error = deleteThrowableError {
             throw error
@@ -801,24 +802,24 @@ public class FileProtocolMock: FileProtocol {
 
 // MARK: - FileSystemProtocolMock
 
-public class FileSystemProtocolMock: FileSystemProtocol {
+open class FileSystemProtocolMock: FileSystemProtocol {
 
 
     public var temporaryFolder: Folder {
         get { return underlyingTemporaryFolder }
         set(value) { underlyingTemporaryFolder = value }
     }
-    var underlyingTemporaryFolder: Folder!
+    public var underlyingTemporaryFolder: Folder!
     public var homeFolder: Folder {
         get { return underlyingHomeFolder }
         set(value) { underlyingHomeFolder = value }
     }
-    var underlyingHomeFolder: Folder!
+    public var underlyingHomeFolder: Folder!
     public var currentFolder: Folder {
         get { return underlyingCurrentFolder }
         set(value) { underlyingCurrentFolder = value }
     }
-    var underlyingCurrentFolder: Folder!
+    public var underlyingCurrentFolder: Folder!
 
     //MARK: - init
 
@@ -847,7 +848,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
     public var createFileAtReturnValue: FileProtocol?
     public var createFileAtClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func createFile(at path: String) throws -> FileProtocol {
+    open func createFile(at path: String) throws -> FileProtocol {
 
         if let error = createFileAtThrowableError {
             throw error
@@ -886,7 +887,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
     public var createFileAtDataContentsReturnValue: FileProtocol?
     public var createFileAtDataContentsClosure: ((String, Data) throws -> FileProtocol)? = nil
 
-    public func createFile(at path: String, dataContents: Data) throws -> FileProtocol {
+    open func createFile(at path: String, dataContents: Data) throws -> FileProtocol {
 
         if let error = createFileAtDataContentsThrowableError {
             throw error
@@ -925,7 +926,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
     public var createFileIfNeededAtReturnValue: FileProtocol?
     public var createFileIfNeededAtClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func createFileIfNeeded(at path: String) throws -> FileProtocol {
+    open func createFileIfNeeded(at path: String) throws -> FileProtocol {
 
         if let error = createFileIfNeededAtThrowableError {
             throw error
@@ -964,7 +965,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
     public var createFileIfNeededAtContentsReturnValue: FileProtocol?
     public var createFileIfNeededAtContentsClosure: ((String, Data) throws -> FileProtocol)? = nil
 
-    public func createFileIfNeeded(at path: String, contents: Data) throws -> FileProtocol {
+    open func createFileIfNeeded(at path: String, contents: Data) throws -> FileProtocol {
 
         if let error = createFileIfNeededAtContentsThrowableError {
             throw error
@@ -1003,7 +1004,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
     public var createFolderAtReturnValue: FolderProtocol?
     public var createFolderAtClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func createFolder(at path: String) throws -> FolderProtocol {
+    open func createFolder(at path: String) throws -> FolderProtocol {
 
         if let error = createFolderAtThrowableError {
             throw error
@@ -1042,7 +1043,7 @@ public class FileSystemProtocolMock: FileSystemProtocol {
     public var createFolderIfNeededAtReturnValue: FolderProtocol?
     public var createFolderIfNeededAtClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func createFolderIfNeeded(at path: String) throws -> FolderProtocol {
+    open func createFolderIfNeeded(at path: String) throws -> FolderProtocol {
 
         if let error = createFolderIfNeededAtThrowableError {
             throw error
@@ -1075,35 +1076,35 @@ public class FileSystemProtocolMock: FileSystemProtocol {
 
 // MARK: - FolderProtocolMock
 
-public class FolderProtocolMock: FolderProtocol {
+open class FolderProtocolMock: FolderProtocol {
 
 
     public var path: String {
         get { return underlyingPath }
         set(value) { underlyingPath = value }
     }
-    var underlyingPath: String = "AutoMockable filled value"
+    public var underlyingPath: String = "AutoMockable filled value"
     public var name: String {
         get { return underlyingName }
         set(value) { underlyingName = value }
     }
-    var underlyingName: String = "AutoMockable filled value"
+    public var underlyingName: String = "AutoMockable filled value"
     public var nameExcludingExtension: String {
         get { return underlyingNameExcludingExtension }
         set(value) { underlyingNameExcludingExtension = value }
     }
-    var underlyingNameExcludingExtension: String = "AutoMockable filled value"
+    public var underlyingNameExcludingExtension: String = "AutoMockable filled value"
     public var `extension`: String?
     public var modificationDate: Date {
         get { return underlyingModificationDate }
         set(value) { underlyingModificationDate = value }
     }
-    var underlyingModificationDate: Date = Date()
+    public var underlyingModificationDate: Date = Date()
     public var description: String {
         get { return underlyingDescription }
         set(value) { underlyingDescription = value }
     }
-    var underlyingDescription: String = "AutoMockable filled value"
+    public var underlyingDescription: String = "AutoMockable filled value"
 
     //MARK: - mostRecentSubfolder
 
@@ -1115,7 +1116,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var mostRecentSubfolderReturnValue: FolderProtocol?
     public var mostRecentSubfolderClosure: (() throws -> FolderProtocol)? = nil
 
-    public func mostRecentSubfolder() throws -> FolderProtocol {
+    open func mostRecentSubfolder() throws -> FolderProtocol {
 
         if let error = mostRecentSubfolderThrowableError {
             throw error
@@ -1152,7 +1153,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var mostRecentFileReturnValue: FileProtocol?
     public var mostRecentFileClosure: (() throws -> FileProtocol)? = nil
 
-    public func mostRecentFile() throws -> FileProtocol {
+    open func mostRecentFile() throws -> FileProtocol {
 
         if let error = mostRecentFileThrowableError {
             throw error
@@ -1190,7 +1191,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var fileNamedReturnValue: FileProtocol?
     public var fileNamedClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func file(named fileName: String) throws -> FileProtocol {
+    open func file(named fileName: String) throws -> FileProtocol {
 
         if let error = fileNamedThrowableError {
             throw error
@@ -1229,7 +1230,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var fileAtPathReturnValue: FileProtocol?
     public var fileAtPathClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func file(atPath filePath: String) throws -> FileProtocol {
+    open func file(atPath filePath: String) throws -> FileProtocol {
 
         if let error = fileAtPathThrowableError {
             throw error
@@ -1267,7 +1268,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var containsFileNamedReturnValue: Bool?
     public var containsFileNamedClosure: ((String) -> Bool)? = nil
 
-    public func containsFile(named fileName: String) -> Bool {
+    open func containsFile(named fileName: String) -> Bool {
 
       containsFileNamedCallsCount += 1
         containsFileNamedReceivedFileName = fileName
@@ -1302,7 +1303,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var firstFolderWithReturnValue: FolderProtocol?
     public var firstFolderWithClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func firstFolder(with prefix: String) throws -> FolderProtocol {
+    open func firstFolder(with prefix: String) throws -> FolderProtocol {
 
         if let error = firstFolderWithThrowableError {
             throw error
@@ -1341,7 +1342,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var subfolderNamedReturnValue: FolderProtocol?
     public var subfolderNamedClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func subfolder(named folderName: String) throws -> FolderProtocol {
+    open func subfolder(named folderName: String) throws -> FolderProtocol {
 
         if let error = subfolderNamedThrowableError {
             throw error
@@ -1380,7 +1381,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var subfolderAtPathReturnValue: FolderProtocol?
     public var subfolderAtPathClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func subfolder(atPath folderPath: String) throws -> FolderProtocol {
+    open func subfolder(atPath folderPath: String) throws -> FolderProtocol {
 
         if let error = subfolderAtPathThrowableError {
             throw error
@@ -1418,7 +1419,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var containsSubfolderNamedReturnValue: Bool?
     public var containsSubfolderNamedClosure: ((String) -> Bool)? = nil
 
-    public func containsSubfolder(named folderName: String) -> Bool {
+    open func containsSubfolder(named folderName: String) -> Bool {
 
       containsSubfolderNamedCallsCount += 1
         containsSubfolderNamedReceivedFolderName = folderName
@@ -1453,7 +1454,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var createFileIfNeededNamedReturnValue: FileProtocol?
     public var createFileIfNeededNamedClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func createFileIfNeeded(named fileName: String) throws -> FileProtocol {
+    open func createFileIfNeeded(named fileName: String) throws -> FileProtocol {
 
         if let error = createFileIfNeededNamedThrowableError {
             throw error
@@ -1492,7 +1493,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var createFileNamedReturnValue: FileProtocol?
     public var createFileNamedClosure: ((String) throws -> FileProtocol)? = nil
 
-    public func createFile(named fileName: String) throws -> FileProtocol {
+    open func createFile(named fileName: String) throws -> FileProtocol {
 
         if let error = createFileNamedThrowableError {
             throw error
@@ -1531,7 +1532,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var createFileNamedDataContentsReturnValue: FileProtocol?
     public var createFileNamedDataContentsClosure: ((String, Data) throws -> FileProtocol)? = nil
 
-    public func createFile(named fileName: String, dataContents data: Data) throws -> FileProtocol {
+    open func createFile(named fileName: String, dataContents data: Data) throws -> FileProtocol {
 
         if let error = createFileNamedDataContentsThrowableError {
             throw error
@@ -1570,7 +1571,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var createFileNamedContentsReturnValue: FileProtocol?
     public var createFileNamedContentsClosure: ((String, String) throws -> FileProtocol)? = nil
 
-    public func createFile(named fileName: String, contents: String) throws -> FileProtocol {
+    open func createFile(named fileName: String, contents: String) throws -> FileProtocol {
 
         if let error = createFileNamedContentsThrowableError {
             throw error
@@ -1609,7 +1610,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var createSubfolderNamedReturnValue: FolderProtocol?
     public var createSubfolderNamedClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func createSubfolder(named folderName: String) throws -> FolderProtocol {
+    open func createSubfolder(named folderName: String) throws -> FolderProtocol {
 
         if let error = createSubfolderNamedThrowableError {
             throw error
@@ -1648,7 +1649,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var createSubfolderIfNeededWithNameReturnValue: FolderProtocol?
     public var createSubfolderIfNeededWithNameClosure: ((String) throws -> FolderProtocol)? = nil
 
-    public func createSubfolderIfNeeded(withName folderName: String) throws -> FolderProtocol {
+    open func createSubfolderIfNeeded(withName folderName: String) throws -> FolderProtocol {
 
         if let error = createSubfolderIfNeededWithNameThrowableError {
             throw error
@@ -1686,7 +1687,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var makeFileSequenceRecursiveIncludeHiddenReturnValue: FileSystemSequence<File>?
     public var makeFileSequenceRecursiveIncludeHiddenClosure: ((Bool, Bool) -> FileSystemSequence<File>)? = nil
 
-    public func makeFileSequence(recursive: Bool, includeHidden: Bool) -> FileSystemSequence<File> {
+    open func makeFileSequence(recursive: Bool, includeHidden: Bool) -> FileSystemSequence<File> {
 
       makeFileSequenceRecursiveIncludeHiddenCallsCount += 1
         makeFileSequenceRecursiveIncludeHiddenReceivedArguments = (recursive: recursive, includeHidden: includeHidden)
@@ -1721,7 +1722,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var copyToReturnValue: Folder?
     public var copyToClosure: ((FolderProtocol) throws -> Folder)? = nil
 
-    public func copy(to folder: FolderProtocol) throws -> Folder {
+    open func copy(to folder: FolderProtocol) throws -> Folder {
 
         if let error = copyToThrowableError {
             throw error
@@ -1759,7 +1760,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var parentFolderReturnValue: FolderProtocol?
     public var parentFolderClosure: (() throws -> FolderProtocol)? = nil
 
-    public func parentFolder() throws -> FolderProtocol {
+    open func parentFolder() throws -> FolderProtocol {
 
         if let error = parentFolderThrowableError {
             throw error
@@ -1796,7 +1797,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var renameToReceivedNewName: String?
     public var renameToClosure: ((String) throws -> Void)? = nil
 
-    public func rename(to newName: String) throws {
+    open func rename(to newName: String) throws {
 
         if let error = renameToThrowableError {
             throw error
@@ -1821,7 +1822,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var renameToKeepExtensionReceivedArguments: (newName: String, keepExtension: Bool)?
     public var renameToKeepExtensionClosure: ((String, Bool) throws -> Void)? = nil
 
-    public func rename(to newName: String, keepExtension: Bool) throws {
+    open func rename(to newName: String, keepExtension: Bool) throws {
 
         if let error = renameToKeepExtensionThrowableError {
             throw error
@@ -1846,7 +1847,7 @@ public class FolderProtocolMock: FolderProtocol {
     public var moveToReceivedNewParent: Folder?
     public var moveToClosure: ((Folder) throws -> Void)? = nil
 
-    public func move(to newParent: Folder) throws {
+    open func move(to newParent: Folder) throws {
 
         if let error = moveToThrowableError {
             throw error
@@ -1870,7 +1871,7 @@ public class FolderProtocolMock: FolderProtocol {
     }
     public var deleteClosure: (() throws -> Void)? = nil
 
-    public func delete() throws {
+    open func delete() throws {
 
         if let error = deleteThrowableError {
             throw error
@@ -1906,7 +1907,7 @@ public class FolderProtocolMock: FolderProtocol {
 
 // MARK: - GitToolProtocolMock
 
-public class GitToolProtocolMock: GitToolProtocol {
+open class GitToolProtocolMock: GitToolProtocol {
 
     public init() {}
 
@@ -1921,7 +1922,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var addAllAtReceivedUrl: FolderProtocol?
     public var addAllAtClosure: ((FolderProtocol) throws -> Void)? = nil
 
-    public func addAll(at url: FolderProtocol) throws {
+    open func addAll(at url: FolderProtocol) throws {
 
         if let error = addAllAtThrowableError {
             throw error
@@ -1946,7 +1947,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var commitAtMessageReceivedArguments: (url: FolderProtocol, message: String)?
     public var commitAtMessageClosure: ((FolderProtocol, String) throws -> Void)? = nil
 
-    public func commit(at url: FolderProtocol, message: String) throws {
+    open func commit(at url: FolderProtocol, message: String) throws {
 
         if let error = commitAtMessageThrowableError {
             throw error
@@ -1971,7 +1972,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var pushToMasterAtReceivedUrl: FolderProtocol?
     public var pushToMasterAtClosure: ((FolderProtocol) throws -> Void)? = nil
 
-    public func pushToMaster(at url: FolderProtocol) throws {
+    open func pushToMaster(at url: FolderProtocol) throws {
 
         if let error = pushToMasterAtThrowableError {
             throw error
@@ -1996,7 +1997,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var pushTagsToMasterAtReceivedUrl: FolderProtocol?
     public var pushTagsToMasterAtClosure: ((FolderProtocol) throws -> Void)? = nil
 
-    public func pushTagsToMaster(at url: FolderProtocol) throws {
+    open func pushTagsToMaster(at url: FolderProtocol) throws {
 
         if let error = pushTagsToMasterAtThrowableError {
             throw error
@@ -2021,7 +2022,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var pullAtReceivedUrl: FolderProtocol?
     public var pullAtClosure: ((FolderProtocol) throws -> Void)? = nil
 
-    public func pull(at url: FolderProtocol) throws {
+    open func pull(at url: FolderProtocol) throws {
 
         if let error = pullAtThrowableError {
             throw error
@@ -2047,7 +2048,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var currentTagAtReturnValue: String?
     public var currentTagAtClosure: ((FolderProtocol) throws -> String)? = nil
 
-    public func currentTag(at url: FolderProtocol) throws -> String {
+    open func currentTag(at url: FolderProtocol) throws -> String {
 
         if let error = currentTagAtThrowableError {
             throw error
@@ -2085,7 +2086,7 @@ public class GitToolProtocolMock: GitToolProtocol {
     public var cloneWithReceivedOptions: CloneOptions?
     public var cloneWithClosure: ((CloneOptions) throws -> Void)? = nil
 
-    public func clone(with options: CloneOptions) throws {
+    open func clone(with options: CloneOptions) throws {
 
         if let error = cloneWithThrowableError {
             throw error
@@ -2105,7 +2106,7 @@ public class GitToolProtocolMock: GitToolProtocol {
 
 // MARK: - HighwayBundleProtocolMock
 
-public class HighwayBundleProtocolMock: HighwayBundleProtocol {
+open class HighwayBundleProtocolMock: HighwayBundleProtocol {
 
     public init() {}
 
@@ -2113,22 +2114,22 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
         get { return underlyingUrl }
         set(value) { underlyingUrl = value }
     }
-    var underlyingUrl: FolderProtocol!
+    public var underlyingUrl: FolderProtocol!
     public var fileSystem: FileSystemProtocol {
         get { return underlyingFileSystem }
         set(value) { underlyingFileSystem = value }
     }
-    var underlyingFileSystem: FileSystemProtocol!
+    public var underlyingFileSystem: FileSystemProtocol!
     public var configuration: Configuration {
         get { return underlyingConfiguration }
         set(value) { underlyingConfiguration = value }
     }
-    var underlyingConfiguration: Configuration!
+    public var underlyingConfiguration: Configuration!
     public var xcodeprojectParent: FolderProtocol {
         get { return underlyingXcodeprojectParent }
         set(value) { underlyingXcodeprojectParent = value }
     }
-    var underlyingXcodeprojectParent: FolderProtocol!
+    public var underlyingXcodeprojectParent: FolderProtocol!
 
     //MARK: - xcodeprojectUrl
 
@@ -2140,7 +2141,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var xcodeprojectUrlReturnValue: FolderProtocol?
     public var xcodeprojectUrlClosure: (() throws -> FolderProtocol)? = nil
 
-    public func xcodeprojectUrl() throws -> FolderProtocol {
+    open func xcodeprojectUrl() throws -> FolderProtocol {
 
         if let error = xcodeprojectUrlThrowableError {
             throw error
@@ -2177,7 +2178,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var xcconfigFileReturnValue: FileProtocol?
     public var xcconfigFileClosure: (() throws -> FileProtocol)? = nil
 
-    public func xcconfigFile() throws -> FileProtocol {
+    open func xcconfigFile() throws -> FileProtocol {
 
         if let error = xcconfigFileThrowableError {
             throw error
@@ -2214,7 +2215,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var gitignoreReturnValue: FileProtocol?
     public var gitignoreClosure: (() throws -> FileProtocol)? = nil
 
-    public func gitignore() throws -> FileProtocol {
+    open func gitignore() throws -> FileProtocol {
 
         if let error = gitignoreThrowableError {
             throw error
@@ -2251,7 +2252,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var mainSwiftFileReturnValue: FileProtocol?
     public var mainSwiftFileClosure: (() throws -> FileProtocol)? = nil
 
-    public func mainSwiftFile() throws -> FileProtocol {
+    open func mainSwiftFile() throws -> FileProtocol {
 
         if let error = mainSwiftFileThrowableError {
             throw error
@@ -2288,7 +2289,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var packageReturnValue: FileProtocol?
     public var packageClosure: (() throws -> FileProtocol)? = nil
 
-    public func package() throws -> FileProtocol {
+    open func package() throws -> FileProtocol {
 
         if let error = packageThrowableError {
             throw error
@@ -2325,7 +2326,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var pinsFileUrlReturnValue: FileProtocol?
     public var pinsFileUrlClosure: (() throws -> FileProtocol)? = nil
 
-    public func pinsFileUrl() throws -> FileProtocol {
+    open func pinsFileUrl() throws -> FileProtocol {
 
         if let error = pinsFileUrlThrowableError {
             throw error
@@ -2362,7 +2363,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var buildDirectoryReturnValue: FolderProtocol?
     public var buildDirectoryClosure: (() throws -> FolderProtocol)? = nil
 
-    public func buildDirectory() throws -> FolderProtocol {
+    open func buildDirectory() throws -> FolderProtocol {
 
         if let error = buildDirectoryThrowableError {
             throw error
@@ -2399,7 +2400,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var cleanReturnValue: Bool?
     public var cleanClosure: (() throws -> Bool)? = nil
 
-    public func clean() throws -> Bool {
+    open func clean() throws -> Bool {
 
         if let error = cleanThrowableError {
             throw error
@@ -2437,7 +2438,7 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
     public var executableUrlSwiftBinUrlReturnValue: FileProtocol?
     public var executableUrlSwiftBinUrlClosure: ((FolderProtocol) throws -> FileProtocol)? = nil
 
-    public func executableUrl(swiftBinUrl: FolderProtocol) throws -> FileProtocol {
+    open func executableUrl(swiftBinUrl: FolderProtocol) throws -> FileProtocol {
 
         if let error = executableUrlSwiftBinUrlThrowableError {
             throw error
@@ -2470,35 +2471,35 @@ public class HighwayBundleProtocolMock: HighwayBundleProtocol {
 
 // MARK: - ItemProtocolMock
 
-public class ItemProtocolMock: ItemProtocol {
+open class ItemProtocolMock: ItemProtocol {
 
 
     public var path: String {
         get { return underlyingPath }
         set(value) { underlyingPath = value }
     }
-    var underlyingPath: String = "AutoMockable filled value"
+    public var underlyingPath: String = "AutoMockable filled value"
     public var name: String {
         get { return underlyingName }
         set(value) { underlyingName = value }
     }
-    var underlyingName: String = "AutoMockable filled value"
+    public var underlyingName: String = "AutoMockable filled value"
     public var nameExcludingExtension: String {
         get { return underlyingNameExcludingExtension }
         set(value) { underlyingNameExcludingExtension = value }
     }
-    var underlyingNameExcludingExtension: String = "AutoMockable filled value"
+    public var underlyingNameExcludingExtension: String = "AutoMockable filled value"
     public var `extension`: String?
     public var modificationDate: Date {
         get { return underlyingModificationDate }
         set(value) { underlyingModificationDate = value }
     }
-    var underlyingModificationDate: Date = Date()
+    public var underlyingModificationDate: Date = Date()
     public var description: String {
         get { return underlyingDescription }
         set(value) { underlyingDescription = value }
     }
-    var underlyingDescription: String = "AutoMockable filled value"
+    public var underlyingDescription: String = "AutoMockable filled value"
 
     //MARK: - parentFolder
 
@@ -2510,7 +2511,7 @@ public class ItemProtocolMock: ItemProtocol {
     public var parentFolderReturnValue: FolderProtocol?
     public var parentFolderClosure: (() throws -> FolderProtocol)? = nil
 
-    public func parentFolder() throws -> FolderProtocol {
+    open func parentFolder() throws -> FolderProtocol {
 
         if let error = parentFolderThrowableError {
             throw error
@@ -2547,7 +2548,7 @@ public class ItemProtocolMock: ItemProtocol {
     public var renameToReceivedNewName: String?
     public var renameToClosure: ((String) throws -> Void)? = nil
 
-    public func rename(to newName: String) throws {
+    open func rename(to newName: String) throws {
 
         if let error = renameToThrowableError {
             throw error
@@ -2572,7 +2573,7 @@ public class ItemProtocolMock: ItemProtocol {
     public var renameToKeepExtensionReceivedArguments: (newName: String, keepExtension: Bool)?
     public var renameToKeepExtensionClosure: ((String, Bool) throws -> Void)? = nil
 
-    public func rename(to newName: String, keepExtension: Bool) throws {
+    open func rename(to newName: String, keepExtension: Bool) throws {
 
         if let error = renameToKeepExtensionThrowableError {
             throw error
@@ -2597,7 +2598,7 @@ public class ItemProtocolMock: ItemProtocol {
     public var moveToReceivedNewParent: Folder?
     public var moveToClosure: ((Folder) throws -> Void)? = nil
 
-    public func move(to newParent: Folder) throws {
+    open func move(to newParent: Folder) throws {
 
         if let error = moveToThrowableError {
             throw error
@@ -2621,7 +2622,7 @@ public class ItemProtocolMock: ItemProtocol {
     }
     public var deleteClosure: (() throws -> Void)? = nil
 
-    public func delete() throws {
+    open func delete() throws {
 
         if let error = deleteThrowableError {
             throw error
@@ -2640,7 +2641,7 @@ public class ItemProtocolMock: ItemProtocol {
 
 // MARK: - KeychainProtocolMock
 
-public class KeychainProtocolMock: KeychainProtocol {
+open class KeychainProtocolMock: KeychainProtocol {
 
     public init() {}
 
@@ -2648,7 +2649,7 @@ public class KeychainProtocolMock: KeychainProtocol {
         get { return underlyingSystem }
         set(value) { underlyingSystem = value }
     }
-    var underlyingSystem: SystemProtocol!
+    public var underlyingSystem: SystemProtocol!
 
     //MARK: - password
 
@@ -2661,7 +2662,7 @@ public class KeychainProtocolMock: KeychainProtocol {
     public var passwordMatchingReturnValue: String?
     public var passwordMatchingClosure: ((Keychain.PasswordQuery) throws -> String)? = nil
 
-    public func password(matching query: Keychain.PasswordQuery) throws -> String {
+    open func password(matching query: Keychain.PasswordQuery) throws -> String {
 
         if let error = passwordMatchingThrowableError {
             throw error
@@ -2694,7 +2695,7 @@ public class KeychainProtocolMock: KeychainProtocol {
 
 // MARK: - SystemProtocolMock
 
-public class SystemProtocolMock: SystemProtocol {
+open class SystemProtocolMock: SystemProtocol {
 
     public init() {}
 
@@ -2710,7 +2711,7 @@ public class SystemProtocolMock: SystemProtocol {
     public var taskNamedReturnValue: Task?
     public var taskNamedClosure: ((String) throws -> Task)? = nil
 
-    public func task(named name: String) throws -> Task {
+    open func task(named name: String) throws -> Task {
 
         if let error = taskNamedThrowableError {
             throw error
@@ -2749,7 +2750,7 @@ public class SystemProtocolMock: SystemProtocol {
     public var executeReturnValue: Bool?
     public var executeClosure: ((Task) throws -> Bool)? = nil
 
-    public func execute(_ task: Task) throws -> Bool {
+    open func execute(_ task: Task) throws -> Bool {
 
         if let error = executeThrowableError {
             throw error
@@ -2788,7 +2789,7 @@ public class SystemProtocolMock: SystemProtocol {
     public var launchWaitReturnValue: Bool?
     public var launchWaitClosure: ((Task, Bool) throws -> Bool)? = nil
 
-    public func launch(_ task: Task, wait: Bool) throws -> Bool {
+    open func launch(_ task: Task, wait: Bool) throws -> Bool {
 
         if let error = launchWaitThrowableError {
             throw error
@@ -2821,7 +2822,7 @@ public class SystemProtocolMock: SystemProtocol {
 
 // MARK: - TaskExecutorProtocolMock
 
-public class TaskExecutorProtocolMock: TaskExecutorProtocol {
+open class TaskExecutorProtocolMock: TaskExecutorProtocol {
 
     public init() {}
 
@@ -2829,7 +2830,7 @@ public class TaskExecutorProtocolMock: TaskExecutorProtocol {
         get { return underlyingUi }
         set(value) { underlyingUi = value }
     }
-    var underlyingUi: UIProtocol!
+    public var underlyingUi: UIProtocol!
 
     //MARK: - execute
 
@@ -2841,7 +2842,7 @@ public class TaskExecutorProtocolMock: TaskExecutorProtocol {
     public var executeTaskReceivedTask: Task?
     public var executeTaskClosure: ((Task) throws -> Void)? = nil
 
-    public func execute(task: Task) throws {
+    open func execute(task: Task) throws {
 
         if let error = executeTaskThrowableError {
             throw error
@@ -2866,7 +2867,7 @@ public class TaskExecutorProtocolMock: TaskExecutorProtocol {
     public var launchTaskWaitReceivedArguments: (task: Task, wait: Bool)?
     public var launchTaskWaitClosure: ((Task, Bool) throws -> Void)? = nil
 
-    public func launch(task: Task, wait: Bool) throws {
+    open func launch(task: Task, wait: Bool) throws {
 
         if let error = launchTaskWaitThrowableError {
             throw error
@@ -2886,17 +2887,105 @@ public class TaskExecutorProtocolMock: TaskExecutorProtocol {
 
 // MARK: - TaskProtocolMock
 
-public class TaskProtocolMock: TaskProtocol {
+open class TaskProtocolMock: TaskProtocol {
 
     public init() {}
 
+    public var name: String {
+        get { return underlyingName }
+        set(value) { underlyingName = value }
+    }
+    public var underlyingName: String = "AutoMockable filled value"
+    public var executable: FileProtocol {
+        get { return underlyingExecutable }
+        set(value) { underlyingExecutable = value }
+    }
+    public var underlyingExecutable: FileProtocol!
+    public var arguments: Arguments {
+        get { return underlyingArguments }
+        set(value) { underlyingArguments = value }
+    }
+    public var underlyingArguments: Arguments!
+    public var environment: [String : String] = [:]
+    public var currentDirectoryUrl: FolderProtocol?
+    public var input: Channel {
+        get { return underlyingInput }
+        set(value) { underlyingInput = value }
+    }
+    public var underlyingInput: Channel!
+    public var output: Channel {
+        get { return underlyingOutput }
+        set(value) { underlyingOutput = value }
+    }
+    public var underlyingOutput: Channel!
+    public var state: State {
+        get { return underlyingState }
+        set(value) { underlyingState = value }
+    }
+    public var underlyingState: State!
+    public var capturedOutputData: Data?
+    public var readOutputString: String?
+    public var trimmedOutput: String?
+    public var capturedOutputString: String?
+    public var successfullyFinished: Bool {
+        get { return underlyingSuccessfullyFinished }
+        set(value) { underlyingSuccessfullyFinished = value }
+    }
+    public var underlyingSuccessfullyFinished: Bool = false
+    public var description: String {
+        get { return underlyingDescription }
+        set(value) { underlyingDescription = value }
+    }
+    public var underlyingDescription: String = "AutoMockable filled value"
+
+    //MARK: - enableReadableOutputDataCapturing
+
+    public var enableReadableOutputDataCapturingCallsCount = 0
+    public var enableReadableOutputDataCapturingCalled: Bool {
+        return enableReadableOutputDataCapturingCallsCount > 0
+    }
+    public var enableReadableOutputDataCapturingClosure: (() -> Void)? = nil
+
+    open func enableReadableOutputDataCapturing() {
+
+      enableReadableOutputDataCapturingCallsCount += 1
+
+
+      enableReadableOutputDataCapturingClosure?()
+
+    }
+
+    //MARK: - throwIfNotSuccess
+
+    public  var throwIfNotSuccessThrowableError: Error?
+    public var throwIfNotSuccessCallsCount = 0
+    public var throwIfNotSuccessCalled: Bool {
+        return throwIfNotSuccessCallsCount > 0
+    }
+    public var throwIfNotSuccessReceivedError: Swift.Error?
+    public var throwIfNotSuccessClosure: ((Swift.Error) throws -> Void)? = nil
+
+    open func throwIfNotSuccess(_ error: Swift.Error) throws {
+
+        if let error = throwIfNotSuccessThrowableError {
+            throw error
+        }
+
+
+      throwIfNotSuccessCallsCount += 1
+        throwIfNotSuccessReceivedError = error
+
+
+      try throwIfNotSuccessClosure?(error)
+
+    }
 
 }
 
 
 // MARK: - TestOptionsProtocolMock
 
-public class TestOptionsProtocolMock: TestOptionsProtocol {
+open class TestOptionsProtocolMock: TestOptionsProtocol {
 
     public init() {}
 
@@ -2904,24 +2993,24 @@ public class TestOptionsProtocolMock: TestOptionsProtocol {
         get { return underlyingScheme }
         set(value) { underlyingScheme = value }
     }
-    var underlyingScheme: String = "AutoMockable filled value"
+    public var underlyingScheme: String = "AutoMockable filled value"
     public var project: String {
         get { return underlyingProject }
         set(value) { underlyingProject = value }
     }
-    var underlyingProject: String = "AutoMockable filled value"
+    public var underlyingProject: String = "AutoMockable filled value"
     public var destination: DestinationProtocol {
         get { return underlyingDestination }
         set(value) { underlyingDestination = value }
     }
-    var underlyingDestination: DestinationProtocol!
+    public var underlyingDestination: DestinationProtocol!
 
 }
 
 
 // MARK: - UIProtocolMock
 
-public class UIProtocolMock: UIProtocol {
+open class UIProtocolMock: UIProtocol {
 
     public init() {}
 
@@ -2935,7 +3024,7 @@ public class UIProtocolMock: UIProtocol {
     public var messageReceivedText: String?
     public var messageClosure: ((String) -> Void)? = nil
 
-    public func message(_ text: String) {
+    open func message(_ text: String) {
 
       messageCallsCount += 1
         messageReceivedText = text
@@ -2954,7 +3043,7 @@ public class UIProtocolMock: UIProtocol {
     public var successReceivedText: String?
     public var successClosure: ((String) -> Void)? = nil
 
-    public func success(_ text: String) {
+    open func success(_ text: String) {
 
       successCallsCount += 1
         successReceivedText = text
@@ -2973,7 +3062,7 @@ public class UIProtocolMock: UIProtocol {
     public var verboseReceivedText: String?
     public var verboseClosure: ((String) -> Void)? = nil
 
-    public func verbose(_ text: String) {
+    open func verbose(_ text: String) {
 
       verboseCallsCount += 1
         verboseReceivedText = text
@@ -2992,7 +3081,7 @@ public class UIProtocolMock: UIProtocol {
     public var errorReceivedText: String?
     public var errorClosure: ((String) -> Void)? = nil
 
-    public func error(_ text: String) {
+    open func error(_ text: String) {
 
       errorCallsCount += 1
         errorReceivedText = text
@@ -3011,7 +3100,7 @@ public class UIProtocolMock: UIProtocol {
     public var printReceivedPrintable: Printable?
     public var printClosure: ((Printable) -> Void)? = nil
 
-    public func print(_ printable: Printable) {
+    open func print(_ printable: Printable) {
 
       printCallsCount += 1
         printReceivedPrintable = printable
@@ -3030,7 +3119,7 @@ public class UIProtocolMock: UIProtocol {
     public var verbosePrintReceivedPrintable: Printable?
     public var verbosePrintClosure: ((Printable) -> Void)? = nil
 
-    public func verbosePrint(_ printable: Printable) {
+    open func verbosePrint(_ printable: Printable) {
 
       verbosePrintCallsCount += 1
         verbosePrintReceivedPrintable = printable
@@ -3045,7 +3134,7 @@ public class UIProtocolMock: UIProtocol {
 
 // MARK: - XCBuildProtocolMock
 
-public class XCBuildProtocolMock: XCBuildProtocol {
+open class XCBuildProtocolMock: XCBuildProtocol {
 
     public init() {}
 
@@ -3053,12 +3142,12 @@ public class XCBuildProtocolMock: XCBuildProtocol {
         get { return underlyingSystem }
         set(value) { underlyingSystem = value }
     }
-    var underlyingSystem: SystemProtocol!
+    public var underlyingSystem: SystemProtocol!
     public var fileSystem: FileSystemProtocol {
         get { return underlyingFileSystem }
         set(value) { underlyingFileSystem = value }
     }
-    var underlyingFileSystem: FileSystemProtocol!
+    public var underlyingFileSystem: FileSystemProtocol!
 
     //MARK: - archive
 
@@ -3071,7 +3160,7 @@ public class XCBuildProtocolMock: XCBuildProtocol {
     public var archiveUsingReturnValue: ArchiveProtocol?
     public var archiveUsingClosure: ((ArchiveOptionsProtocol) throws -> ArchiveProtocol)? = nil
 
-    public func archive(using options: ArchiveOptionsProtocol) throws -> ArchiveProtocol {
+    open func archive(using options: ArchiveOptionsProtocol) throws -> ArchiveProtocol {
 
         if let error = archiveUsingThrowableError {
             throw error
@@ -3110,7 +3199,7 @@ public class XCBuildProtocolMock: XCBuildProtocol {
     public var exportUsingReturnValue: ExportProtocol?
     public var exportUsingClosure: ((ExportArchiveOptionsProtocol) throws -> ExportProtocol)? = nil
 
-    public func export(using options: ExportArchiveOptionsProtocol) throws -> ExportProtocol {
+    open func export(using options: ExportArchiveOptionsProtocol) throws -> ExportProtocol {
 
         if let error = exportUsingThrowableError {
             throw error
@@ -3149,7 +3238,7 @@ public class XCBuildProtocolMock: XCBuildProtocol {
     public var buildAndTestUsingReturnValue: TestReport?
     public var buildAndTestUsingClosure: ((TestOptionsProtocol) throws -> TestReport)? = nil
 
-    public func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
+    open func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
 
         if let error = buildAndTestUsingThrowableError {
             throw error

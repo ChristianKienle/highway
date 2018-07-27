@@ -377,6 +377,13 @@ public class ExportArchiveOptionsProtocolMock: ExportArchiveOptionsProtocol {
     }
     var underlyingExportPath: String = "AutoMockable filled value"
 
+    public required init(from decoder: Decoder) throws {
+        
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+    }
 }
 
 

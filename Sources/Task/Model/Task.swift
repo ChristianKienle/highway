@@ -5,7 +5,7 @@ import SourceryAutoProtocols
 
 public protocol TaskProtocol: AutoMockable {
 
-    // sourcery:inline:Task.AutoGenerateProtocol
+    /// sourcery:inline:Task.AutoGenerateProtocol
     var name: String { get }
     var executable: FileProtocol { get set }
     var arguments: Arguments { get set }
@@ -23,7 +23,7 @@ public protocol TaskProtocol: AutoMockable {
 
     func enableReadableOutputDataCapturing()
     func throwIfNotSuccess(_ error: Swift.Error) throws 
-    // sourcery:end
+    /// sourcery:end
 }
 
 public class Task: TaskProtocol, AutoGenerateProtocol {

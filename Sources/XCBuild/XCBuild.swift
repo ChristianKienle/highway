@@ -152,6 +152,8 @@ fileprivate extension TestOptionsProtocol {
         args += _option("scheme", value: scheme)
         args += _option("project", value: project)
         args += _option("destination", value: destination.asString)
+        args += _option("resultBundlePath", value: resultBundlePath)
+        args += _option("quiet", value: nil)
         args.append(["build", "test"])
         return args
     }

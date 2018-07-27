@@ -27,6 +27,7 @@ public protocol FileSystemProtocol {
     func createFileIfNeeded(at path: String, contents: Data) throws -> FileProtocol
     func createFolder(at path: String) throws -> FolderProtocol
     func createFolderIfNeeded(at path: String) throws -> FolderProtocol
+    func itemKind(at path: String)-> FileSystem.Item.Kind?
     
     /// sourcery:end
     
@@ -506,6 +507,11 @@ public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
         }
         
         return try createFolder(at: path)
+    }
+    
+    // sourcery:selectedForProtocol
+    public func itemKind(at path: String) -> FileSystem.Item.Kind? {
+        return fileManager.itemKind(atPath: path)
     }
 }
 

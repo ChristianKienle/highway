@@ -6,6 +6,7 @@
 
 import Foundation
 import os
+import XCBuild
 
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
@@ -1069,6 +1070,40 @@ open class FileSystemProtocolMock: FileSystemProtocol {
       }
 
       return try closureReturn(path)
+    }
+
+    //MARK: - itemKind
+
+    public var itemKindAtCallsCount = 0
+    public var itemKindAtCalled: Bool {
+        return itemKindAtCallsCount > 0
+    }
+    public var itemKindAtReceivedPath: String?
+    public var itemKindAtReturnValue: FileSystem.Item.Kind??
+    public var itemKindAtClosure: ((String) -> FileSystem.Item.Kind?)? = nil
+
+    open func itemKind(at path: String) -> FileSystem.Item.Kind? {
+
+      itemKindAtCallsCount += 1
+        itemKindAtReceivedPath = path
+
+
+      guard let closureReturn = itemKindAtClosure else {
+          guard let returnValue = itemKindAtReturnValue else {
+              let message = """
+                🧙‍♂️ 🔥asked to return a value for name parameters:
+                    itemKindAt
+                    but this case(s) is(are) not implemented in
+                    FileSystemProtocol for method itemKindAtClosure.
+                """
+              let error = SourceryMockError.implementErrorCaseFor(message)
+              os_log("🧙‍♂️ 🔥 %@", type: .error, "\(error)")
+              return itemKindAtReturnValue!
+          }
+          return returnValue
+      }
+
+      return closureReturn(path)
     }
 
 }
@@ -3004,6 +3039,11 @@ open class TestOptionsProtocolMock: TestOptionsProtocol {
         set(value) { underlyingDestination = value }
     }
     public var underlyingDestination: DestinationProtocol!
+    public var resultBundlePath: String {
+        get { return underlyingResultBundlePath }
+        set(value) { underlyingResultBundlePath = value }
+    }
+    public var underlyingResultBundlePath: String = "AutoMockable filled value"
 
 }
 

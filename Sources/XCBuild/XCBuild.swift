@@ -108,7 +108,7 @@ public struct XCodeBuildOption {
 
 extension XCodeBuildOption: ArgumentsConvertible {
     public func arguments() -> Arguments? {
-        guard let value = value else { return nil }
+        guard let value = value else { return Arguments(["-\(name)"]) }
         return Arguments(["-" + name, value])
     }
 }

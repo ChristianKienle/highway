@@ -47,12 +47,13 @@ public struct TestOptions: TestOptionsProtocol, AutoGenerateProtocol {
     public func arguments() throws -> Arguments {
         var args = Arguments.empty
         
+        // TODO: add derived data path
         args += _option("scheme", value: scheme)
         args += _option("project", value: project)
         args += _option("destination", value: destination.asString)
         args += _option("resultBundlePath", value: resultBundlePath)
         args += _option("quiet", value: nil)
-        args.append(["build", "test"])
+        args.append(["test"])
        
         return args
         

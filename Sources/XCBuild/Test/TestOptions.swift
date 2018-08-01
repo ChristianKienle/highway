@@ -11,6 +11,7 @@ public protocol TestOptionsProtocol: ArgumentExecutableProtocol {
     var project: String { get }
     var destination: DestinationProtocol { get }
     var resultBundlePath: String { get }
+    var derivedDataPath: FolderProtocol? { get } // if set it will not build just run tests
     /// sourcery:end
 }
 
@@ -20,7 +21,8 @@ public struct TestOptions: TestOptionsProtocol, AutoGenerateProtocol {
     public let scheme: String // -scheme
     public let project: String // -project [sub-type: path]
     public let destination: DestinationProtocol // -destination
-    public let resultBundlePath: String
+    public let resultBundlePath: String // -resultBundlePath
+    public let derivedDataPath: FolderProtocol?
     
     private let executableProvider: ExecutableProviderProtocol
     
@@ -29,6 +31,7 @@ public struct TestOptions: TestOptionsProtocol, AutoGenerateProtocol {
                 destination: Destination,
                 resultBundlePath: String,
                 fileSystem: FileSystem = FileSystem(),
+                derivedDataPath: FolderProtocol?,
                 executableProvider: ExecutableProviderProtocol? = nil
         ) throws {
         
@@ -41,26 +44,27 @@ public struct TestOptions: TestOptionsProtocol, AutoGenerateProtocol {
         self.project = project
         self.destination = destination
         self.resultBundlePath = resultBundlePath
+        self.derivedDataPath = derivedDataPath
         self.executableProvider = (executableProvider == nil) ? try SystemExecutableProvider() : executableProvider!
     }
     
     public func arguments() throws -> Arguments {
         var args = Arguments.empty
         
-        // TODO: add derived data path
         args += _option("scheme", value: scheme)
         args += _option("project", value: project)
         args += _option("destination", value: destination.asString)
         args += _option("resultBundlePath", value: resultBundlePath)
-        args += _option("quiet", value: nil)
-        args.append(["test"])
+        args += _option("derivedDataPath", value: derivedDataPath?.path)
+
+        args.append(["-quiet", "test"]) // arguments without a value
        
         return args
         
     }
     
     public func executableFile() throws -> FileProtocol {
-        return try self.executableProvider.executable(with: "") // TODO
+        return try self.executableProvider.executable(with: "") // TODO: this is not yet used.
     }
     
 }

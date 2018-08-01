@@ -3365,6 +3365,7 @@ open class TestOptionsProtocolMock: TestOptionsProtocol {
         set(value) { underlyingResultBundlePath = value }
     }
     public var underlyingResultBundlePath: String = "AutoMockable filled value"
+    public var derivedDataPath: FolderProtocol?
 
     //MARK: - arguments
 

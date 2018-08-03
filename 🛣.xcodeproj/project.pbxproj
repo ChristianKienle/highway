@@ -65,6 +65,14 @@
 		FD326D9F210A0F5F00AE3A98 /* HighwayCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::HighwayCore::Product" /* HighwayCore.framework */; };
 		FD326DA1210A134000AE3A98 /* DestinationFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326DA0210A134000AE3A98 /* DestinationFactory.swift */; };
 		FD326DA3210B125200AE3A98 /* DecoderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326DA2210B125200AE3A98 /* DecoderMock.swift */; };
+		FD77AEFE2114B39F00BB9E44 /* ZFileiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD77AEF52114B39F00BB9E44 /* ZFileiOS.framework */; };
+		FD77AF032114B39F00BB9E44 /* ZFileiOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD77AF022114B39F00BB9E44 /* ZFileiOSTests.swift */; };
+		FD77AF0C2114B3D700BB9E44 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_126 /* File.swift */; };
+		FD77AF0D2114B3D700BB9E44 /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_127 /* FileSystem.swift */; };
+		FD77AF0E2114B3D700BB9E44 /* FileSystemInterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_128 /* FileSystemInterator.swift */; };
+		FD77AF0F2114B3D700BB9E44 /* FileSystemSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_129 /* FileSystemSequence.swift */; };
+		FD77AF102114B3D700BB9E44 /* FilesGeneral.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_130 /* FilesGeneral.swift */; };
+		FD77AF112114B3D700BB9E44 /* Folder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_131 /* Folder.swift */; };
 		FDAC932A210B595100B0D045 /* POSIX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::POSIX::Product" /* POSIX.framework */; };
 		FDAC9351210B7D4A00B0D045 /* TerminalTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC9350210B7D4A00B0D045 /* TerminalTasks.swift */; };
 		FDAC9353210B7F1E00B0D045 /* ExcecutableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC932C210B5C4500B0D045 /* ExcecutableProtocol.swift */; };
@@ -2233,6 +2241,13 @@
 			remoteGlobalIDString = "highway::GitTests";
 			remoteInfo = GitTests;
 		};
+		FD77AEFF2114B39F00BB9E44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FD77AEF42114B39F00BB9E44;
+			remoteInfo = ZFileiOS;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -2243,6 +2258,12 @@
 		FD326D9B210A094300AE3A98 /* BuildResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildResult.swift; sourceTree = "<group>"; };
 		FD326DA0210A134000AE3A98 /* DestinationFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationFactory.swift; sourceTree = "<group>"; };
 		FD326DA2210B125200AE3A98 /* DecoderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderMock.swift; sourceTree = "<group>"; };
+		FD77AEF52114B39F00BB9E44 /* ZFileiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ZFileiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD77AEF72114B39F00BB9E44 /* ZFileiOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZFileiOS.h; sourceTree = "<group>"; };
+		FD77AEF82114B39F00BB9E44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FD77AEFD2114B39F00BB9E44 /* ZFileiOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZFileiOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD77AF022114B39F00BB9E44 /* ZFileiOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZFileiOSTests.swift; sourceTree = "<group>"; };
+		FD77AF042114B39F00BB9E44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FDAC932C210B5C4500B0D045 /* ExcecutableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExcecutableProtocol.swift; sourceTree = "<group>"; };
 		FDAC9350210B7D4A00B0D045 /* TerminalTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerminalTasks.swift; sourceTree = "<group>"; };
 		OBJ_10 /* Archive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Archive.swift; sourceTree = "<group>"; };
@@ -2399,6 +2420,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		FD77AEF12114B39F00BB9E44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FD77AEFA2114B39F00BB9E44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD77AEFE2114B39F00BB9E44 /* ZFileiOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		OBJ_1017 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
@@ -2845,6 +2881,24 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FD77AEF62114B39F00BB9E44 /* ZFileiOS */ = {
+			isa = PBXGroup;
+			children = (
+				FD77AEF72114B39F00BB9E44 /* ZFileiOS.h */,
+				FD77AEF82114B39F00BB9E44 /* Info.plist */,
+			);
+			path = ZFileiOS;
+			sourceTree = "<group>";
+		};
+		FD77AF012114B39F00BB9E44 /* ZFileiOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				FD77AF022114B39F00BB9E44 /* ZFileiOSTests.swift */,
+				FD77AF042114B39F00BB9E44 /* Info.plist */,
+			);
+			path = ZFileiOSTests;
+			sourceTree = "<group>";
+		};
 		OBJ_101 /* HighwayProject */ = {
 			isa = PBXGroup;
 			children = (
@@ -3171,6 +3225,8 @@
 				"highway::SourceryMocks::Product" /* SourceryMocks.framework */,
 				"highway::TerminalTests::Product" /* TerminalTests.xctest */,
 				"highway::UrlTests::Product" /* UrlTests.xctest */,
+				FD77AEF52114B39F00BB9E44 /* ZFileiOS.framework */,
+				FD77AEFD2114B39F00BB9E44 /* ZFileiOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3287,6 +3343,8 @@
 				OBJ_191 /* end2end_tests */,
 				OBJ_192 /* _highway */,
 				OBJ_193 /* scripts */,
+				FD77AEF62114B39F00BB9E44 /* ZFileiOS */,
+				FD77AF012114B39F00BB9E44 /* ZFileiOSTests */,
 				OBJ_194 /* Products */,
 				FD326D9E210A0F5F00AE3A98 /* Frameworks */,
 			);
@@ -3483,7 +3541,53 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		FD77AEF22114B39F00BB9E44 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		FD77AEF42114B39F00BB9E44 /* ZFileiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD77AF062114B3A000BB9E44 /* Build configuration list for PBXNativeTarget "ZFileiOS" */;
+			buildPhases = (
+				FD77AEF02114B39F00BB9E44 /* Sources */,
+				FD77AEF12114B39F00BB9E44 /* Frameworks */,
+				FD77AEF22114B39F00BB9E44 /* Headers */,
+				FD77AEF32114B39F00BB9E44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ZFileiOS;
+			productName = ZFileiOS;
+			productReference = FD77AEF52114B39F00BB9E44 /* ZFileiOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		FD77AEFC2114B39F00BB9E44 /* ZFileiOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD77AF092114B3A000BB9E44 /* Build configuration list for PBXNativeTarget "ZFileiOSTests" */;
+			buildPhases = (
+				FD77AEF92114B39F00BB9E44 /* Sources */,
+				FD77AEFA2114B39F00BB9E44 /* Frameworks */,
+				FD77AEFB2114B39F00BB9E44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FD77AF002114B39F00BB9E44 /* PBXTargetDependency */,
+			);
+			name = ZFileiOSTests;
+			productName = ZFileiOSTests;
+			productReference = FD77AEFD2114B39F00BB9E44 /* ZFileiOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		"highway::Arguments" /* Arguments */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_265 /* Build configuration list for PBXNativeTarget "Arguments" */;
@@ -4199,7 +4303,19 @@
 		OBJ_1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0940;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+					FD77AEF42114B39F00BB9E44 = {
+						CreatedOnToolsVersion = 9.4.1;
+						ProvisioningStyle = Manual;
+					};
+					FD77AEFC2114B39F00BB9E44 = {
+						CreatedOnToolsVersion = 9.4.1;
+						DevelopmentTeam = WWFDRU947Q;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "🛣" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -4245,11 +4361,51 @@
 				"highway::highway" /* highway */,
 				"highway::SwiftPMPackageDescription" /* highwayPackageDescription */,
 				"highway::highwayPackageTests::ProductTarget" /* highwayPackageTests */,
+				FD77AEF42114B39F00BB9E44 /* ZFileiOS */,
+				FD77AEFC2114B39F00BB9E44 /* ZFileiOSTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		FD77AEF32114B39F00BB9E44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FD77AEFB2114B39F00BB9E44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		FD77AEF02114B39F00BB9E44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD77AF0C2114B3D700BB9E44 /* File.swift in Sources */,
+				FD77AF0D2114B3D700BB9E44 /* FileSystem.swift in Sources */,
+				FD77AF0E2114B3D700BB9E44 /* FileSystemInterator.swift in Sources */,
+				FD77AF0F2114B3D700BB9E44 /* FileSystemSequence.swift in Sources */,
+				FD77AF102114B3D700BB9E44 /* FilesGeneral.swift in Sources */,
+				FD77AF112114B3D700BB9E44 /* Folder.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FD77AEF92114B39F00BB9E44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD77AF032114B39F00BB9E44 /* ZFileiOSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		OBJ_1010 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
@@ -4589,6 +4745,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		FD77AF002114B39F00BB9E44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FD77AEF42114B39F00BB9E44 /* ZFileiOS */;
+			targetProxy = FD77AEFF2114B39F00BB9E44 /* PBXContainerItemProxy */;
+		};
 		OBJ_1000 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "highway::Result" /* Result */;
@@ -5887,6 +6048,274 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		FD77AF072114B3A000BB9E44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ZFileiOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = dooz.be.ZFileiOS;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		FD77AF082114B3A000BB9E44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ZFileiOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = dooz.be.ZFileiOS;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		FD77AF0A2114B3A000BB9E44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WWFDRU947Q;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ZFileiOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = dooz.be.ZFileiOSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FD77AF0B2114B3A000BB9E44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = WWFDRU947Q;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ZFileiOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = dooz.be.ZFileiOSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		OBJ_1008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -7280,6 +7709,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		FD77AF062114B3A000BB9E44 /* Build configuration list for PBXNativeTarget "ZFileiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD77AF072114B3A000BB9E44 /* Debug */,
+				FD77AF082114B3A000BB9E44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FD77AF092114B3A000BB9E44 /* Build configuration list for PBXNativeTarget "ZFileiOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD77AF0A2114B3A000BB9E44 /* Debug */,
+				FD77AF0B2114B3A000BB9E44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		OBJ_1007 /* Build configuration list for PBXNativeTarget "ZFile" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

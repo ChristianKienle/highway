@@ -73,6 +73,7 @@
 		FD77AF0F2114B3D700BB9E44 /* FileSystemSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_129 /* FileSystemSequence.swift */; };
 		FD77AF102114B3D700BB9E44 /* FilesGeneral.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_130 /* FilesGeneral.swift */; };
 		FD77AF112114B3D700BB9E44 /* Folder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_131 /* Folder.swift */; };
+		FD77AF1B2114B5F900BB9E44 /* SourceryAutoProtocols.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::SourceryAutoProtocols::Product" /* SourceryAutoProtocols.framework */; };
 		FDAC932A210B595100B0D045 /* POSIX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::POSIX::Product" /* POSIX.framework */; };
 		FDAC9351210B7D4A00B0D045 /* TerminalTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC9350210B7D4A00B0D045 /* TerminalTasks.swift */; };
 		FDAC9353210B7F1E00B0D045 /* ExcecutableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDAC932C210B5C4500B0D045 /* ExcecutableProtocol.swift */; };
@@ -2424,6 +2425,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD77AF1B2114B5F900BB9E44 /* SourceryAutoProtocols.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

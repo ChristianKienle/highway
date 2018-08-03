@@ -6177,6 +6177,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SYMROOT = "$(PROJECT_DIR)/Frameworks🛣";
 				USE_HEADERMAP = NO;
 			};
 			name = Debug;
@@ -6373,6 +6374,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SYMROOT = "$(PROJECT_DIR)/Frameworks🛣";
 				USE_HEADERMAP = NO;
 			};
 			name = Release;

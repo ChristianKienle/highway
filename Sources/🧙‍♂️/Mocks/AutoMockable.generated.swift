@@ -3670,11 +3670,11 @@ open class XCBuildProtocolMock: XCBuildProtocol {
     public var buildAndTestUsingCalled: Bool {
         return buildAndTestUsingCallsCount > 0
     }
-    public var buildAndTestUsingReceivedOptions: TestOptionsProtocol?
+    public var buildAndTestUsingReceivedOptions: ArgumentExecutableProtocol?
     public var buildAndTestUsingReturnValue: TestReport?
-    public var buildAndTestUsingClosure: ((TestOptionsProtocol) throws -> TestReport)? = nil
+    public var buildAndTestUsingClosure: ((ArgumentExecutableProtocol) throws -> TestReport)? = nil
 
-    open func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
+    open func buildAndTest(using options: ArgumentExecutableProtocol) throws -> TestReport {
 
         if let error = buildAndTestUsingThrowableError {
             throw error

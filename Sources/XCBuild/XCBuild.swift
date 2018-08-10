@@ -14,7 +14,7 @@ public protocol XCBuildProtocol: AutoMockable {
 
     func archive(using options: ArchiveOptionsProtocol) throws -> ArchiveProtocol
     func export(using options: ExportArchiveOptionsProtocol) throws -> ExportProtocol
-    func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport
+    func buildAndTest(using options: ArgumentExecutableProtocol) throws -> TestReport
     /// sourcery:end
 }
 
@@ -66,7 +66,7 @@ public final class XCBuild: XCBuildProtocol, AutoGenerateProtocol {
     
     // MARK: Testing
     @discardableResult
-    public func buildAndTest(using options: TestOptionsProtocol) throws -> TestReport {
+    public func buildAndTest(using options: ArgumentExecutableProtocol) throws -> TestReport {
         let xcbuild = try _buildTestTask(using: options)
         
         do {
@@ -83,7 +83,7 @@ public final class XCBuild: XCBuildProtocol, AutoGenerateProtocol {
         return TestReport()
     }
     
-    private func _buildTestTask(using options: TestOptionsProtocol) throws -> Task {
+    private func _buildTestTask(using options: ArgumentExecutableProtocol) throws -> Task {
         let result = try _xcodebuild()
         result.arguments += try options.arguments()
         return result

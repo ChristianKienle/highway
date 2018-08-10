@@ -11,10 +11,13 @@ import Arguments
 import ZFile
 
 public protocol ExecutableProtocol: AutoMockable {
+    
     func executableFile() throws -> FileProtocol
+    
 }
 
 public protocol ArgumentExecutableProtocol: ExecutableProtocol {
+    
     func arguments() throws -> Arguments
 
 }

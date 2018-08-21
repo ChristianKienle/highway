@@ -42,6 +42,9 @@ import Foundation
 public protocol AutoMockable {
 }
 
+@objc public protocol AutoObjcMockable {
+    
+}
 public protocol AutoGenerateProtocol {
 }
 

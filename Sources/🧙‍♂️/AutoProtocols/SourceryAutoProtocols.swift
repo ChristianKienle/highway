@@ -33,7 +33,7 @@ import Foundation
 
  // to edit template
  
- atom .🤖sources/builder/🧙‍♂️/AutoProtocols/AutoGenerateProtocol.stencil
+ atom .🤖sources/builder/🧙‍♂️/AutoProtocols/ZGenerateProtocol.stencil
  
  :*/
 
@@ -45,7 +45,7 @@ public protocol AutoMockable {
 @objc public protocol AutoObjcMockable {
     
 }
-public protocol AutoGenerateProtocol {
+public protocol ZGenerateProtocol {
 }
 
 public protocol AutoGenerateSelectiveProtocol {

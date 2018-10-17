@@ -7,9 +7,7 @@
 
 import Foundation
 
-#if ZFile
 import SourceryAutoProtocols
-#endif
 
 // MARK: - FileSystemProtocol
 

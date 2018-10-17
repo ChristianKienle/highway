@@ -214,7 +214,7 @@ open class File: FileSystem.Item, FileProtocol {
             try fileManager.copyItem(atPath: path, toPath: newPath)
             return try File(path: newPath)
         } catch {
-            throw OperationError.copyFailed(self)
+            throw OperationError.copyFailed(self, error: "\(error)")
         }
     }
 }

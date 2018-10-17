@@ -78,6 +78,8 @@ public protocol ItemProtocol {
  *  To open other files & folders, use the `File` and `Folder` class respectively.
  */
 public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
+    static let shared = FileSystem()
+    
     let fileManager: FileManager
     
     /**
@@ -124,79 +126,15 @@ public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
         }
         
         /// Error type used for failed operations run on files or folders
-        public enum OperationError: Error, Equatable, CustomStringConvertible {
+        public enum OperationError: Error, Equatable {
             /// Thrown when a file or folder couldn't be renamed (contains the item)
-            case renameFailed(Item)
+            case renameFailed(Item, error: String)
             /// Thrown when a file or folder couldn't be moved (contains the item)
-            case moveFailed(Item)
+            case moveFailed(Item, error: String)
             /// Thrown when a file or folder couldn't be copied (contains the item)
-            case copyFailed(Item)
+            case copyFailed(Item, error: String)
             /// Thrown when a file or folder couldn't be deleted (contains the item)
-            case deleteFailed(Item)
-            
-            /// Operator used to compare two instances for equality
-            public static func == (lhs: OperationError, rhs: OperationError) -> Bool {
-                switch lhs {
-                case let .renameFailed(itemA):
-                    switch rhs {
-                    case let .renameFailed(itemB):
-                        return itemA == itemB
-                    case .moveFailed:
-                        return false
-                    case .copyFailed:
-                        return false
-                    case .deleteFailed:
-                        return false
-                    }
-                case let .moveFailed(itemA):
-                    switch rhs {
-                    case .renameFailed:
-                        return false
-                    case let .moveFailed(itemB):
-                        return itemA == itemB
-                    case .copyFailed:
-                        return false
-                    case .deleteFailed:
-                        return false
-                    }
-                case let .copyFailed(itemA):
-                    switch rhs {
-                    case .renameFailed:
-                        return false
-                    case .moveFailed:
-                        return false
-                    case let .copyFailed(itemB):
-                        return itemA == itemB
-                    case .deleteFailed:
-                        return false
-                    }
-                case let .deleteFailed(itemA):
-                    switch rhs {
-                    case .renameFailed:
-                        return false
-                    case .moveFailed:
-                        return false
-                    case .copyFailed:
-                        return false
-                    case let .deleteFailed(itemB):
-                        return itemA == itemB
-                    }
-                }
-            }
-            
-            /// A string describing the error
-            public var description: String {
-                switch self {
-                case let .renameFailed(item):
-                    return "Failed to rename item: \(item)"
-                case let .moveFailed(item):
-                    return "Failed to move item: \(item)"
-                case let .copyFailed(item):
-                    return "Failed to copy item: \(item)"
-                case let .deleteFailed(item):
-                    return "Failed to delete item: \(item)"
-                }
-            }
+            case deleteFailed(Item, error: String)
         }
         
         /// Operator used to compare two instances for equality
@@ -315,7 +253,7 @@ public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
         // sourcery:selectedForProtocol
         public func rename(to newName: String, keepExtension: Bool) throws {
             guard let parent = parent else {
-                throw OperationError.renameFailed(self)
+                throw OperationError.renameFailed(self, error: "no parent")
             }
             
             var newName = newName
@@ -342,7 +280,7 @@ public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
                 name = newName
                 path = newPath
             } catch {
-                throw OperationError.renameFailed(self)
+                throw OperationError.renameFailed(self, error: "\(error)")
             }
         }
         
@@ -365,7 +303,7 @@ public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
                 try fileManager.moveItem(atPath: path, toPath: newPath)
                 path = newPath
             } catch {
-                throw OperationError.moveFailed(self)
+                throw OperationError.moveFailed(self, error: "\(error)")
             }
         }
         
@@ -381,7 +319,7 @@ public class FileSystem: FileSystemProtocol, AutoGenerateSelectiveProtocol {
             do {
                 try fileManager.removeItem(atPath: path)
             } catch {
-                throw OperationError.deleteFailed(self)
+                throw OperationError.deleteFailed(self, error: "\(error)")
             }
         }
     }
@@ -636,11 +574,12 @@ public extension FileSystem.Item {
     }
 }
 
-// MARK: - For Linux
+// MARK: - For MAC if NOT LINUX
 
 #if !os(Linux)
 extension FileSystem {
     /// A reference to the document folder used by this file system.
+    
     public var documentFolder: Folder? {
         guard let url = try? fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) else {
             return nil
@@ -656,6 +595,12 @@ extension FileSystem {
         }
         
         return try? Folder(path: url.path, fileManager: fileManager)
+    }
+    
+    /// A reference to the cache folder used by this file system.
+    public func cacheFolder() throws -> Folder {
+        let url = try fileManager.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        return try Folder(path: url.path, fileManager: fileManager)
     }
 }
 #endif

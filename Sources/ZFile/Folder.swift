@@ -440,8 +440,7 @@ open class Folder: FileSystem.Item, FolderProtocol, CustomDebugStringConvertible
             try fileManager.copyItem(atPath: path, toPath: newPath)
             return try Folder(path: newPath)
         } catch {
-            os_log("🤖 🔥 %@", type: .error, "\(error)")
-            throw OperationError.copyFailed(self)
+            throw OperationError.copyFailed(self, error: "\(error)")
         }
     }
 }

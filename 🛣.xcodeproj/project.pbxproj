@@ -58,6 +58,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		FD0F7C74218885D500F84604 /* Keychain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::Keychain::Product" /* Keychain.framework */; };
+		FD0F7C8F2188870400F84604 /* HWKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "highway::HWKit::Product" /* HWKit.framework */; };
 		FD326D942109E3C600AE3A98 /* ArchivePlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326D932109E3C600AE3A98 /* ArchivePlist.swift */; };
 		FD326D972109F2B800AE3A98 /* GitTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326D952109F2AC00AE3A98 /* GitTool.swift */; };
 		FD326D9A2109FB8F00AE3A98 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD326D982109FB8200AE3A98 /* Configuration.swift */; };
@@ -429,6 +431,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		FD0F7C702188859900F84604 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "highway::POSIX";
+			remoteInfo = POSIX;
+		};
+		FD0F7C72218885C000F84604 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "highway::Keychain";
+			remoteInfo = Keychain;
+		};
+		FD0F7C902188870E00F84604 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "highway::HWKit";
+			remoteInfo = HWKit;
+		};
 		FD326C762109CCEA00AE3A98 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
@@ -2732,6 +2755,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+				FD0F7C8F2188870400F84604 /* HWKit.framework in Frameworks */,
+				FD0F7C74218885D500F84604 /* Keychain.framework in Frameworks */,
 				OBJ_705 /* HighwayProject.framework in Frameworks */,
 				OBJ_706 /* XCBuild.framework in Frameworks */,
 				OBJ_707 /* HighwayCore.framework in Frameworks */,
@@ -4023,6 +4048,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				FD0F7C912188870E00F84604 /* PBXTargetDependency */,
+				FD0F7C73218885C000F84604 /* PBXTargetDependency */,
 				OBJ_719 /* PBXTargetDependency */,
 				OBJ_720 /* PBXTargetDependency */,
 				OBJ_721 /* PBXTargetDependency */,
@@ -4067,6 +4094,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FD0F7C712188859900F84604 /* PBXTargetDependency */,
 				OBJ_759 /* PBXTargetDependency */,
 				OBJ_760 /* PBXTargetDependency */,
 				OBJ_761 /* PBXTargetDependency */,
@@ -4316,6 +4344,57 @@
 						CreatedOnToolsVersion = 9.4.1;
 						DevelopmentTeam = WWFDRU947Q;
 						ProvisioningStyle = Automatic;
+					};
+					"highway::Arguments" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Deliver" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Errors" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Git" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::HWKit" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::HighwayCore" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::HighwayProject" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Keychain" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::POSIX" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Result" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::SourceryAutoProtocols" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::SourceryMocks" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Task" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Terminal" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::Url" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::XCBuild" = {
+						LastSwiftMigration = 1000;
+					};
+					"highway::ZFile" = {
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -4747,6 +4826,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		FD0F7C712188859900F84604 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "highway::POSIX" /* POSIX */;
+			targetProxy = FD0F7C702188859900F84604 /* PBXContainerItemProxy */;
+		};
+		FD0F7C73218885C000F84604 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "highway::Keychain" /* Keychain */;
+			targetProxy = FD0F7C72218885C000F84604 /* PBXContainerItemProxy */;
+		};
+		FD0F7C912188870E00F84604 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "highway::HWKit" /* HWKit */;
+			targetProxy = FD0F7C902188870E00F84604 /* PBXContainerItemProxy */;
+		};
 		FD77AF002114B39F00BB9E44 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FD77AEF42114B39F00BB9E44 /* ZFileiOS */;

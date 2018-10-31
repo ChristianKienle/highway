@@ -16,7 +16,8 @@ public enum TerminalTask: RawRepresentable, Equatable, AutoCases {
     
     case xcodebuild(ArgumentExecutableProtocol)
     case xcodebuildTests(ArgumentExecutableProtocol)
-
+    case cd(ArgumentExecutableProtocol)
+    
     // MARK: - Executable
     
     public var executable: ArgumentExecutableProtocol {
@@ -31,6 +32,8 @@ public enum TerminalTask: RawRepresentable, Equatable, AutoCases {
             return exec
         case let .xcodebuildTests(testOptions):
            return testOptions
+        case let .cd(path):
+            return path
         }
     }
     
@@ -42,6 +45,10 @@ public enum TerminalTask: RawRepresentable, Equatable, AutoCases {
         case (.git, .git):
             return true
         case (.sourcery, .sourcery ):
+            return true
+        case (.cd, .cd ):
+            return true
+        case (.xcodebuildTests, .xcodebuildTests):
             return true
         default:
             return false
@@ -64,6 +71,8 @@ public enum TerminalTask: RawRepresentable, Equatable, AutoCases {
             return "git"
         case .xcodebuildTests:
             return "xcodebuild"
+        case .cd:
+            return "cd"
         }
     }
     
